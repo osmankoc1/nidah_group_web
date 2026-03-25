@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 100" fill="currentColor" aria-hidden="true">
+  <!-- Carrier wheels -->
+  <circle cx="16" cy="84" r="8"/>
+  <circle cx="36" cy="84" r="8"/>
+  <circle cx="60" cy="84" r="8"/>
+  <circle cx="78" cy="84" r="8"/>
+  <!-- Carrier body -->
+  <rect x="8" y="68" width="76" height="14" rx="4"/>
+  <!-- Superstructure -->
+  <rect x="24" y="52" width="44" height="18" rx="3"/>
+  <!-- Cab -->
+  <rect x="26" y="44" width="24" height="20" rx="4"/>
+  <!-- Cab window -->
+  <rect x="29" y="47" width="15" height="11" rx="2" opacity="0.2"/>
+  <!-- Main boom (vertical) -->
+  <polygon points="40,48 44,4 50,4 54,48"/>
+  <!-- Fly boom (angled) -->
+  <polygon points="44,6 74,22 72,27 42,11"/>
+  <!-- Hook line -->
+  <rect x="72" y="26" width="2" height="18" rx="1"/>
+  <!-- Hook -->
+  <rect x="69" y="42" width="8" height="5" rx="2"/>
+</svg>

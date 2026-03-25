@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60" fill="currentColor" aria-hidden="true">
+  <!-- Counterweight / rear body -->
+  <rect x="56" y="26" width="40" height="22" rx="4"/>
+  <!-- Main body -->
+  <rect x="28" y="28" width="32" height="18" rx="3"/>
+  <!-- Overhead guard frame -->
+  <rect x="38" y="12" width="30" height="18" rx="2"/>
+  <!-- Guard top bar -->
+  <rect x="36" y="10" width="34" height="4" rx="2"/>
+  <!-- Mast uprights -->
+  <rect x="22" y="5" width="5" height="34" rx="2"/>
+  <rect x="33" y="5" width="5" height="34" rx="2"/>
+  <!-- Carriage crossbar -->
+  <rect x="20" y="25" width="21" height="5" rx="1"/>
+  <!-- Forks -->
+  <rect x="2" y="29" width="22" height="4" rx="1"/>
+  <rect x="2" y="36" width="22" height="4" rx="1"/>
+  <!-- Drive wheel -->
+  <circle cx="36" cy="50" r="8"/>
+  <!-- Steer wheel -->
+  <circle cx="82" cy="50" r="6"/>
+</svg>
