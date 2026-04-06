@@ -10,7 +10,7 @@
 
 import type { MetadataRoute } from "next";
 import { db } from "@/lib/db";
-import { products } from "@/lib/db/schema";
+import { products, blogPosts } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
 const BASE_URL = "https://www.nidahgroup.com.tr";
@@ -27,6 +27,7 @@ const STATIC_URLS: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/iletisim`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
   { url: `${BASE_URL}/sss`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
   { url: `${BASE_URL}/teklif-al`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+  { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.8 },
   // Service sub-pages
   { url: `${BASE_URL}/hizmetler/hidrolik-pompa-revizyonu`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
   { url: `${BASE_URL}/hizmetler/sanziman-revizyonu`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
@@ -63,10 +64,22 @@ export async function generateSitemaps() {
 
 export default async function sitemap({ id }: { id: number }): Promise<MetadataRoute.Sitemap> {
   if (id === 0) {
-    return STATIC_URLS;
+    // Static pages + published blog posts
+    const publishedPosts = await db?.select({ slug: blogPosts.slug, updatedAt: blogPosts.updatedAt })
+      .from(blogPosts)
+      .where(eq(blogPosts.status, "published")) ?? [];
+
+    const blogUrls: MetadataRoute.Sitemap = publishedPosts.map(p => ({
+      url: `${BASE_URL}/blog/${p.slug}`,
+      lastModified: p.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    }));
+
+    return [...STATIC_URLS, ...blogUrls];
   }
 
-  // Dynamic chunks: id 1 → slice [0..CHUNK_SIZE-1], id 2 → slice [CHUNK_SIZE..], …
+  // Dynamic product chunks
   const dbProducts = await db?.select({ partNumber: products.partNumber })
     .from(products)
     .where(eq(products.isActive, true)) ?? [];

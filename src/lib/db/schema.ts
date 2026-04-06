@@ -257,6 +257,83 @@ export const oemNumbers = pgTable(
   ]
 );
 
+// ── Blog ──────────────────────────────────────────────────────────────────────
+
+export const blogStatusEnum = pgEnum("blog_status", [
+  "draft",
+  "published",
+  "archived",
+]);
+
+export const blogCategories = pgTable(
+  "blog_categories",
+  {
+    id:          uuid("id").defaultRandom().primaryKey(),
+    name:        varchar("name", { length: 255 }).notNull(),
+    slug:        varchar("slug", { length: 255 }).notNull().unique(),
+    description: text("description"),
+    createdAt:   timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [index("idx_blog_categories_slug").on(table.slug)]
+);
+
+export const blogTags = pgTable(
+  "blog_tags",
+  {
+    id:        uuid("id").defaultRandom().primaryKey(),
+    name:      varchar("name", { length: 100 }).notNull(),
+    slug:      varchar("slug", { length: 100 }).notNull().unique(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [index("idx_blog_tags_slug").on(table.slug)]
+);
+
+export const blogPosts = pgTable(
+  "blog_posts",
+  {
+    id:               uuid("id").defaultRandom().primaryKey(),
+    title:            varchar("title", { length: 500 }).notNull(),
+    slug:             varchar("slug", { length: 500 }).notNull().unique(),
+    content:          text("content").notNull().default(""),
+    excerpt:          text("excerpt"),
+    coverImageUrl:    text("cover_image_url"),
+    coverCloudinaryId: varchar("cover_cloudinary_id", { length: 500 }),
+    metaTitle:        varchar("meta_title", { length: 255 }),
+    metaDescription:  text("meta_description"),
+    status:           blogStatusEnum("status").default("draft").notNull(),
+    publishedAt:      timestamp("published_at", { withTimezone: true }),
+    authorName:       varchar("author_name", { length: 255 }).default("NİDAH GROUP").notNull(),
+    categoryId:       uuid("category_id").references(() => blogCategories.id, { onDelete: "set null" }),
+    readingTimeMinutes: integer("reading_time_minutes").default(3).notNull(),
+    createdAt:        timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt:        timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index("idx_blog_posts_slug").on(table.slug),
+    index("idx_blog_posts_status").on(table.status),
+    index("idx_blog_posts_published_at").on(table.publishedAt),
+    index("idx_blog_posts_category").on(table.categoryId),
+  ]
+);
+
+export const blogPostTags = pgTable(
+  "blog_post_tags",
+  {
+    postId: uuid("post_id").notNull().references(() => blogPosts.id, { onDelete: "cascade" }),
+    tagId:  uuid("tag_id").notNull().references(() => blogTags.id,  { onDelete: "cascade" }),
+  },
+  (table) => [
+    uniqueIndex("uq_blog_post_tag").on(table.postId, table.tagId),
+    index("idx_blog_post_tags_post").on(table.postId),
+    index("idx_blog_post_tags_tag").on(table.tagId),
+  ]
+);
+
+export type BlogCategory   = typeof blogCategories.$inferSelect;
+export type BlogTag        = typeof blogTags.$inferSelect;
+export type BlogPost       = typeof blogPosts.$inferSelect;
+export type NewBlogPost    = typeof blogPosts.$inferInsert;
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 export type Category = typeof categories.$inferSelect;

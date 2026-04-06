@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LayoutDashboard, FileText, Package, Cog, Upload, LogOut } from "lucide-react";
+import { LayoutDashboard, FileText, Package, Cog, Upload, LogOut, BookOpen } from "lucide-react";
 import { Toaster } from "sonner";
 import SplashOverlay from "@/components/splash/SplashOverlay";
 import PageTransitionWrapper from "@/components/layout/PageTransitionWrapper";
@@ -47,6 +47,13 @@ export default function AdminDashboardLayout({
             >
               <Cog className="size-4" />
               Makineler
+            </Link>
+            <Link
+              href="/admin/blog"
+              className="flex items-center gap-1.5 text-sm text-gray-300 transition-colors hover:text-white"
+            >
+              <BookOpen className="size-4" />
+              Blog
             </Link>
             <Link
               href="/admin/import"
