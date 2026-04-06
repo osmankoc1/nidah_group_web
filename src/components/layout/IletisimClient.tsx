@@ -215,11 +215,20 @@ export default function IletisimClient() {
                   </div>
                   <div>
                     <p className="font-bold text-nidah-dark text-sm mb-1">{SITE_CONFIG.location.city}, {SITE_CONFIG.location.country}</p>
-                    <p className="text-xs text-nidah-gray leading-relaxed">Ankara merkezli operasyon</p>
+                    <p className="text-xs text-nidah-gray leading-relaxed">Ostim OSB. Mah. 1139. Sk. No:8<br />Yenimahalle / Ankara</p>
                     <div className="flex items-center gap-1.5 mt-2">
                       <Globe2 className="size-3.5 text-nidah-yellow shrink-0" />
                       <p className="text-xs text-nidah-gray">13+ ülkeye DHL ile ihracat</p>
                     </div>
+                    <a
+                      href="https://maps.google.com/?q=39.97030497347722,32.75472113862786"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 mt-3 text-xs font-semibold text-nidah-steel hover:text-nidah-dark transition-colors"
+                    >
+                      <MapPin className="size-3" />
+                      Google Maps&apos;te Aç
+                    </a>
                   </div>
                 </div>
               </div>
@@ -245,6 +254,43 @@ export default function IletisimClient() {
                 </Button>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Google Maps ── */}
+      <section className="bg-white border-t">
+        <div className="max-w-6xl mx-auto px-4 md:px-6 py-10">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-9 h-9 rounded-xl bg-nidah-dark flex items-center justify-center shrink-0">
+              <MapPin className="size-4 text-nidah-yellow" />
+            </div>
+            <div>
+              <h2 className="text-base font-bold text-nidah-dark">Konumumuz</h2>
+              <p className="text-xs text-nidah-gray">Ostim OSB. Mah. 1139. Sk. No:8, Yenimahalle / Ankara</p>
+            </div>
+            <a
+              href="https://maps.google.com/?q=39.97030497347722,32.75472113862786"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-auto text-xs font-semibold text-nidah-steel hover:text-nidah-dark transition-colors flex items-center gap-1 shrink-0"
+            >
+              <MapPin className="size-3.5" />
+              Yol Tarifi Al
+            </a>
+          </div>
+
+          <div className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm h-72 md:h-96">
+            <iframe
+              title="NİDAH GROUP Konumu"
+              src="https://maps.google.com/maps?q=39.97030497347722,32.75472113862786&hl=tr&z=16&output=embed"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
           </div>
         </div>
       </section>
