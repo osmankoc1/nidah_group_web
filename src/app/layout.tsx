@@ -61,31 +61,86 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "NİDAH GROUP",
-  url: "https://www.nidahgroup.com.tr",
-  description:
-    "İş makinası yedek parça tedariği, hidrolik revizyon ve ECU onarımı. Türkiye merkezli, 3 kıtada 13+ ülkeye ihracat.",
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Ankara",
-    addressCountry: "TR",
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://www.nidahgroup.com.tr/#organization",
+    name: "NİDAH GROUP",
+    legalName: "Nidah İş Makinaları",
+    url: "https://www.nidahgroup.com.tr",
+    logo: "https://www.nidahgroup.com.tr/opengraph-image",
+    description:
+      "İş makinası yedek parça tedariği, hidrolik revizyon ve ECU onarımı. Türkiye merkezli, 3 kıtada 13+ ülkeye ihracat.",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Ostim OSB. Mah. 1139. Sk. No:8",
+      addressLocality: "Yenimahalle",
+      addressRegion: "Ankara",
+      postalCode: "06370",
+      addressCountry: "TR",
+    },
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        telephone: "+90-530-884-59-79",
+        contactType: "sales",
+        name: "Mustafa KOÇ",
+        availableLanguage: ["Turkish", "English"],
+      },
+      {
+        "@type": "ContactPoint",
+        telephone: "+90-555-182-86-29",
+        contactType: "customer service",
+        name: "Osman Koç",
+        availableLanguage: ["Turkish"],
+      },
+    ],
+    sameAs: [],
   },
-  contactPoint: [
-    {
-      "@type": "ContactPoint",
-      telephone: "+90-530-884-59-79",
-      contactType: "sales",
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": "https://www.nidahgroup.com.tr/#localbusiness",
+    name: "NİDAH GROUP",
+    description:
+      "İş makinası yedek parça tedariği, diferansiyel & şanzıman revizyonu, ECU onarımı. Ankara merkezli, 13+ ülkeye ihracat.",
+    url: "https://www.nidahgroup.com.tr",
+    telephone: "+90-530-884-59-79",
+    email: "mustafa.koc@nidahgroup.com.tr",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Ostim OSB. Mah. 1139. Sk. No:8",
+      addressLocality: "Yenimahalle",
+      addressRegion: "Ankara",
+      postalCode: "06370",
+      addressCountry: "TR",
     },
-    {
-      "@type": "ContactPoint",
-      telephone: "+90-555-182-86-29",
-      contactType: "customer service",
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 39.97030497347722,
+      longitude: 32.75472113862786,
     },
-  ],
-};
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "08:30",
+        closes: "18:00",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Saturday"],
+        opens: "09:00",
+        closes: "14:00",
+      },
+    ],
+    priceRange: "$$",
+    currenciesAccepted: "TRY, USD, EUR",
+    paymentAccepted: "Cash, Bank Transfer",
+    areaServed: "Worldwide",
+  },
+];
 
 // ── Blocking splash script ────────────────────────────────────────────────────
 // Runs synchronously during HTML parsing — before React hydration.
@@ -106,10 +161,13 @@ export default function RootLayout({
     <html lang="tr" suppressHydrationWarning>
       <head>
         {/* JSON-LD structured data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        {jsonLd.map((schema, i) => (
+          <script
+            key={i}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          />
+        ))}
         {/* Blocking splash script: runs before body paints */}
         <script dangerouslySetInnerHTML={{ __html: splashBlockScript }} />
       </head>
