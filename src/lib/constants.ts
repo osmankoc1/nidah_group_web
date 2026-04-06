@@ -49,6 +49,7 @@ export const NAV_ITEMS = [
   { label: "Ana Sayfa", href: "/" },
   { label: "Hizmetler", href: "/hizmetler" },
   { label: "Parça Kataloğu", href: "/parca-katalog" },
+  { label: "Canlı Katalog", href: "/catalog" },
   { label: "Hakkımızda", href: "/hakkimizda" },
   { label: "İletişim", href: "/iletisim" },
   { label: "SSS", href: "/sss" },
