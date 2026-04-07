@@ -177,31 +177,34 @@ async function exportToPdf(ref: React.RefObject<HTMLDivElement | null>, title: s
   if (!ref.current) return;
 
   const canvas = await html2canvas(ref.current, {
-    scale: 1.5, useCORS: true, backgroundColor: "#F8FAFC",
-    ignoreElements: el => el.classList.contains("no-pdf"),
+    scale: 2,
+    useCORS: true,
+    backgroundColor: "#F8FAFC",
+    ignoreElements: (el) => (el as HTMLElement).classList?.contains("no-pdf") ?? false,
   });
 
-  const imgData = canvas.toDataURL("image/png");
   const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
-  const W = pdf.internal.pageSize.getWidth();
-  const H = pdf.internal.pageSize.getHeight();
-  const ratio = canvas.width / canvas.height;
-  let imgH = W / ratio;
-  let y = 0;
+  const pdfW = pdf.internal.pageSize.getWidth();
+  const pdfH = pdf.internal.pageSize.getHeight();
 
-  while (y < canvas.height) {
+  // pixels that fit in one A4 landscape page height
+  const pageHeightPx = Math.floor(canvas.width * (pdfH / pdfW));
+  let srcY = 0;
+
+  while (srcY < canvas.height) {
+    const sliceH = Math.min(pageHeightPx, canvas.height - srcY);
     const pageCanvas = document.createElement("canvas");
     pageCanvas.width  = canvas.width;
-    pageCanvas.height = Math.min(canvas.height - y, canvas.width / (W / H));
+    pageCanvas.height = sliceH;
     const ctx = pageCanvas.getContext("2d");
     if (!ctx) break;
-    ctx.drawImage(canvas, 0, -y);
+    // copy the correct slice from the full canvas
+    ctx.drawImage(canvas, 0, srcY, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
     const pageImg = pageCanvas.toDataURL("image/png");
-    if (y > 0) pdf.addPage();
-    pdf.addImage(pageImg, "PNG", 0, 0, W, Math.min(H, W / (pageCanvas.width / pageCanvas.height)));
-    y += pageCanvas.height;
-    imgH -= H;
-    if (imgH <= 0) break;
+    if (srcY > 0) pdf.addPage();
+    const imgH = (sliceH / canvas.width) * pdfW;
+    pdf.addImage(pageImg, "PNG", 0, 0, pdfW, imgH);
+    srcY += sliceH;
   }
 
   pdf.save(`${title}.pdf`);
