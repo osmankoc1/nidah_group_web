@@ -11,11 +11,16 @@ export async function GET(req: NextRequest) {
 
   try {
     if (type === "realtime") {
-      const [activeUsers, pages] = await Promise.all([
-        getRealtimeUsers(),
-        getRealtimePages(),
-      ]);
-      return NextResponse.json({ activeUsers, pages });
+      try {
+        const [activeUsers, pages] = await Promise.all([
+          getRealtimeUsers(),
+          getRealtimePages(),
+        ]);
+        return NextResponse.json({ activeUsers, pages });
+      } catch (rtErr) {
+        console.warn("[analytics/realtime]", rtErr);
+        return NextResponse.json({ activeUsers: 0, pages: [] });
+      }
     }
 
     const [summary, channels, topPages, countries, dailyUsers, devices, browsers, hourlyToday, landingPages] =

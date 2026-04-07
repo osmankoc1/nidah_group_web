@@ -170,6 +170,29 @@ function DeviceIcon({ device }: { device: string }) {
 const DEVICE_TR: Record<string, string> = { mobile: "Mobil", desktop: "Masaüstü", tablet: "Tablet" };
 const DEVICE_COLOR: Record<string, string> = { mobile: "bg-blue-400", desktop: "bg-gray-400", tablet: "bg-purple-400" };
 
+// ── html2canvas only supports rgb/rgba/hsl/hsla ───────────────────────────────
+// Tailwind v4 / shadcn use oklch() CSS variables everywhere. When html2canvas
+// reads computed styles it can't parse oklch and throws "unsupported color
+// function 'lab'". Fix: inject hex overrides into the cloned document via onclone.
+const OKLCH_OVERRIDES = `
+:root, * {
+  --background: #fafafa; --foreground: #0a0a0a;
+  --card: #ffffff; --card-foreground: #0a0a0a;
+  --popover: #ffffff; --popover-foreground: #0a0a0a;
+  --primary: #13284b; --primary-foreground: #fafafa;
+  --secondary: #f5f5f5; --secondary-foreground: #171717;
+  --muted: #f5f5f5; --muted-foreground: #636363;
+  --accent: #edb417; --accent-foreground: #171717;
+  --destructive: #e7000b;
+  --border: #dedede; --input: #dedede; --ring: #13284b;
+  --chart-1: #f54900; --chart-2: #009689;
+  --chart-3: #104e64; --chart-4: #ffb900; --chart-5: #fe9a00;
+  --sidebar: #fafafa; --sidebar-foreground: #0a0a0a;
+  --sidebar-primary: #171717; --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #f5f5f5; --sidebar-accent-foreground: #171717;
+  --sidebar-border: #e5e5e5; --sidebar-ring: #a1a1a1;
+}`;
+
 // ── PDF export ────────────────────────────────────────────────────────────────
 async function exportToPdf(ref: React.RefObject<HTMLDivElement | null>, title: string) {
   const { default: jsPDF } = await import("jspdf");
@@ -181,6 +204,11 @@ async function exportToPdf(ref: React.RefObject<HTMLDivElement | null>, title: s
     useCORS: true,
     backgroundColor: "#F8FAFC",
     ignoreElements: (el) => (el as HTMLElement).classList?.contains("no-pdf") ?? false,
+    onclone: (clonedDoc) => {
+      const style = clonedDoc.createElement("style");
+      style.textContent = OKLCH_OVERRIDES;
+      clonedDoc.head.appendChild(style);
+    },
   });
 
   const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
