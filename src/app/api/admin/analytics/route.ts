@@ -1,54 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  getAnalyticsSummary,
-  getChannels,
-  getTopPages,
-  getCountries,
-  getDailyUsers,
-  getRealtimeUsers,
+  getAnalyticsSummary, getChannels, getTopPages, getCountries,
+  getDailyUsers, getDevices, getBrowsers, getHourlyToday,
+  getLandingPages, getRealtimeUsers, getRealtimePages,
 } from "@/lib/ga4";
 
-// Realtime endpoint: no cache
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const type = searchParams.get("type");
 
   try {
     if (type === "realtime") {
-      const activeUsers = await getRealtimeUsers();
-      return NextResponse.json({ activeUsers });
+      const [activeUsers, pages] = await Promise.all([
+        getRealtimeUsers(),
+        getRealtimePages(),
+      ]);
+      return NextResponse.json({ activeUsers, pages });
     }
 
-    // Full report — fetch all in parallel
-    const [summary, channels, topPages, countries, dailyUsers] =
+    const [summary, channels, topPages, countries, dailyUsers, devices, browsers, hourlyToday, landingPages] =
       await Promise.all([
         getAnalyticsSummary(),
         getChannels(),
         getTopPages(),
         getCountries(),
         getDailyUsers(),
+        getDevices(),
+        getBrowsers(),
+        getHourlyToday(),
+        getLandingPages(),
       ]);
 
     if (!summary) {
       return NextResponse.json(
-        { error: "GA4 yapılandırılmamış. Lütfen ortam değişkenlerini kontrol edin." },
+        { error: "GA4 yapılandırılmamış. Ortam değişkenlerini kontrol edin." },
         { status: 503 }
       );
     }
 
     return NextResponse.json(
-      { summary, channels, topPages, countries, dailyUsers },
-      {
-        headers: {
-          "Cache-Control": "private, max-age=900", // 15 min cache
-        },
-      }
+      { summary, channels, topPages, countries, dailyUsers, devices, browsers, hourlyToday, landingPages },
+      { headers: { "Cache-Control": "private, max-age=900" } }
     );
   } catch (err) {
     console.error("[analytics]", err);
-    return NextResponse.json(
-      { error: "Analytics verisi alınamadı." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Analytics verisi alınamadı." }, { status: 500 });
   }
 }
