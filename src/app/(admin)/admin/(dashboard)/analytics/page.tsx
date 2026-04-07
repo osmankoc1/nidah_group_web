@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Users, TrendingUp, TrendingDown, Eye, Globe2, Loader2,
   RefreshCw, Activity, BarChart3, FileText, Smartphone,
@@ -170,72 +170,12 @@ function DeviceIcon({ device }: { device: string }) {
 const DEVICE_TR: Record<string, string> = { mobile: "Mobil", desktop: "Masaüstü", tablet: "Tablet" };
 const DEVICE_COLOR: Record<string, string> = { mobile: "bg-blue-400", desktop: "bg-gray-400", tablet: "bg-purple-400" };
 
-// ── html2canvas only supports rgb/rgba/hsl/hsla ───────────────────────────────
-// Tailwind v4 / shadcn use oklch() CSS variables everywhere. When html2canvas
-// reads computed styles it can't parse oklch and throws "unsupported color
-// function 'lab'". Fix: inject hex overrides into the cloned document via onclone.
-const OKLCH_OVERRIDES = `
-:root, * {
-  --background: #fafafa; --foreground: #0a0a0a;
-  --card: #ffffff; --card-foreground: #0a0a0a;
-  --popover: #ffffff; --popover-foreground: #0a0a0a;
-  --primary: #13284b; --primary-foreground: #fafafa;
-  --secondary: #f5f5f5; --secondary-foreground: #171717;
-  --muted: #f5f5f5; --muted-foreground: #636363;
-  --accent: #edb417; --accent-foreground: #171717;
-  --destructive: #e7000b;
-  --border: #dedede; --input: #dedede; --ring: #13284b;
-  --chart-1: #f54900; --chart-2: #009689;
-  --chart-3: #104e64; --chart-4: #ffb900; --chart-5: #fe9a00;
-  --sidebar: #fafafa; --sidebar-foreground: #0a0a0a;
-  --sidebar-primary: #171717; --sidebar-primary-foreground: #fafafa;
-  --sidebar-accent: #f5f5f5; --sidebar-accent-foreground: #171717;
-  --sidebar-border: #e5e5e5; --sidebar-ring: #a1a1a1;
-}`;
-
-// ── PDF export ────────────────────────────────────────────────────────────────
-async function exportToPdf(ref: React.RefObject<HTMLDivElement | null>, title: string) {
-  const { default: jsPDF } = await import("jspdf");
-  const { default: html2canvas } = await import("html2canvas");
-  if (!ref.current) return;
-
-  const canvas = await html2canvas(ref.current, {
-    scale: 2,
-    useCORS: true,
-    backgroundColor: "#F8FAFC",
-    ignoreElements: (el) => (el as HTMLElement).classList?.contains("no-pdf") ?? false,
-    onclone: (clonedDoc) => {
-      const style = clonedDoc.createElement("style");
-      style.textContent = OKLCH_OVERRIDES;
-      clonedDoc.head.appendChild(style);
-    },
-  });
-
-  const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
-  const pdfW = pdf.internal.pageSize.getWidth();
-  const pdfH = pdf.internal.pageSize.getHeight();
-
-  // pixels that fit in one A4 landscape page height
-  const pageHeightPx = Math.floor(canvas.width * (pdfH / pdfW));
-  let srcY = 0;
-
-  while (srcY < canvas.height) {
-    const sliceH = Math.min(pageHeightPx, canvas.height - srcY);
-    const pageCanvas = document.createElement("canvas");
-    pageCanvas.width  = canvas.width;
-    pageCanvas.height = sliceH;
-    const ctx = pageCanvas.getContext("2d");
-    if (!ctx) break;
-    // copy the correct slice from the full canvas
-    ctx.drawImage(canvas, 0, srcY, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
-    const pageImg = pageCanvas.toDataURL("image/png");
-    if (srcY > 0) pdf.addPage();
-    const imgH = (sliceH / canvas.width) * pdfW;
-    pdf.addImage(pageImg, "PNG", 0, 0, pdfW, imgH);
-    srcY += sliceH;
-  }
-
-  pdf.save(`${title}.pdf`);
+// ── PDF export via native browser print ──────────────────────────────────────
+// html2canvas can't parse oklch() colors (Tailwind v4 / shadcn default).
+// window.print() uses native browser rendering — no color format issues.
+// @media print CSS (globals.css) hides nav + .no-pdf toolbar elements.
+function exportToPdf() {
+  window.print();
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
@@ -247,7 +187,6 @@ export default function AnalyticsPage() {
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [tab,        setTab]        = useState<"7d" | "30d">("7d");
   const [exporting,  setExporting]  = useState(false);
-  const printRef = useRef<HTMLDivElement>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true); setError("");
@@ -275,12 +214,8 @@ export default function AnalyticsPage() {
     return () => clearInterval(id);
   }, [fetchRealtime]);
 
-  const handlePdf = async () => {
-    setExporting(true);
-    try {
-      const d = new Date().toLocaleDateString("tr-TR").replace(/\./g, "-");
-      await exportToPdf(printRef, `NidahGroup-Analytics-${d}`);
-    } finally { setExporting(false); }
+  const handlePdf = () => {
+    exportToPdf();
   };
 
   if (loading) return (
@@ -309,7 +244,7 @@ export default function AnalyticsPage() {
   const totalDevUsers = devices.reduce((a, d) => a + d.users, 0);
 
   return (
-    <div className="space-y-6" ref={printRef}>
+    <div className="space-y-6">
 
       {/* ── Header ── */}
       <div className="flex items-center justify-between flex-wrap gap-3">
@@ -333,8 +268,8 @@ export default function AnalyticsPage() {
           <Button variant="outline" size="sm" onClick={fetchData} disabled={loading}>
             <RefreshCw className="size-4 mr-1" />Yenile
           </Button>
-          <Button size="sm" className="bg-nidah-dark text-white hover:bg-nidah-navy" onClick={handlePdf} disabled={exporting}>
-            {exporting ? <Loader2 className="size-4 animate-spin mr-1" /> : <Download className="size-4 mr-1" />}
+          <Button size="sm" className="bg-nidah-dark text-white hover:bg-nidah-navy" onClick={handlePdf}>
+            <Download className="size-4 mr-1" />
             PDF İndir
           </Button>
         </div>

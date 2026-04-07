@@ -135,6 +135,28 @@
   }
 }
 
+/* ── Print / PDF export ──────────────────────────────────────────────────── */
+@media print {
+  /* Hide admin nav, action buttons, interactive controls */
+  nav,
+  .no-pdf {
+    display: none !important;
+  }
+  /* Reset layout for clean print output */
+  body {
+    background: #fff !important;
+  }
+  main {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+  /* Prevent page breaks inside cards */
+  .bg-white {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
