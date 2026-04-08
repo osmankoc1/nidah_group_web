@@ -84,14 +84,14 @@ const jsonLd = [
       {
         "@type": "ContactPoint",
         telephone: "+90-530-884-59-79",
-        contactType: "sales",
+        contactType: "customer service",
         name: "Mustafa KOÇ",
         availableLanguage: ["Turkish", "English"],
       },
       {
         "@type": "ContactPoint",
         telephone: "+90-555-182-86-29",
-        contactType: "customer service",
+        contactType: "sales",
         name: "Osman Koç",
         availableLanguage: ["Turkish"],
       },

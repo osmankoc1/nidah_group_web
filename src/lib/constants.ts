@@ -17,14 +17,14 @@ export const CONTACTS = {
     phone: "+90 530 884 59 79",
     phoneRaw: "905308845979",
     email: "mustafa.koc@nidahgroup.com.tr",
-    role: "Satış Müdürü",
+    role: "Genel Müdür",
   },
   osman: {
     name: "Osman Koç",
     phone: "+90 555 182 86 29",
     phoneRaw: "905551828629",
     email: "osman.koc@nidahgroup.com.tr",
-    role: "Genel Müdür",
+    role: "Satış Müdürü",
   },
 } as const;
 
