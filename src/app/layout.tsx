@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import CookieConsentBanner from "@/components/shared/CookieConsentBanner";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,6 +18,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.nidahgroup.com.tr"),
+  verification: {
+    google: "_WRmlhOjW5o6UDhjFOcqh4c7rY8MoOBsF9fa64nbixc",
+  },
   title: "NİDAH GROUP | İş Makinası Servisi & Yedek Parça",
   description:
     "NİDAH GROUP — İş makinası yedek parça tedariği, hidrolik şanzıman ve pompa revizyonu, ECU onarımı. Türkiye merkezli, 3 kıtada 13+ ülkeye DHL ile ihracat. Volvo, Komatsu, CAT, Hidromek, BOMAG, HAMM ve daha fazlası.",
@@ -96,7 +100,11 @@ const jsonLd = [
         availableLanguage: ["Turkish"],
       },
     ],
-    sameAs: [],
+    sameAs: [
+      "https://www.linkedin.com/in/osman-ko%C3%A7-930751354",
+      "https://www.instagram.com/nidahgroup",
+      "https://youtube.com/@nidahgroup",
+    ],
   },
   {
     "@context": "https://schema.org",
@@ -175,17 +183,25 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <CookieConsentBanner />
         <Analytics />
         <SpeedInsights />
         {/* Google Analytics 4 — only loads when GA_ID env var is set */}
         {process.env.NEXT_PUBLIC_GA_ID && (
           <>
+            {/* Consent Mode v2: varsayılan olarak analytics reddedilmiş.
+                CookieConsentBanner kullanıcı kabul edince gtag('consent','update') çağırır. */}
+            <Script id="ga4-consent-default" strategy="afterInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+var _c=typeof localStorage!=='undefined'?localStorage.getItem('nidah_cookie_consent'):null;
+gtag('consent','default',{'analytics_storage':_c==='accepted'?'granted':'denied','wait_for_update':_c?0:500});`}
+            </Script>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
               strategy="afterInteractive"
             />
             <Script id="ga4-init" strategy="afterInteractive">
-              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${process.env.NEXT_PUBLIC_GA_ID}',{page_path:window.location.pathname});`}
+              {`gtag('js',new Date());gtag('config','${process.env.NEXT_PUBLIC_GA_ID}',{page_path:window.location.pathname});`}
             </Script>
           </>
         )}

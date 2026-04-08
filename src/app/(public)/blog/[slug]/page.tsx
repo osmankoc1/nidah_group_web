@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { db } from "@/lib/db";
 import { blogPosts, blogCategories, blogPostTags, blogTags } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
@@ -94,8 +95,14 @@ export default async function BlogPostPage({ params }: PageProps) {
       {/* Hero */}
       {post.coverImageUrl ? (
         <div className="relative h-72 md:h-96 overflow-hidden">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={post.coverImageUrl} alt={post.title} className="w-full h-full object-cover" />
+          <Image
+            src={post.coverImageUrl}
+            alt={post.title}
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-8 max-w-4xl mx-auto">
             {post.categoryName && (

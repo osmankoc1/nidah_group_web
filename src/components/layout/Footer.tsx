@@ -232,6 +232,12 @@ export default function Footer() {
             <p className="text-xs text-gray-600">
               &copy; {currentYear} {SITE_CONFIG.legalName} — Tüm hakları saklıdır.
             </p>
+            <Link
+              href="/kvkk"
+              className="text-xs text-gray-600 hover:text-gray-400 transition-colors underline underline-offset-2"
+            >
+              KVKK & Gizlilik
+            </Link>
             <div className="flex items-center gap-3">
               {SOCIAL_LINKS.map((s) => (
                 <a

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { db } from "@/lib/db";
 import { blogPosts, blogCategories } from "@/lib/db/schema";
 import { desc, eq } from "drizzle-orm";
@@ -73,12 +74,15 @@ export default async function BlogPage() {
                 >
                   {/* Cover */}
                   {post.coverImageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={post.coverImageUrl}
-                      alt={post.title}
-                      className="w-full h-48 object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                    />
+                    <div className="relative w-full h-48 overflow-hidden">
+                      <Image
+                        src={post.coverImageUrl}
+                        alt={post.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                      />
+                    </div>
                   ) : (
                     <div className="w-full h-48 gradient-hero flex items-center justify-center">
                       <span className="text-white/30 text-4xl font-bold">NİDAH</span>
