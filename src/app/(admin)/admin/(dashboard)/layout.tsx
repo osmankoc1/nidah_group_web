@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LayoutDashboard, FileText, Package, Cog, Upload, LogOut, BookOpen, BarChart3 } from "lucide-react";
+import { LayoutDashboard, FileText, Package, Cog, Upload, LogOut, BookOpen, BarChart3, ToggleLeft } from "lucide-react";
 import { Toaster } from "sonner";
 import SplashOverlay from "@/components/splash/SplashOverlay";
 import PageTransitionWrapper from "@/components/layout/PageTransitionWrapper";
@@ -68,6 +68,13 @@ export default function AdminDashboardLayout({
             >
               <Upload className="size-4" />
               Import
+            </Link>
+            <Link
+              href="/admin/pages"
+              className="flex items-center gap-1.5 text-sm text-gray-300 transition-colors hover:text-white"
+            >
+              <ToggleLeft className="size-4" />
+              Sayfalar
             </Link>
           </div>
 

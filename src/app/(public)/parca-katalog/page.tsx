@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { isPageEnabled } from "@/lib/site-settings";
 import ParcaKatalogClient from "@/components/catalog/ParcaKatalogClient";
 
 export const metadata: Metadata = {
@@ -17,6 +19,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ParcaKatalogPage() {
+export default async function ParcaKatalogPage() {
+  if (!await isPageEnabled("page_parca_katalog")) notFound();
   return <ParcaKatalogClient />;
 }

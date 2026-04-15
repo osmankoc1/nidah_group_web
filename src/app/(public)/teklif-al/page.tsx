@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { isPageEnabled } from "@/lib/site-settings";
 import TeklifAlClient from "@/components/layout/TeklifAlClient";
 
 export const metadata: Metadata = {
@@ -16,6 +18,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TeklifAlPage() {
+export default async function TeklifAlPage() {
+  if (!await isPageEnabled("page_teklif_al")) notFound();
   return <TeklifAlClient />;
 }

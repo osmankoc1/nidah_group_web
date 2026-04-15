@@ -334,6 +334,19 @@ export type BlogTag        = typeof blogTags.$inferSelect;
 export type BlogPost       = typeof blogPosts.$inferSelect;
 export type NewBlogPost    = typeof blogPosts.$inferInsert;
 
+// ── Site Settings ─────────────────────────────────────────────────────────────
+
+export const siteSettings = pgTable(
+  "site_settings",
+  {
+    key:       varchar("key", { length: 100 }).primaryKey(),
+    value:     text("value").notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  }
+);
+
+export type SiteSetting = typeof siteSettings.$inferSelect;
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 export type Category = typeof categories.$inferSelect;

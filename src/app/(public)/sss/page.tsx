@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { isPageEnabled } from "@/lib/site-settings";
 import Link from "next/link";
 import { MessageCircle, ArrowRight } from "lucide-react";
 import { faqItems, FAQ_CATEGORIES, type FaqCategory } from "@/data/faq";
@@ -35,7 +37,8 @@ const CATEGORY_META: Record<FaqCategory, { emoji: string; color: string }> = {
   "Teklif & Sipariş":          { emoji: "📋", color: "bg-violet-50 border-violet-100 text-violet-700" },
 };
 
-export default function SSSPage() {
+export default async function SSSPage() {
+  if (!await isPageEnabled("page_sss")) notFound();
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",

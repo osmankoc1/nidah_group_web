@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { notFound } from "next/navigation";
+import { isPageEnabled } from "@/lib/site-settings";
 import { db } from "@/lib/db";
 import { blogPosts, blogCategories } from "@/lib/db/schema";
 import { desc, eq } from "drizzle-orm";
@@ -17,6 +19,8 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function BlogPage() {
+  if (!await isPageEnabled("page_blog")) notFound();
+
   const posts = db
     ? await db
         .select({

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { isPageEnabled } from "@/lib/site-settings";
 import Link from "next/link";
 import {
   Globe2,
@@ -106,7 +108,8 @@ const VALUES = [
   },
 ] as const;
 
-export default function HakkimizdaPage() {
+export default async function HakkimizdaPage() {
+  if (!await isPageEnabled("page_hakkimizda")) notFound();
   return (
     <main>
 

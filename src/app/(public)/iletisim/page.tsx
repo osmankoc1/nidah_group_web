@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { isPageEnabled } from "@/lib/site-settings";
 import IletisimClient from "@/components/layout/IletisimClient";
 
 export const metadata: Metadata = {
@@ -16,6 +18,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function IletisimPage() {
+export default async function IletisimPage() {
+  if (!await isPageEnabled("page_iletisim")) notFound();
   return <IletisimClient />;
 }

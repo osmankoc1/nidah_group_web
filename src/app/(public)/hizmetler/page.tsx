@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { isPageEnabled } from "@/lib/site-settings";
 import Link from "next/link";
 import {
   Package,
@@ -62,7 +64,8 @@ const ELECTRONIC_SERVICES = [
   { icon: ShoppingBag, title: "Yeni ECU Satışı & Tedarik",      desc: "Stok durumuna göre orijinal ve yeni kontrol üniteleri temini." },
 ] as const;
 
-export default function HizmetlerPage() {
+export default async function HizmetlerPage() {
+  if (!await isPageEnabled("page_hizmetler")) notFound();
   return (
     <main>
 
