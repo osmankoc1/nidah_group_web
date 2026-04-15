@@ -1,7 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
 import { siteSettings } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { NAV_ITEMS } from "@/lib/constants";
 
 // ── Yönetilebilir sayfalar tanımı ────────────────────────────────────────────
 
@@ -52,4 +52,38 @@ export async function getAllPageSettings(): Promise<
     label: p.label,
     enabled: p.key in settings ? settings[p.key] === "true" : p.defaultEnabled,
   }));
+}
+
+// ── Nav visibility ────────────────────────────────────────────────────────────
+
+export type NavItem = { label: string; href: string };
+
+export type NavVisibility = {
+  /** NAV_ITEMS filtrelenmiş — kapalı sayfalar çıkarılmış */
+  navItems: NavItem[];
+  /** /teklif-al butonu görünür mü */
+  teklifAlEnabled: boolean;
+  /** /hizmetler ve alt sayfaları görünür mü */
+  hizmetlerEnabled: boolean;
+};
+
+export async function getNavVisibility(): Promise<NavVisibility> {
+  const settings = await fetchSettings();
+
+  function enabled(key: PageKey): boolean {
+    const page = MANAGED_PAGES.find((p) => p.key === key)!;
+    return key in settings ? settings[key] === "true" : page.defaultEnabled;
+  }
+
+  const navItems = NAV_ITEMS.filter((item) => {
+    const managed = MANAGED_PAGES.find((p) => p.path === item.href);
+    if (!managed) return true; // yönetilmiyorsa daima göster (Ana Sayfa)
+    return enabled(managed.key as PageKey);
+  });
+
+  return {
+    navItems,
+    teklifAlEnabled: enabled("page_teklif_al"),
+    hizmetlerEnabled: enabled("page_hizmetler"),
+  };
 }

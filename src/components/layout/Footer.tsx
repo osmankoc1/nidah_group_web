@@ -2,7 +2,14 @@ import Link from "next/link";
 import { Phone, Mail, MapPin, MessageCircle, Globe2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { CONTACTS, NAV_ITEMS, WHATSAPP_URL, SITE_CONFIG } from "@/lib/constants";
+import { CONTACTS, WHATSAPP_URL, SITE_CONFIG } from "@/lib/constants";
+import type { NavItem } from "@/lib/site-settings";
+
+interface FooterProps {
+  navItems: NavItem[];
+  teklifAlEnabled: boolean;
+  hizmetlerEnabled: boolean;
+}
 
 const SOCIAL_LINKS = [
   {
@@ -40,7 +47,7 @@ const EXPORT_COUNTRIES = [
   "Sri Lanka", "Meksika", "Paraguay", "Arjantin",
 ];
 
-export default function Footer() {
+export default function Footer({ navItems, teklifAlEnabled, hizmetlerEnabled }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -122,7 +129,7 @@ export default function Footer() {
               Hızlı Bağlantılar
             </h3>
             <nav className="flex flex-col gap-2.5">
-              {NAV_ITEMS.map((item) => (
+              {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -131,38 +138,42 @@ export default function Footer() {
                   {item.label}
                 </Link>
               ))}
-              <Link
-                href="/teklif-al"
-                className="text-sm text-nidah-yellow hover:text-nidah-yellow-dark transition-colors font-medium"
-              >
-                → Teklif Al
-              </Link>
+              {teklifAlEnabled && (
+                <Link
+                  href="/teklif-al"
+                  className="text-sm text-nidah-yellow hover:text-nidah-yellow-dark transition-colors font-medium"
+                >
+                  → Teklif Al
+                </Link>
+              )}
             </nav>
           </div>
 
-          {/* Col 3: Services */}
-          <div className="space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-nidah-yellow">
-              Hizmetlerimiz
-            </h3>
-            <nav className="flex flex-col gap-2.5">
-              {[
-                { label: "Yedek Parça Tedariği", href: "/hizmetler" },
-                { label: "Teknik Servis & Arıza Tespiti", href: "/hizmetler/periyodik-bakim-ariza-tespit" },
-                { label: "Elektronik Sistemler & ECU", href: "/hizmetler/ecu-elektronik-tamir" },
-                { label: "Diferansiyel & Şanzıman", href: "/hizmetler/sanziman-revizyonu" },
-                { label: "Hidrolik Sistem Revizyonu", href: "/hizmetler/hidrolik-pompa-revizyonu" },
-              ].map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className="text-sm text-gray-400 transition-colors hover:text-white hover:pl-1 duration-200"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
+          {/* Col 3: Services — hizmetler kapalıysa gizle */}
+          {hizmetlerEnabled && (
+            <div className="space-y-4">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-nidah-yellow">
+                Hizmetlerimiz
+              </h3>
+              <nav className="flex flex-col gap-2.5">
+                {[
+                  { label: "Yedek Parça Tedariği", href: "/hizmetler" },
+                  { label: "Teknik Servis & Arıza Tespiti", href: "/hizmetler/periyodik-bakim-ariza-tespit" },
+                  { label: "Elektronik Sistemler & ECU", href: "/hizmetler/ecu-elektronik-tamir" },
+                  { label: "Diferansiyel & Şanzıman", href: "/hizmetler/sanziman-revizyonu" },
+                  { label: "Hidrolik Sistem Revizyonu", href: "/hizmetler/hidrolik-pompa-revizyonu" },
+                ].map((item) => (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    className="text-sm text-gray-400 transition-colors hover:text-white hover:pl-1 duration-200"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+          )}
 
           {/* Col 4: Contact */}
           <div className="space-y-5">

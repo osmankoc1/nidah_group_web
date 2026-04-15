@@ -12,9 +12,14 @@ import {
   SheetTitle,
   SheetClose,
 } from "@/components/ui/sheet";
-import { NAV_ITEMS } from "@/lib/constants";
+import type { NavItem } from "@/lib/site-settings";
 
-export default function Header() {
+interface HeaderProps {
+  navItems: NavItem[];
+  teklifAlEnabled: boolean;
+}
+
+export default function Header({ navItems, teklifAlEnabled }: HeaderProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -41,7 +46,7 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-1 lg:flex">
-          {NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -51,18 +56,22 @@ export default function Header() {
             </Link>
           ))}
 
-          <div className="ml-4">
-            <Button asChild className="bg-nidah-yellow text-nidah-dark hover:bg-nidah-yellow-dark font-bold">
-              <Link href="/teklif-al">Teklif Al</Link>
-            </Button>
-          </div>
+          {teklifAlEnabled && (
+            <div className="ml-4">
+              <Button asChild className="bg-nidah-yellow text-nidah-dark hover:bg-nidah-yellow-dark font-bold">
+                <Link href="/teklif-al">Teklif Al</Link>
+              </Button>
+            </div>
+          )}
         </nav>
 
         {/* Mobile Menu */}
         <div className="flex items-center gap-2 lg:hidden">
-          <Button asChild size="sm" className="bg-nidah-yellow text-nidah-dark hover:bg-nidah-yellow-dark font-bold">
-            <Link href="/teklif-al">Teklif Al</Link>
-          </Button>
+          {teklifAlEnabled && (
+            <Button asChild size="sm" className="bg-nidah-yellow text-nidah-dark hover:bg-nidah-yellow-dark font-bold">
+              <Link href="/teklif-al">Teklif Al</Link>
+            </Button>
+          )}
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
@@ -87,7 +96,7 @@ export default function Header() {
               </SheetHeader>
 
               <nav className="flex flex-col gap-1 px-4 pt-4">
-                {NAV_ITEMS.map((item) => (
+                {navItems.map((item) => (
                   <SheetClose asChild key={item.href}>
                     <Link
                       href={item.href}
@@ -98,16 +107,18 @@ export default function Header() {
                   </SheetClose>
                 ))}
 
-                <div className="mt-4 border-t pt-4">
-                  <SheetClose asChild>
-                    <Button
-                      asChild
-                      className="w-full bg-nidah-yellow text-nidah-dark hover:bg-nidah-yellow-dark font-bold"
-                    >
-                      <Link href="/teklif-al">Teklif Al</Link>
-                    </Button>
-                  </SheetClose>
-                </div>
+                {teklifAlEnabled && (
+                  <div className="mt-4 border-t pt-4">
+                    <SheetClose asChild>
+                      <Button
+                        asChild
+                        className="w-full bg-nidah-yellow text-nidah-dark hover:bg-nidah-yellow-dark font-bold"
+                      >
+                        <Link href="/teklif-al">Teklif Al</Link>
+                      </Button>
+                    </SheetClose>
+                  </div>
+                )}
               </nav>
             </SheetContent>
           </Sheet>
