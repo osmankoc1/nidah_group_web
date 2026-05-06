@@ -3,34 +3,72 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { db } from "@/lib/db";
-import { blogPosts, blogCategories, blogPostTags, blogTags } from "@/lib/db/schema";
+import { blogPosts, blogCategories, blogPostTags, blogTags, blogPostTranslations } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { Clock, ArrowLeft, Tag, User, Calendar } from "lucide-react";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
+import { LanguageSwitcher } from "@/components/blog/LanguageSwitcher";
+import { type Locale, buildPostHreflangs } from "@/lib/blog-locales";
 import { MDXRemote } from "next-mdx-remote/rsc";
 
 interface PageProps { params: Promise<{ slug: string }> }
 
 export const revalidate = 60;
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  if (!db) return { title: "Blog | NİDAH GROUP" };
-  const { slug } = await params;
+async function getTrPost(slug: string) {
+  if (!db) return null;
 
   const [post] = await db
-    .select({ title: blogPosts.title, metaTitle: blogPosts.metaTitle, metaDescription: blogPosts.metaDescription, excerpt: blogPosts.excerpt, coverImageUrl: blogPosts.coverImageUrl })
+    .select({
+      id:                 blogPosts.id,
+      title:              blogPosts.title,
+      slug:               blogPosts.slug,
+      content:            blogPosts.content,
+      excerpt:            blogPosts.excerpt,
+      coverImageUrl:      blogPosts.coverImageUrl,
+      publishedAt:        blogPosts.publishedAt,
+      authorName:         blogPosts.authorName,
+      readingTimeMinutes: blogPosts.readingTimeMinutes,
+      categoryName:       blogCategories.name,
+      categorySlug:       blogCategories.slug,
+      metaTitle:          blogPosts.metaTitle,
+      metaDescription:    blogPosts.metaDescription,
+      keywords:           blogPosts.keywords,
+    })
     .from(blogPosts)
+    .leftJoin(blogCategories, eq(blogPosts.categoryId, blogCategories.id))
     .where(and(eq(blogPosts.slug, slug), eq(blogPosts.status, "published")));
 
+  if (!post) return null;
+
+  // Fetch all locale translations for language switcher + hreflang
+  const translations = await db
+    .select({ locale: blogPostTranslations.locale, slug: blogPostTranslations.slug })
+    .from(blogPostTranslations)
+    .where(eq(blogPostTranslations.postId, post.id));
+
+  const slugsByLocale: Partial<Record<Locale, string>> = { tr: post.slug };
+  for (const t of translations) slugsByLocale[t.locale as Locale] = t.slug;
+
+  return { ...post, slugsByLocale };
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getTrPost(slug);
   if (!post) return { title: "Blog | NİDAH GROUP" };
 
-  const title = post.metaTitle || post.title;
+  const title       = post.metaTitle || post.title;
   const description = post.metaDescription || post.excerpt || "";
 
   return {
     title: `${title} | NİDAH GROUP`,
     description,
-    alternates: { canonical: `https://www.nidahgroup.com.tr/blog/${slug}` },
+    keywords: post.keywords ?? undefined,
+    alternates: {
+      canonical: `https://www.nidahgroup.com.tr/blog/${slug}`,
+      languages: buildPostHreflangs(post.slugsByLocale),
+    },
     openGraph: {
       title,
       description,
@@ -45,28 +83,10 @@ export default async function BlogPostPage({ params }: PageProps) {
   if (!db) notFound();
 
   const { slug } = await params;
-
-  const [post] = await db
-    .select({
-      id:            blogPosts.id,
-      title:         blogPosts.title,
-      slug:          blogPosts.slug,
-      content:       blogPosts.content,
-      excerpt:       blogPosts.excerpt,
-      coverImageUrl: blogPosts.coverImageUrl,
-      publishedAt:   blogPosts.publishedAt,
-      authorName:    blogPosts.authorName,
-      readingTimeMinutes: blogPosts.readingTimeMinutes,
-      categoryName:  blogCategories.name,
-      categorySlug:  blogCategories.slug,
-    })
-    .from(blogPosts)
-    .leftJoin(blogCategories, eq(blogPosts.categoryId, blogCategories.id))
-    .where(and(eq(blogPosts.slug, slug), eq(blogPosts.status, "published")));
-
+  const post = await getTrPost(slug);
   if (!post) notFound();
 
-  const postTags = await db
+  const postTags = await db!
     .select({ name: blogTags.name, slug: blogTags.slug })
     .from(blogPostTags)
     .innerJoin(blogTags, eq(blogPostTags.tagId, blogTags.id))
@@ -86,6 +106,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     datePublished: post.publishedAt?.toISOString(),
     image: post.coverImageUrl ?? undefined,
     url: `https://www.nidahgroup.com.tr/blog/${post.slug}`,
+    inLanguage: "tr",
   };
 
   return (
@@ -95,14 +116,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       {/* Hero */}
       {post.coverImageUrl ? (
         <div className="relative h-72 md:h-96 overflow-hidden">
-          <Image
-            src={post.coverImageUrl}
-            alt={post.title}
-            fill
-            sizes="100vw"
-            className="object-cover"
-            priority
-          />
+          <Image src={post.coverImageUrl} alt={post.title} fill sizes="100vw" className="object-cover" priority />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-8 max-w-4xl mx-auto">
             {post.categoryName && (
@@ -147,6 +161,9 @@ export default async function BlogPostPage({ params }: PageProps) {
             <Clock className="size-3.5" />
             {post.readingTimeMinutes} dk okuma
           </span>
+          <div className="ml-auto">
+            <LanguageSwitcher currentLocale="tr" slugsByLocale={post.slugsByLocale} />
+          </div>
         </div>
       </div>
 

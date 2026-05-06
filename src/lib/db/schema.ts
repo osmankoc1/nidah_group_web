@@ -300,6 +300,7 @@ export const blogPosts = pgTable(
     coverCloudinaryId: varchar("cover_cloudinary_id", { length: 500 }),
     metaTitle:        varchar("meta_title", { length: 255 }),
     metaDescription:  text("meta_description"),
+    keywords:         text("keywords"),
     status:           blogStatusEnum("status").default("draft").notNull(),
     publishedAt:      timestamp("published_at", { withTimezone: true }),
     authorName:       varchar("author_name", { length: 255 }).default("NİDAH GROUP").notNull(),
@@ -329,10 +330,37 @@ export const blogPostTags = pgTable(
   ]
 );
 
-export type BlogCategory   = typeof blogCategories.$inferSelect;
-export type BlogTag        = typeof blogTags.$inferSelect;
-export type BlogPost       = typeof blogPosts.$inferSelect;
-export type NewBlogPost    = typeof blogPosts.$inferInsert;
+export const blogPostTranslations = pgTable(
+  "blog_post_translations",
+  {
+    id:             uuid("id").defaultRandom().primaryKey(),
+    postId:         uuid("post_id").notNull().references(() => blogPosts.id, { onDelete: "cascade" }),
+    locale:         varchar("locale", { length: 10 }).notNull(), // 'tr' | 'en'
+    title:          varchar("title", { length: 500 }).notNull(),
+    slug:           varchar("slug", { length: 500 }).notNull(),
+    content:        text("content").notNull().default(""),
+    excerpt:        text("excerpt"),
+    seoTitle:       varchar("seo_title", { length: 255 }),
+    seoDescription: text("seo_description"),
+    keywords:       text("keywords"),
+    createdAt:      timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt:      timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("uq_blog_translation_post_locale").on(table.postId, table.locale),
+    uniqueIndex("uq_blog_translation_locale_slug").on(table.locale, table.slug),
+    index("idx_blog_translations_post").on(table.postId),
+    index("idx_blog_translations_locale").on(table.locale),
+    index("idx_blog_translations_slug").on(table.slug),
+  ]
+);
+
+export type BlogCategory          = typeof blogCategories.$inferSelect;
+export type BlogTag               = typeof blogTags.$inferSelect;
+export type BlogPost              = typeof blogPosts.$inferSelect;
+export type NewBlogPost           = typeof blogPosts.$inferInsert;
+export type BlogPostTranslation   = typeof blogPostTranslations.$inferSelect;
+export type NewBlogPostTranslation = typeof blogPostTranslations.$inferInsert;
 
 // ── Site Settings ─────────────────────────────────────────────────────────────
 

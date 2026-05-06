@@ -25,6 +25,7 @@
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.9.0",
     "clsx": "^2.1.1",
+    "country-flag-icons": "^1.6.17",
     "drizzle-orm": "^0.45.1",
     "gray-matter": "^4.0.3",
     "html2canvas": "^1.4.1",

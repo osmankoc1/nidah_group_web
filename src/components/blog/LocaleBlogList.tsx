@@ -1,79 +1,83 @@
-import type { Metadata } from "next";
+// Shared server component — renders blog list for EN / RU / AR
 import Link from "next/link";
 import Image from "next/image";
-import { notFound } from "next/navigation";
-import { isPageEnabled } from "@/lib/site-settings";
 import { db } from "@/lib/db";
-import { blogPosts, blogCategories } from "@/lib/db/schema";
-import { desc, eq } from "drizzle-orm";
+import { blogPosts, blogCategories, blogPostTranslations } from "@/lib/db/schema";
+import { desc, eq, and } from "drizzle-orm";
 import { Clock, Tag, ArrowRight } from "lucide-react";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
-import { LOCALE_CONFIG, LOCALES, blogListHref, buildListHreflangs } from "@/lib/blog-locales";
+import {
+  type TranslationLocale,
+  LOCALE_CONFIG,
+  blogListHref,
+  blogPostHref,
+  LOCALES,
+} from "@/lib/blog-locales";
 import { FlagIcon } from "@/components/blog/FlagIcon";
 
-export const metadata: Metadata = {
-  title: "Blog | NİDAH GROUP — İş Makinası Teknik Rehber",
-  description:
-    "İş makinası bakımı, yedek parça rehberleri, teknik servis ipuçları ve sektör haberleri. NİDAH GROUP uzman blog içerikleri.",
-  alternates: {
-    canonical: "https://www.nidahgroup.com.tr/blog",
-    languages: buildListHreflangs(),
-  },
-};
+interface Props { locale: TranslationLocale }
 
-export const dynamic = "force-dynamic";
-
-export default async function BlogPage() {
-  if (!await isPageEnabled("page_blog")) notFound();
+export async function LocaleBlogList({ locale }: Props) {
+  const cfg = LOCALE_CONFIG[locale];
 
   const posts = db
     ? await db
         .select({
           id:                 blogPosts.id,
-          title:              blogPosts.title,
-          slug:               blogPosts.slug,
-          excerpt:            blogPosts.excerpt,
+          title:              blogPostTranslations.title,
+          slug:               blogPostTranslations.slug,
+          excerpt:            blogPostTranslations.excerpt,
           coverImageUrl:      blogPosts.coverImageUrl,
           publishedAt:        blogPosts.publishedAt,
-          authorName:         blogPosts.authorName,
           categoryName:       blogCategories.name,
-          categorySlug:       blogCategories.slug,
           readingTimeMinutes: blogPosts.readingTimeMinutes,
         })
         .from(blogPosts)
+        .innerJoin(
+          blogPostTranslations,
+          and(
+            eq(blogPostTranslations.postId, blogPosts.id),
+            eq(blogPostTranslations.locale, locale),
+          ),
+        )
         .leftJoin(blogCategories, eq(blogPosts.categoryId, blogCategories.id))
         .where(eq(blogPosts.status, "published"))
         .orderBy(desc(blogPosts.publishedAt))
     : [];
 
-  const otherLocales = LOCALES.filter(l => l !== "tr");
+  // Language nav pills for the hero
+  const otherLocales = LOCALES.filter(l => l !== locale);
 
   return (
-    <main>
+    <main dir={cfg.dir} lang={cfg.lang}>
       {/* Hero */}
       <section className="gradient-hero py-20 md:py-24 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none opacity-[0.04]"
-          style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,.5) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.04]"
+          style={{
+            backgroundImage: "radial-gradient(circle, rgba(255,255,255,.5) 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
+        />
         <div className="container mx-auto px-4 text-center relative z-10">
           <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm text-white/80 mb-6">
             <Tag className="size-3.5 text-nidah-yellow" />
-            <span>Teknik Rehber & Sektör İçerikleri</span>
+            <span>{cfg.heroTag}</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Blog</h1>
-          <p className="text-lg text-white/70 max-w-xl mx-auto">
-            İş makinası bakımı, yedek parça seçimi ve teknik servis hakkında uzman içerikler.
-          </p>
-          {/* 4-language pills */}
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">{cfg.heroTitle}</h1>
+          <p className="text-lg text-white/70 max-w-xl mx-auto">{cfg.heroBody}</p>
+
+          {/* Language switcher pills */}
           <div className="flex items-center justify-center gap-2 mt-6 flex-wrap">
-            {otherLocales.map(locale => {
-              const cfg = LOCALE_CONFIG[locale];
+            {otherLocales.map(l => {
+              const lc = LOCALE_CONFIG[l];
               return (
                 <Link
-                  key={locale}
-                  href={blogListHref(locale)}
+                  key={l}
+                  href={blogListHref(l)}
                   className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs px-3 py-1.5 rounded-full transition-colors"
                 >
-                  <FlagIcon locale={locale} className="inline-block w-4 h-3 rounded-[2px] shadow-sm" /> {cfg.name}
+                  <FlagIcon locale={l} className="inline-block w-4 h-3 rounded-[2px] shadow-sm" /> {lc.name}
                 </Link>
               );
             })}
@@ -81,21 +85,28 @@ export default async function BlogPage() {
         </div>
       </section>
 
-      <PageBreadcrumb items={[{ label: "Blog" }]} />
+      <PageBreadcrumb items={[{ label: `Blog (${cfg.label})` }]} />
 
-      {/* Posts */}
+      {/* Posts grid */}
       <section className="bg-nidah-light py-16 min-h-[400px]">
         <div className="max-w-6xl mx-auto px-4">
           {posts.length === 0 ? (
             <div className="text-center py-20 text-gray-400">
-              <p>Henüz yayınlanmış yazı bulunmuyor.</p>
+              <p className="mb-2">{cfg.noPostsText}</p>
+              {cfg.browseTrText && (
+                <p className="text-sm">
+                  <Link href="/blog" className="text-nidah-steel hover:underline">
+                    {cfg.browseTrText}
+                  </Link>
+                </p>
+              )}
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {posts.map(post => (
                 <Link
                   key={post.id}
-                  href={`/blog/${post.slug}`}
+                  href={blogPostHref(locale, post.slug)}
                   className="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-md hover:border-nidah-yellow/30 transition-all duration-200"
                 >
                   {post.coverImageUrl ? (
@@ -129,10 +140,14 @@ export default async function BlogPage() {
                     <div className="flex items-center justify-between text-xs text-nidah-gray mt-auto">
                       <div className="flex items-center gap-1">
                         <Clock className="size-3" />
-                        <span>{post.readingTimeMinutes} dk</span>
+                        <span>{post.readingTimeMinutes} {cfg.readSuffix}</span>
                       </div>
                       {post.publishedAt && (
-                        <span>{new Date(post.publishedAt).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" })}</span>
+                        <span>
+                          {new Date(post.publishedAt).toLocaleDateString(cfg.dateLocale, {
+                            day: "numeric", month: "long", year: "numeric",
+                          })}
+                        </span>
                       )}
                     </div>
                   </div>
@@ -146,10 +161,13 @@ export default async function BlogPage() {
       {/* CTA */}
       <section className="gradient-cta py-14">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold text-nidah-dark mb-3">Parça veya Servis İhtiyacınız mı Var?</h2>
-          <p className="text-nidah-dark/70 mb-6 max-w-lg mx-auto">Teknik ekibimiz sorularınızı yanıtlamak için hazır.</p>
-          <Link href="/teklif-al" className="inline-flex items-center gap-2 bg-nidah-dark hover:bg-nidah-navy text-white font-bold px-6 py-3 rounded-xl transition-colors">
-            Teklif Al <ArrowRight className="size-4" />
+          <h2 className="text-2xl font-bold text-nidah-dark mb-3">{cfg.ctaTitle}</h2>
+          <p className="text-nidah-dark/70 mb-6 max-w-lg mx-auto">{cfg.ctaBody}</p>
+          <Link
+            href="/teklif-al"
+            className="inline-flex items-center gap-2 bg-nidah-dark hover:bg-nidah-navy text-white font-bold px-6 py-3 rounded-xl transition-colors"
+          >
+            {cfg.ctaButton} <ArrowRight className="size-4" />
           </Link>
         </div>
       </section>
