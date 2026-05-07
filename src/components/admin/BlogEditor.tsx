@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Save, Eye, EyeOff, Loader2, Trash2, Plus, X } from "lucide-react";
+import { Save, Loader2, Trash2, Plus, X, AlertTriangle } from "lucide-react";
+import { MarkdownEditor } from "@/components/admin/MarkdownEditor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LOCALES, LOCALE_CONFIG, type Locale, blogListHref, blogPostHref } from "@/lib/blog-locales";
@@ -31,7 +32,7 @@ interface PostForm {
   ru:                 LangData;
   ar:                 LangData;
   coverImageUrl:      string;
-  status:             "draft" | "published" | "archived";
+  status:             "draft" | "published" | "archived" | "hidden";
   publishedAt:        string;
   authorName:         string;
   categoryId:         string;
@@ -62,26 +63,13 @@ function slugify(text: string) {
     .trim().replace(/\s+/g, "-").replace(/-+/g, "-");
 }
 
+function isCloudinaryUrl(url: string): boolean {
+  try { return new URL(url).hostname === "res.cloudinary.com"; } catch { return false; }
+}
+
 function estimateReadingTime(content: string) {
   const words = content.trim().split(/\s+/).length;
   return Math.max(1, Math.round(words / 200));
-}
-
-function markdownToHtml(md: string): string {
-  return md
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-    .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    .replace(/`(.+?)`/g, "<code>$1</code>")
-    .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-blue-600 underline">$1</a>')
-    .replace(/^- (.+)$/gm, "<li>$1</li>")
-    .replace(/(<li>[\s\S]*?<\/li>)/g, "<ul class='list-disc pl-5 my-2'>$1</ul>")
-    .replace(/\n\n/g, "</p><p>")
-    .replace(/\n/g, "<br/>")
-    .replace(/^(.+[^>])$/gm, "<p>$1</p>");
 }
 
 // ── Per-language editor panel ─────────────────────────────────────────────────
@@ -90,14 +78,12 @@ function LangEditor({
   locale,
   data,
   onChange,
-  preview,
   slugManual,
   onSlugManual,
 }: {
   locale: Locale;
   data: LangData;
   onChange: (key: keyof LangData, value: string) => void;
-  preview: boolean;
   slugManual: boolean;
   onSlugManual: () => void;
 }) {
@@ -136,21 +122,13 @@ function LangEditor({
         )}
       </div>
 
-      {preview ? (
-        <div
-          className="min-h-[400px] border rounded-lg p-6 prose prose-sm max-w-none bg-white"
-          dir={cfg.dir}
-          dangerouslySetInnerHTML={{ __html: markdownToHtml(data.content) }}
-        />
-      ) : (
-        <textarea
-          className={`w-full min-h-[400px] border rounded-lg p-4 text-sm font-mono resize-y focus:outline-none focus:ring-2 focus:ring-nidah-yellow/50 bg-white${isRTL ? " text-right" : ""}`}
-          placeholder={`Markdown içerik / content / содержание / محتوى…\n\n# ${cfg.name} Heading\n## Subheading`}
-          value={data.content}
-          onChange={e => onChange("content", e.target.value)}
-          dir={cfg.dir}
-        />
-      )}
+      <MarkdownEditor
+        value={data.content}
+        onChange={v => onChange("content", v)}
+        dir={cfg.dir}
+        lang={cfg.lang}
+        placeholder={`Markdown içerik / content / содержание / محتوى…\n\n# ${cfg.name} Heading\n## Subheading`}
+      />
 
       <textarea
         className={`w-full h-24 border rounded-lg p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-nidah-yellow/50 bg-white${isRTL ? " text-right" : ""}`}
@@ -235,7 +213,6 @@ export default function BlogEditor({
   });
 
   const [activeLang,   setActiveLang]   = useState<Locale>("tr");
-  const [preview,      setPreview]      = useState(false);
   const [saving,       setSaving]       = useState(false);
   const [deleting,     setDeleting]     = useState(false);
   const [categories,   setCategories]   = useState<BlogCategory[]>([]);
@@ -283,19 +260,22 @@ export default function BlogEditor({
     setForm(f => ({ ...f, [key]: value }));
   }, []);
 
-  async function handleSave(status?: "draft" | "published") {
+  async function handleSave(nextStatus?: "draft" | "published" | "hidden") {
     if (!form.tr.title.trim()) { toast.error("Türkçe başlık zorunlu"); return; }
     if (!form.tr.slug.trim())  { toast.error("Türkçe slug zorunlu");   return; }
 
     setSaving(true);
-    const payload = { ...form, status: status ?? form.status };
+    const newStatus = nextStatus ?? form.status;
+    const payload = { ...form, status: newStatus };
     try {
       const url    = isEdit ? `/api/admin/blog/posts/${initialData!.id}` : "/api/admin/blog/posts";
       const method = isEdit ? "PUT" : "POST";
       const res    = await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-      const json   = await res.json();
+      const json   = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error ?? "Kayıt başarısız");
-      toast.success(status === "published" ? "Yayınlandı!" : "Taslak kaydedildi");
+      if (newStatus === "published") toast.success("Yayınlandı!");
+      else if (newStatus === "hidden") toast.success("Yayından alındı");
+      else toast.success(isEdit ? "Güncellendi" : "Taslak kaydedildi");
       router.push("/admin/blog");
       router.refresh();
     } catch (e) {
@@ -379,33 +359,61 @@ export default function BlogEditor({
       {/* Toolbar */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-2">
+          {/* Status badge — read-only; actions are the buttons */}
           <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-            form.status === "published" ? "bg-green-100 text-green-700" :
-            form.status === "archived"  ? "bg-gray-100 text-gray-600"  :
+            form.status === "published" ? "bg-green-100 text-green-700"  :
+            form.status === "hidden"    ? "bg-red-100 text-red-700"      :
+            form.status === "archived"  ? "bg-gray-100 text-gray-600"    :
             "bg-amber-100 text-amber-700"
           }`}>
-            {form.status === "published" ? "Yayında" : form.status === "archived" ? "Arşiv" : "Taslak"}
+            {form.status === "published" ? "Yayında" :
+             form.status === "hidden"    ? "Gizli"   :
+             form.status === "archived"  ? "Arşiv"   : "Taslak"}
           </span>
           <span className="text-xs text-gray-500">{form.readingTimeMinutes} dk okuma</span>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={() => setPreview(p => !p)}>
-            {preview ? <EyeOff className="size-4 mr-1" /> : <Eye className="size-4 mr-1" />}
-            {preview ? "Editör" : "Önizleme"}
-          </Button>
-          {isEdit && (
-            <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-700" onClick={handleDelete} disabled={deleting}>
-              {deleting ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4 mr-1" />}
-              Sil
-            </Button>
+
+        <div className="flex items-center gap-2 flex-wrap">
+          {isEdit ? (
+            <>
+              {/* Delete */}
+              <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-700" onClick={handleDelete} disabled={deleting}>
+                {deleting ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4 mr-1" />}
+                Sil
+              </Button>
+
+              {/* Publish — shown when not already published */}
+              {form.status !== "published" && (
+                <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => handleSave("published")} disabled={saving}>
+                  Yayınla
+                </Button>
+              )}
+
+              {/* Hide — shown only when published */}
+              {form.status === "published" && (
+                <Button variant="outline" size="sm" className="text-amber-600 border-amber-300 hover:bg-amber-50" onClick={() => handleSave("hidden")} disabled={saving}>
+                  Yayından Al
+                </Button>
+              )}
+
+              {/* Update — always shown; keeps current status */}
+              <Button variant="outline" size="sm" onClick={() => handleSave()} disabled={saving}>
+                {saving ? <Loader2 className="size-4 animate-spin mr-1" /> : <Save className="size-4 mr-1" />}
+                Güncelle
+              </Button>
+            </>
+          ) : (
+            <>
+              {/* New post: draft or publish */}
+              <Button variant="outline" size="sm" onClick={() => handleSave("draft")} disabled={saving}>
+                {saving ? <Loader2 className="size-4 animate-spin mr-1" /> : <Save className="size-4 mr-1" />}
+                Taslak Kaydet
+              </Button>
+              <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => handleSave("published")} disabled={saving}>
+                Yayınla
+              </Button>
+            </>
           )}
-          <Button variant="outline" size="sm" onClick={() => handleSave("draft")} disabled={saving}>
-            {saving ? <Loader2 className="size-4 animate-spin mr-1" /> : <Save className="size-4 mr-1" />}
-            Taslak
-          </Button>
-          <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" onClick={() => handleSave("published")} disabled={saving}>
-            Yayınla
-          </Button>
         </div>
       </div>
 
@@ -439,7 +447,6 @@ export default function BlogEditor({
             locale={activeLang}
             data={form[activeLang]}
             onChange={(key, val) => setLang(activeLang, key, val)}
-            preview={preview}
             slugManual={slugManual[activeLang]}
             onSlugManual={() => setSlugManual(s => ({ ...s, [activeLang]: true }))}
           />
@@ -452,15 +459,16 @@ export default function BlogEditor({
             <h3 className="font-semibold text-sm text-gray-800">Yayın Ayarları</h3>
             <div>
               <label className="text-xs text-gray-500 mb-1 block">Durum</label>
-              <select
-                value={form.status}
-                onChange={e => setShared("status", e.target.value as PostForm["status"])}
-                className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-nidah-yellow/50"
-              >
-                <option value="draft">Taslak</option>
-                <option value="published">Yayında</option>
-                <option value="archived">Arşiv</option>
-              </select>
+              <div className={`text-xs font-medium px-2 py-1.5 rounded-md w-fit ${
+                form.status === "published" ? "bg-green-100 text-green-700" :
+                form.status === "hidden"    ? "bg-red-100 text-red-700"     :
+                form.status === "archived"  ? "bg-gray-100 text-gray-600"   :
+                "bg-amber-100 text-amber-700"
+              }`}>
+                {form.status === "published" ? "Yayında" :
+                 form.status === "hidden"    ? "Gizli — Yayından Alınmış" :
+                 form.status === "archived"  ? "Arşiv"  : "Taslak"}
+              </div>
             </div>
             <div>
               <label className="text-xs text-gray-500 mb-1 block">Yazar</label>
@@ -525,6 +533,12 @@ export default function BlogEditor({
               onChange={e => setShared("coverImageUrl", e.target.value)}
               className="text-xs"
             />
+            {form.coverImageUrl && !isCloudinaryUrl(form.coverImageUrl) && (
+              <p className="flex items-center gap-1.5 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-md px-2.5 py-1.5">
+                <AlertTriangle className="size-3 shrink-0" />
+                Cloudinary dışı URL — yayın sayfasında görsel hatası oluşabilir
+              </p>
+            )}
             {form.coverImageUrl && (
               <div className="relative">
                 {/* eslint-disable-next-line @next/next/no-img-element */}

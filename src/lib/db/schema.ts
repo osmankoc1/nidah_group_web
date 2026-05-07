@@ -263,6 +263,7 @@ export const blogStatusEnum = pgEnum("blog_status", [
   "draft",
   "published",
   "archived",
+  "hidden",
 ]);
 
 export const blogCategories = pgTable(
