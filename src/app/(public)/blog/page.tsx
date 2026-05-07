@@ -11,22 +11,35 @@ import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import { LOCALE_CONFIG, LOCALES, blogListHref, buildListHreflangs } from "@/lib/blog-locales";
 import { FlagIcon } from "@/components/blog/FlagIcon";
 
-export const metadata: Metadata = {
-  title: "Blog | NİDAH GROUP — İş Makinası Teknik Rehber",
-  description:
-    "İş makinası bakımı, yedek parça rehberleri, teknik servis ipuçları ve sektör haberleri. NİDAH GROUP uzman blog içerikleri.",
-  alternates: {
-    canonical: "https://www.nidahgroup.com.tr/blog",
-    languages: buildListHreflangs(),
-  },
-};
+const BASE_URL = "https://www.nidahgroup.com.tr";
+
+export async function generateMetadata(
+  { searchParams }: { searchParams: Promise<{ page?: string }> }
+): Promise<Metadata> {
+  const { page } = await searchParams;
+  const pageNum = Math.max(1, Number(page) || 1);
+  return {
+    title: "Blog | NİDAH GROUP — İş Makinası Teknik Rehber",
+    description:
+      "İş makinası bakımı, yedek parça rehberleri, teknik servis ipuçları ve sektör haberleri. NİDAH GROUP uzman blog içerikleri.",
+    alternates: {
+      canonical: pageNum > 1 ? `${BASE_URL}/blog?page=${pageNum}` : `${BASE_URL}/blog`,
+      languages: buildListHreflangs(),
+    },
+  };
+}
 
 export const dynamic = "force-dynamic";
 
-export default async function BlogPage() {
+const PAGE_SIZE = 12;
+
+export default async function BlogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   if (!await isPageEnabled("page_blog")) notFound();
 
-  const posts = db
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+
+  const rows = db
     ? await db
         .select({
           id:                 blogPosts.id,
@@ -44,7 +57,12 @@ export default async function BlogPage() {
         .leftJoin(blogCategories, eq(blogPosts.categoryId, blogCategories.id))
         .where(eq(blogPosts.status, "published"))
         .orderBy(desc(blogPosts.publishedAt))
+        .limit(PAGE_SIZE + 1)
+        .offset((page - 1) * PAGE_SIZE)
     : [];
+
+  const hasMore = rows.length > PAGE_SIZE;
+  const posts   = rows.slice(0, PAGE_SIZE);
 
   const otherLocales = LOCALES.filter(l => l !== "tr");
 
@@ -138,6 +156,25 @@ export default async function BlogPage() {
                   </div>
                 </Link>
               ))}
+            </div>
+          )}
+
+          {/* Pagination */}
+          {(page > 1 || hasMore) && (
+            <div className="flex items-center justify-center gap-3 mt-10">
+              {page > 1 && (
+                <Link href={`/blog?page=${page - 1}`}
+                  className="px-4 py-2 text-sm border rounded-lg bg-white hover:bg-gray-50 transition-colors text-nidah-dark">
+                  ← Önceki
+                </Link>
+              )}
+              <span className="text-sm text-gray-500">Sayfa {page}</span>
+              {hasMore && (
+                <Link href={`/blog?page=${page + 1}`}
+                  className="px-4 py-2 text-sm border rounded-lg bg-white hover:bg-gray-50 transition-colors text-nidah-dark">
+                  Sonraki →
+                </Link>
+              )}
             </div>
           )}
         </div>

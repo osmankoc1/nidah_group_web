@@ -2,14 +2,19 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { blogPosts, blogCategories } from "@/lib/db/schema";
 import { desc, eq } from "drizzle-orm";
-import { Plus, Edit, Eye } from "lucide-react";
+import { Plus, Edit, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminBlogPage() {
-  const posts = db
+const PAGE_SIZE = 20;
+
+export default async function AdminBlogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+
+  const rows = db
     ? await db
         .select({
           id:          blogPosts.id,
@@ -24,7 +29,12 @@ export default async function AdminBlogPage() {
         .from(blogPosts)
         .leftJoin(blogCategories, eq(blogPosts.categoryId, blogCategories.id))
         .orderBy(desc(blogPosts.updatedAt))
+        .limit(PAGE_SIZE + 1)
+        .offset((page - 1) * PAGE_SIZE)
     : [];
+
+  const hasMore = rows.length > PAGE_SIZE;
+  const posts   = rows.slice(0, PAGE_SIZE);
 
   const statusBadge = (s: string) => {
     if (s === "published") return <Badge className="bg-green-100 text-green-700 border-green-200 hover:bg-green-100">Yayında</Badge>;
@@ -38,7 +48,9 @@ export default async function AdminBlogPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Blog Yazıları</h1>
-          <p className="text-sm text-gray-500 mt-1">{posts.length} yazı</p>
+          <p className="text-sm text-gray-500 mt-1">
+            Sayfa {page} · {posts.length} yazı{hasMore ? "+" : ""}
+          </p>
         </div>
         <Button asChild className="bg-nidah-yellow text-nidah-dark hover:bg-nidah-yellow-dark font-bold">
           <Link href="/admin/blog/new">
@@ -101,6 +113,27 @@ export default async function AdminBlogPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Pagination */}
+      {(page > 1 || hasMore) && (
+        <div className="flex items-center justify-end gap-2 mt-4">
+          {page > 1 && (
+            <Button asChild variant="outline" size="sm">
+              <Link href={`/admin/blog?page=${page - 1}`}>
+                <ChevronLeft className="size-4 mr-1" /> Önceki
+              </Link>
+            </Button>
+          )}
+          <span className="text-sm text-gray-500 px-2">Sayfa {page}</span>
+          {hasMore && (
+            <Button asChild variant="outline" size="sm">
+              <Link href={`/admin/blog?page=${page + 1}`}>
+                Sonraki <ChevronRight className="size-4 ml-1" />
+              </Link>
+            </Button>
+          )}
         </div>
       )}
     </div>

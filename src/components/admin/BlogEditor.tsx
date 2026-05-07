@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Save, Loader2, Trash2, Plus, X, AlertTriangle } from "lucide-react";
+import { Save, Loader2, Trash2, Plus, X, AlertTriangle, Check } from "lucide-react";
 import { MarkdownEditor } from "@/components/admin/MarkdownEditor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -67,6 +67,8 @@ function isCloudinaryUrl(url: string): boolean {
   try { return new URL(url).hostname === "res.cloudinary.com"; } catch { return false; }
 }
 
+type SlugStatus = "idle" | "checking" | "available" | "taken";
+
 function estimateReadingTime(content: string) {
   const words = content.trim().split(/\s+/).length;
   return Math.max(1, Math.round(words / 200));
@@ -80,12 +82,14 @@ function LangEditor({
   onChange,
   slugManual,
   onSlugManual,
+  slugStatus,
 }: {
   locale: Locale;
   data: LangData;
   onChange: (key: keyof LangData, value: string) => void;
   slugManual: boolean;
   onSlugManual: () => void;
+  slugStatus?: SlugStatus;
 }) {
   const cfg         = LOCALE_CONFIG[locale];
   const isRTL       = cfg.dir === "rtl";
@@ -109,8 +113,11 @@ function LangEditor({
           placeholder="slug"
           value={data.slug}
           onChange={e => { onSlugManual(); onChange("slug", e.target.value); }}
-          className="font-mono text-sm"
+          className={`font-mono text-sm ${slugStatus === "taken" ? "border-red-400 focus-visible:ring-red-300" : slugStatus === "available" ? "border-green-400 focus-visible:ring-green-300" : ""}`}
         />
+        {slugStatus === "checking" && <Loader2 className="size-3.5 shrink-0 animate-spin text-gray-400" />}
+        {slugStatus === "available" && <Check className="size-3.5 shrink-0 text-green-600" />}
+        {slugStatus === "taken" && <span className="text-xs text-red-500 shrink-0 whitespace-nowrap">Slug alınmış</span>}
         {slugManual && (
           <button
             type="button"
@@ -219,6 +226,7 @@ export default function BlogEditor({
   const [tags,         setTags]         = useState<BlogTag[]>([]);
   const [newTag,       setNewTag]       = useState("");
   const [newCat,       setNewCat]       = useState("");
+  const [slugStatus,   setSlugStatus]   = useState<SlugStatus>("idle");
 
   // Per-locale slug-manual state
   const [slugManual, setSlugManual]   = useState<Record<Locale, boolean>>({
@@ -243,6 +251,26 @@ export default function BlogEditor({
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.tr.title, form.en.title, form.ru.title, form.ar.title]);
+
+  // Debounced TR slug collision check
+  useEffect(() => {
+    const slug = form.tr.slug;
+    if (!slug) { setSlugStatus("idle"); return; }
+    setSlugStatus("checking");
+    const timer = setTimeout(async () => {
+      try {
+        const params = new URLSearchParams({ slugCheck: slug, pageSize: "1" });
+        if (initialData?.id) params.set("excludeId", initialData.id);
+        const res  = await fetch(`/api/admin/blog/posts?${params}`);
+        const json = await res.json().catch(() => ({}));
+        setSlugStatus((json.data ?? []).length > 0 ? "taken" : "available");
+      } catch {
+        setSlugStatus("idle");
+      }
+    }, 600);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.tr.slug]);
 
   // Auto reading time from the longest content
   useEffect(() => {
@@ -449,6 +477,7 @@ export default function BlogEditor({
             onChange={(key, val) => setLang(activeLang, key, val)}
             slugManual={slugManual[activeLang]}
             onSlugManual={() => setSlugManual(s => ({ ...s, [activeLang]: true }))}
+            slugStatus={activeLang === "tr" ? slugStatus : undefined}
           />
         </div>
 

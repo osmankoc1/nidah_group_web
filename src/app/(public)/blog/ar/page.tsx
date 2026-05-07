@@ -2,18 +2,27 @@ import type { Metadata } from "next";
 import { LocaleBlogList } from "@/components/blog/LocaleBlogList";
 import { buildListHreflangs } from "@/lib/blog-locales";
 
-export const metadata: Metadata = {
-  title: "المدونة | NİDAH GROUP — دليل المعدات الثقيلة",
-  description:
-    "أدلة تقنية لصيانة معدات البناء واختيار قطع الغيار وأنظمة الهيدروليك. محتوى متخصص من NİDAH GROUP.",
-  alternates: {
-    canonical: "https://www.nidahgroup.com.tr/blog/ar",
-    languages: buildListHreflangs(),
-  },
-};
+const BASE_URL = "https://www.nidahgroup.com.tr";
+
+export async function generateMetadata(
+  { searchParams }: { searchParams: Promise<{ page?: string }> }
+): Promise<Metadata> {
+  const { page } = await searchParams;
+  const pageNum = Math.max(1, Number(page) || 1);
+  return {
+    title: "المدونة | NİDAH GROUP — دليل المعدات الثقيلة",
+    description:
+      "أدلة تقنية لصيانة معدات البناء واختيار قطع الغيار وأنظمة الهيدروليك. محتوى متخصص من NİDAH GROUP.",
+    alternates: {
+      canonical: pageNum > 1 ? `${BASE_URL}/blog/ar?page=${pageNum}` : `${BASE_URL}/blog/ar`,
+      languages: buildListHreflangs(),
+    },
+  };
+}
 
 export const dynamic = "force-dynamic";
 
-export default function ArBlogPage() {
-  return <LocaleBlogList locale="ar" />;
+export default async function ArBlogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+  const { page } = await searchParams;
+  return <LocaleBlogList locale="ar" page={Math.max(1, Number(page) || 1)} />;
 }

@@ -2,18 +2,27 @@ import type { Metadata } from "next";
 import { LocaleBlogList } from "@/components/blog/LocaleBlogList";
 import { buildListHreflangs } from "@/lib/blog-locales";
 
-export const metadata: Metadata = {
-  title: "Блог | NİDAH GROUP — Техническое руководство по тяжёлой технике",
-  description:
-    "Технические руководства по обслуживанию строительной техники, выбору запасных частей и гидравлическим системам. Экспертные материалы от NİDAH GROUP.",
-  alternates: {
-    canonical: "https://www.nidahgroup.com.tr/blog/ru",
-    languages: buildListHreflangs(),
-  },
-};
+const BASE_URL = "https://www.nidahgroup.com.tr";
+
+export async function generateMetadata(
+  { searchParams }: { searchParams: Promise<{ page?: string }> }
+): Promise<Metadata> {
+  const { page } = await searchParams;
+  const pageNum = Math.max(1, Number(page) || 1);
+  return {
+    title: "Блог | NİDAH GROUP — Техническое руководство по тяжёлой технике",
+    description:
+      "Технические руководства по обслуживанию строительной техники, выбору запасных частей и гидравлическим системам. Экспертные материалы от NİDAH GROUP.",
+    alternates: {
+      canonical: pageNum > 1 ? `${BASE_URL}/blog/ru?page=${pageNum}` : `${BASE_URL}/blog/ru`,
+      languages: buildListHreflangs(),
+    },
+  };
+}
 
 export const dynamic = "force-dynamic";
 
-export default function RuBlogPage() {
-  return <LocaleBlogList locale="ru" />;
+export default async function RuBlogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+  const { page } = await searchParams;
+  return <LocaleBlogList locale="ru" page={Math.max(1, Number(page) || 1)} />;
 }

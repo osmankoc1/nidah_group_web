@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { blogPosts, blogCategories, blogPostTags, blogPostTranslations, blogTags } from "@/lib/db/schema";
-import { eq, desc, ilike, and, or } from "drizzle-orm";
+import { eq, ne, desc, ilike, and, or } from "drizzle-orm";
 import { TRANSLATION_LOCALES, type TranslationLocale } from "@/lib/blog-locales";
 
 function slugifyTag(text: string): string {
@@ -31,14 +31,18 @@ export async function GET(req: NextRequest) {
   if (!db) return NextResponse.json({ error: "Database not configured" }, { status: 503 });
 
   const { searchParams } = new URL(req.url);
-  const status   = searchParams.get("status") || "";
-  const search   = searchParams.get("search") || "";
-  const page     = Math.max(1, Number(searchParams.get("page") || "1"));
+  const status     = searchParams.get("status")     || "";
+  const search     = searchParams.get("search")     || "";
+  const slugCheck  = searchParams.get("slugCheck")  || "";
+  const excludeId  = searchParams.get("excludeId")  || "";
+  const page     = Math.max(1, Number(searchParams.get("page")     || "1"));
   const pageSize = Math.min(50, Number(searchParams.get("pageSize") || "20"));
 
   const conditions = [];
-  if (status) conditions.push(eq(blogPosts.status, status as "draft" | "published" | "archived"));
-  if (search) conditions.push(or(ilike(blogPosts.title, `%${search}%`), ilike(blogPosts.slug, `%${search}%`)));
+  if (status)    conditions.push(eq(blogPosts.status, status as "draft" | "published" | "archived"));
+  if (slugCheck) conditions.push(eq(blogPosts.slug, slugCheck));
+  else if (search) conditions.push(or(ilike(blogPosts.title, `%${search}%`), ilike(blogPosts.slug, `%${search}%`)));
+  if (excludeId) conditions.push(ne(blogPosts.id, excludeId));
 
   const rows = await db
     .select({

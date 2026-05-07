@@ -15,12 +15,14 @@ import {
 } from "@/lib/blog-locales";
 import { FlagIcon } from "@/components/blog/FlagIcon";
 
-interface Props { locale: TranslationLocale }
+const PAGE_SIZE = 12;
 
-export async function LocaleBlogList({ locale }: Props) {
+interface Props { locale: TranslationLocale; page?: number }
+
+export async function LocaleBlogList({ locale, page = 1 }: Props) {
   const cfg = LOCALE_CONFIG[locale];
 
-  const posts = db
+  const rows = db
     ? await db
         .select({
           id:                 blogPosts.id,
@@ -43,7 +45,12 @@ export async function LocaleBlogList({ locale }: Props) {
         .leftJoin(blogCategories, eq(blogPosts.categoryId, blogCategories.id))
         .where(eq(blogPosts.status, "published"))
         .orderBy(desc(blogPosts.publishedAt))
+        .limit(PAGE_SIZE + 1)
+        .offset((page - 1) * PAGE_SIZE)
     : [];
+
+  const hasMore = rows.length > PAGE_SIZE;
+  const posts   = rows.slice(0, PAGE_SIZE);
 
   // Language nav pills for the hero
   const otherLocales = LOCALES.filter(l => l !== locale);
@@ -153,6 +160,25 @@ export async function LocaleBlogList({ locale }: Props) {
                   </div>
                 </Link>
               ))}
+            </div>
+          )}
+
+          {/* Pagination */}
+          {(page > 1 || hasMore) && (
+            <div className="flex items-center justify-center gap-3 mt-10">
+              {page > 1 && (
+                <Link href={`${blogListHref(locale)}?page=${page - 1}`}
+                  className="px-4 py-2 text-sm border rounded-lg bg-white hover:bg-gray-50 transition-colors text-nidah-dark">
+                  ← Önceki
+                </Link>
+              )}
+              <span className="text-sm text-gray-500">Sayfa {page}</span>
+              {hasMore && (
+                <Link href={`${blogListHref(locale)}?page=${page + 1}`}
+                  className="px-4 py-2 text-sm border rounded-lg bg-white hover:bg-gray-50 transition-colors text-nidah-dark">
+                  Sonraki →
+                </Link>
+              )}
             </div>
           )}
         </div>
