@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { db } from "@/lib/db";
-import { products, blogPosts, blogPostTranslations } from "@/lib/db/schema";
+import { products, blogPosts, blogPostTranslations, blogCategories, blogTags } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
 const BASE_URL = "https://www.nidahgroup.com.tr";
@@ -66,6 +66,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .from(products)
     .where(eq(products.isActive, true));
 
+  // Blog category and tag hub pages
+  const dbCategories = await db.select({ slug: blogCategories.slug }).from(blogCategories);
+  const dbTags       = await db.select({ slug: blogTags.slug }).from(blogTags);
+
   const trBlogUrls: MetadataRoute.Sitemap = trPosts.map(p => ({
     url: `${BASE_URL}/blog/${p.slug}`,
     lastModified: p.updatedAt,
@@ -87,5 +91,40 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  return [...STATIC_URLS, ...trBlogUrls, ...translatedUrls, ...productUrls];
+  const categoryUrls: MetadataRoute.Sitemap = dbCategories.map(c => ({
+    url: `${BASE_URL}/blog/kategori/${c.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.6,
+  }));
+
+  const tagUrls: MetadataRoute.Sitemap = dbTags.map(t => ({
+    url: `${BASE_URL}/blog/etiket/${t.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.5,
+  }));
+
+  // Locale-specific category and tag hub pages (EN / RU / AR)
+  const localeHubUrls: MetadataRoute.Sitemap = [];
+  for (const locale of ["en", "ru", "ar"] as const) {
+    for (const cat of dbCategories) {
+      localeHubUrls.push({
+        url: `${BASE_URL}/blog/${locale}/category/${cat.slug}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 0.5,
+      });
+    }
+    for (const tag of dbTags) {
+      localeHubUrls.push({
+        url: `${BASE_URL}/blog/${locale}/tag/${tag.slug}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 0.4,
+      });
+    }
+  }
+
+  return [...STATIC_URLS, ...trBlogUrls, ...translatedUrls, ...productUrls, ...categoryUrls, ...tagUrls, ...localeHubUrls];
 }

@@ -4,18 +4,23 @@ import Link from "next/link";
 import Image from "next/image";
 import { db } from "@/lib/db";
 import { blogPosts, blogCategories, blogPostTags, blogTags, blogPostTranslations } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, ne } from "drizzle-orm";
 import { Clock, ArrowLeft, Tag, User, Calendar } from "lucide-react";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import { LanguageSwitcher } from "@/components/blog/LanguageSwitcher";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import { parseFaqFromMarkdown } from "@/lib/blog-faq";
 import {
   type TranslationLocale,
   type Locale,
   LOCALE_CONFIG,
   blogListHref,
   blogPostHref,
+  localeCategoryHref,
+  localeTagHref,
 } from "@/lib/blog-locales";
+
+const FALLBACK_IMAGE = "https://www.nidahgroup.com.tr/opengraph-image";
 
 interface Props {
   locale: TranslationLocale;
@@ -39,10 +44,12 @@ export async function getLocaleBlogPostData(locale: TranslationLocale, slug: str
       keywords:           blogPostTranslations.keywords,
       coverImageUrl:      blogPosts.coverImageUrl,
       publishedAt:        blogPosts.publishedAt,
+      updatedAt:          blogPosts.updatedAt,
       authorName:         blogPosts.authorName,
-      readingTimeMinutes: blogPosts.readingTimeMinutes,
+      categoryId:         blogPosts.categoryId,
       categoryName:       blogCategories.name,
       categorySlug:       blogCategories.slug,
+      readingTimeMinutes: blogPosts.readingTimeMinutes,
     })
     .from(blogPostTranslations)
     .innerJoin(blogPosts, eq(blogPostTranslations.postId, blogPosts.id))
@@ -57,7 +64,6 @@ export async function getLocaleBlogPostData(locale: TranslationLocale, slug: str
 
   if (!post) return null;
 
-  // Fetch all available locale slugs for the language switcher + hreflang
   const otherTranslations = await db
     .select({ locale: blogPostTranslations.locale, slug: blogPostTranslations.slug })
     .from(blogPostTranslations)
@@ -86,9 +92,30 @@ export async function LocaleBlogPost({ locale, slug }: Props) {
     .innerJoin(blogTags, eq(blogPostTags.tagId, blogTags.id))
     .where(eq(blogPostTags.postId, post.id));
 
+  const catId = post.categoryId;
+  const relatedPosts = catId
+    ? await db!
+        .select({
+          postId:             blogPosts.id,
+          title:              blogPostTranslations.title,
+          slug:               blogPostTranslations.slug,
+          coverImageUrl:      blogPosts.coverImageUrl,
+          readingTimeMinutes: blogPosts.readingTimeMinutes,
+        })
+        .from(blogPostTranslations)
+        .innerJoin(blogPosts, eq(blogPostTranslations.postId, blogPosts.id))
+        .where(and(
+          eq(blogPostTranslations.locale, locale),
+          eq(blogPosts.categoryId, catId),
+          ne(blogPosts.id, post.id),
+          eq(blogPosts.status, "published"),
+        ))
+        .limit(3)
+    : [];
+
   const articleJsonLd = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
     headline: post.title,
     description: post.excerpt ?? "",
     author: { "@type": "Organization", name: post.authorName },
@@ -98,10 +125,22 @@ export async function LocaleBlogPost({ locale, slug }: Props) {
       url: "https://www.nidahgroup.com.tr",
     },
     datePublished: post.publishedAt?.toISOString(),
-    image: post.coverImageUrl ?? undefined,
+    dateModified:  post.updatedAt?.toISOString(),
+    image: post.coverImageUrl ?? FALLBACK_IMAGE,
     url: `https://www.nidahgroup.com.tr${blogPostHref(locale, post.slug)}`,
     inLanguage: cfg.lang,
   };
+
+  const faqItems = parseFaqFromMarkdown(post.content);
+  const faqJsonLd = faqItems ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map(item => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
+  } : null;
 
   return (
     <main dir={cfg.dir} lang={cfg.lang}>
@@ -109,6 +148,12 @@ export async function LocaleBlogPost({ locale, slug }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
 
       {/* Hero */}
       {post.coverImageUrl ? (
@@ -123,10 +168,13 @@ export async function LocaleBlogPost({ locale, slug }: Props) {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-8 max-w-4xl mx-auto">
-            {post.categoryName && (
-              <span className="text-nidah-yellow text-xs font-bold uppercase tracking-wider mb-2 block">
+            {post.categoryName && post.categorySlug && (
+              <Link
+                href={localeCategoryHref(locale, post.categorySlug)}
+                className="text-nidah-yellow text-xs font-bold uppercase tracking-wider mb-2 block hover:underline"
+              >
                 {post.categoryName}
-              </span>
+              </Link>
             )}
             <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight">
               {post.title}
@@ -136,10 +184,13 @@ export async function LocaleBlogPost({ locale, slug }: Props) {
       ) : (
         <section className="gradient-hero py-16 md:py-20">
           <div className="container mx-auto px-4">
-            {post.categoryName && (
-              <span className="text-nidah-yellow text-xs font-bold uppercase tracking-wider mb-3 block text-center">
+            {post.categoryName && post.categorySlug && (
+              <Link
+                href={localeCategoryHref(locale, post.categorySlug)}
+                className="text-nidah-yellow text-xs font-bold uppercase tracking-wider mb-3 block text-center hover:underline"
+              >
                 {post.categoryName}
-              </span>
+              </Link>
             )}
             <h1 className="text-3xl md:text-4xl font-bold text-white text-center leading-tight max-w-3xl mx-auto">
               {post.title}
@@ -206,12 +257,13 @@ export async function LocaleBlogPost({ locale, slug }: Props) {
                 <Tag className="size-3" /> {cfg.tagsLabel}:
               </span>
               {postTags.map(tag => (
-                <span
+                <Link
                   key={tag.slug}
-                  className="text-xs bg-nidah-light border border-gray-200 text-nidah-dark rounded-full px-3 py-1"
+                  href={localeTagHref(locale, tag.slug)}
+                  className="text-xs bg-nidah-light border border-gray-200 text-nidah-dark rounded-full px-3 py-1 hover:bg-nidah-yellow/10 hover:border-nidah-yellow/40 transition-colors"
                 >
                   {tag.name}
-                </span>
+                </Link>
               ))}
             </div>
           )}
@@ -241,6 +293,49 @@ export async function LocaleBlogPost({ locale, slug }: Props) {
           </div>
         </div>
       </article>
+
+      {/* Related Posts */}
+      {relatedPosts.length > 0 && (
+        <section className="bg-nidah-light py-12" dir="ltr">
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-xl font-bold text-nidah-dark mb-6">{cfg.relatedPostsLabel}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {relatedPosts.map(related => (
+                <Link
+                  key={related.postId}
+                  href={blogPostHref(locale, related.slug)}
+                  className="group bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md hover:border-nidah-yellow/30 transition-all duration-200"
+                >
+                  {related.coverImageUrl ? (
+                    <div className="relative w-full h-36 overflow-hidden">
+                      <Image
+                        src={related.coverImageUrl}
+                        alt={related.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-full h-36 gradient-hero flex items-center justify-center">
+                      <span className="text-white/20 text-2xl font-bold">NİDAH</span>
+                    </div>
+                  )}
+                  <div className="p-4">
+                    <h3 className="font-semibold text-nidah-dark text-sm leading-snug line-clamp-2 group-hover:text-nidah-steel transition-colors">
+                      {related.title}
+                    </h3>
+                    <div className="flex items-center gap-1 mt-2 text-xs text-nidah-gray">
+                      <Clock className="size-3" />
+                      <span>{related.readingTimeMinutes} {cfg.readSuffix}</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CTA */}
       <section className="gradient-cta py-14">

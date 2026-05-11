@@ -1,11 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { blogTags } from "@/lib/db/schema";
-import { eq, asc } from "drizzle-orm";
+import { blogTags, blogPostTags } from "@/lib/db/schema";
+import { eq, asc, sql } from "drizzle-orm";
 
 export async function GET() {
   if (!db) return NextResponse.json({ error: "Database not configured" }, { status: 503 });
-  const rows = await db.select().from(blogTags).orderBy(asc(blogTags.name));
+  const rows = await db
+    .select({
+      id:        blogTags.id,
+      name:      blogTags.name,
+      slug:      blogTags.slug,
+      createdAt: blogTags.createdAt,
+      postCount: sql<number>`count(${blogPostTags.postId})`.mapWith(Number),
+    })
+    .from(blogTags)
+    .leftJoin(blogPostTags, eq(blogPostTags.tagId, blogTags.id))
+    .groupBy(blogTags.id, blogTags.name, blogTags.slug, blogTags.createdAt)
+    .orderBy(asc(blogTags.name));
   return NextResponse.json({ data: rows });
 }
 
@@ -20,21 +31,28 @@ export async function POST(req: NextRequest) {
   const name = body.name.trim();
   const slug = body.slug?.trim() || slugifyTag(name);
 
-  // Upsert: insert if slug is new, otherwise return existing tag
-  await db
-    .insert(blogTags)
-    .values({ name, slug })
-    .onConflictDoNothing();
-
-  const [tag] = await db
+  // Explicit duplicate check — return existing so callers can auto-select
+  const [existing] = await db
     .select()
     .from(blogTags)
     .where(eq(blogTags.slug, slug))
     .limit(1);
 
+  if (existing) {
+    return NextResponse.json(
+      { error: "Bu isimde bir etiket zaten mevcut", existing },
+      { status: 409 },
+    );
+  }
+
+  const [tag] = await db
+    .insert(blogTags)
+    .values({ name, slug })
+    .returning();
+
   if (!tag) return NextResponse.json({ error: "Etiket oluşturulamadı" }, { status: 500 });
 
-  return NextResponse.json({ data: tag });
+  return NextResponse.json({ data: tag }, { status: 201 });
 }
 
 function slugifyTag(text: string): string {

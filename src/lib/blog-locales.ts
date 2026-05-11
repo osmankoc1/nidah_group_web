@@ -27,6 +27,9 @@ export interface LocaleConfig {
   tagsLabel: string;
   trVersionLabel: string;
   trReadLabel: string;
+  relatedPostsLabel: string;
+  categoryNavTitle: string;
+  categoryNavSubtitle: string;
 }
 
 export const LOCALE_CONFIG: Record<Locale, LocaleConfig> = {
@@ -46,6 +49,9 @@ export const LOCALE_CONFIG: Record<Locale, LocaleConfig> = {
     tagsLabel: "Etiketler",
     trVersionLabel: "",
     trReadLabel: "Türkçe oku",
+    relatedPostsLabel: "Benzer Yazılar",
+    categoryNavTitle: "Kategoriler",
+    categoryNavSubtitle: "Konuya göre blog yazılarını keşfedin.",
   },
   en: {
     label: "EN", flag: "🇬🇧", dir: "ltr", lang: "en", name: "English",
@@ -63,6 +69,9 @@ export const LOCALE_CONFIG: Record<Locale, LocaleConfig> = {
     tagsLabel: "Tags",
     trVersionLabel: "This article is also available in Turkish.",
     trReadLabel: "Read in Turkish →",
+    relatedPostsLabel: "Related Posts",
+    categoryNavTitle: "Categories",
+    categoryNavSubtitle: "Explore articles by topic.",
   },
   ru: {
     label: "RU", flag: "🇷🇺", dir: "ltr", lang: "ru", name: "Русский",
@@ -80,6 +89,9 @@ export const LOCALE_CONFIG: Record<Locale, LocaleConfig> = {
     tagsLabel: "Теги",
     trVersionLabel: "Эта статья также доступна на турецком языке.",
     trReadLabel: "Читать на турецком →",
+    relatedPostsLabel: "Похожие статьи",
+    categoryNavTitle: "Категории",
+    categoryNavSubtitle: "Просматривайте статьи по темам.",
   },
   ar: {
     label: "AR", flag: "🇸🇦", dir: "rtl", lang: "ar", name: "العربية",
@@ -97,6 +109,9 @@ export const LOCALE_CONFIG: Record<Locale, LocaleConfig> = {
     tagsLabel: "الوسوم",
     trVersionLabel: "هذا المقال متاح أيضًا باللغة التركية.",
     trReadLabel: "اقرأ بالتركية →",
+    relatedPostsLabel: "مقالات ذات صلة",
+    categoryNavTitle: "الفئات",
+    categoryNavSubtitle: "تصفح المقالات حسب الموضوع.",
   },
 } as const;
 
@@ -118,6 +133,16 @@ export function blogPostHref(locale: Locale, slug: string): string {
   return locale === "tr" ? `/blog/${slug}` : `/blog/${locale}/${slug}`;
 }
 
+/** Canonical href for a category hub page in a given locale */
+export function localeCategoryHref(locale: Locale, slug: string): string {
+  return locale === "tr" ? `/blog/kategori/${slug}` : `/blog/${locale}/category/${slug}`;
+}
+
+/** Canonical href for a tag hub page in a given locale */
+export function localeTagHref(locale: Locale, slug: string): string {
+  return locale === "tr" ? `/blog/etiket/${slug}` : `/blog/${locale}/tag/${slug}`;
+}
+
 const SITE_BASE = "https://www.nidahgroup.com.tr";
 
 /** Build hreflang alternates for a blog post given slugs per locale */
@@ -126,12 +151,42 @@ export function buildPostHreflangs(slugsByLocale: Partial<Record<Locale, string>
   for (const [locale, slug] of Object.entries(slugsByLocale) as [Locale, string][]) {
     if (slug) result[locale] = `${SITE_BASE}${blogPostHref(locale, slug)}`;
   }
+  // x-default points to the Turkish version; fall back to the first available locale
+  if (slugsByLocale.tr) {
+    result["x-default"] = `${SITE_BASE}${blogPostHref("tr", slugsByLocale.tr)}`;
+  } else {
+    const first = (Object.entries(slugsByLocale) as [Locale, string][]).find(([, s]) => s);
+    if (first) result["x-default"] = `${SITE_BASE}${blogPostHref(first[0], first[1])}`;
+  }
   return result;
+}
+
+/** Build hreflang alternates for category hub pages (all 4 locales) */
+export function buildCategoryHreflangs(slug: string): Record<string, string> {
+  return {
+    tr: `${SITE_BASE}/blog/kategori/${slug}`,
+    en: `${SITE_BASE}/blog/en/category/${slug}`,
+    ru: `${SITE_BASE}/blog/ru/category/${slug}`,
+    ar: `${SITE_BASE}/blog/ar/category/${slug}`,
+    "x-default": `${SITE_BASE}/blog/kategori/${slug}`,
+  };
+}
+
+/** Build hreflang alternates for tag hub pages (all 4 locales) */
+export function buildTagHreflangs(slug: string): Record<string, string> {
+  return {
+    tr: `${SITE_BASE}/blog/etiket/${slug}`,
+    en: `${SITE_BASE}/blog/en/tag/${slug}`,
+    ru: `${SITE_BASE}/blog/ru/tag/${slug}`,
+    ar: `${SITE_BASE}/blog/ar/tag/${slug}`,
+    "x-default": `${SITE_BASE}/blog/etiket/${slug}`,
+  };
 }
 
 /** Build hreflang alternates for blog list pages */
 export function buildListHreflangs() {
-  return Object.fromEntries(
-    LOCALES.map(l => [l, `${SITE_BASE}${blogListHref(l)}`])
-  );
+  return {
+    ...Object.fromEntries(LOCALES.map(l => [l, `${SITE_BASE}${blogListHref(l)}`])),
+    "x-default": `${SITE_BASE}/blog`,
+  };
 }

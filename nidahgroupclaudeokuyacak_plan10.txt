@@ -1,0 +1,76 @@
+Good plan, but I want a revised Sprint 4 plan before implementation.
+
+DO NOT IMPLEMENT YET.
+DO NOT WRITE CODE.
+DO NOT MODIFY FILES.
+DO NOT COMMIT.
+DO NOT PUSH.
+
+Revise the plan with these changes:
+
+1) Category deletion policy change
+Current proposal says deleting a category can leave blog posts uncategorized via SET NULL.
+
+I do NOT want that.
+
+New rule:
+- If category postCount > 0
+- deletion must be blocked
+- no force delete
+- no automatic uncategorized/null behavior
+
+Admin warning should say:
+"This category is used by X blog posts. Reassign those posts before deleting."
+
+Only completely unused categories can be deleted.
+
+2) Slug policy refinement
+Keep slug readonly in normal admin UI for safety.
+
+Reason:
+- public URLs
+- SEO
+- hreflang
+- sitemap consistency
+
+But architect the code cleanly so advanced slug editing can be added in a future sprint.
+
+For Sprint 4:
+NO slug editing UI.
+
+3) Re-check UX
+Re-evaluate:
+- admin navigation placement
+- tabs vs separate menu
+- category creation UX
+- tag creation UX
+- duplicate handling UX
+- toast flows
+- empty states
+- loading states
+
+4) Re-check API behavior
+Confirm:
+- PATCH behavior
+- DELETE behavior
+- conflict responses
+- duplicate name handling
+- validation strategy
+
+5) Re-check risks
+I want updated risk analysis with the new category deletion rule.
+
+Output:
+Give me the FULL revised Sprint 4 implementation plan again:
+- current state
+- target structure
+- API plan
+- UX plan
+- risk analysis
+- implementation order
+- test plan
+- changed/new files list
+- estimated complexity
+
+Only planning.
+No implementation.

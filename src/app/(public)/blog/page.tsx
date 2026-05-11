@@ -6,9 +6,9 @@ import { isPageEnabled } from "@/lib/site-settings";
 import { db } from "@/lib/db";
 import { blogPosts, blogCategories } from "@/lib/db/schema";
 import { desc, eq } from "drizzle-orm";
-import { Clock, Tag, ArrowRight } from "lucide-react";
+import { Clock, Tag, ArrowRight, Folder } from "lucide-react";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
-import { LOCALE_CONFIG, LOCALES, blogListHref, buildListHreflangs } from "@/lib/blog-locales";
+import { LOCALE_CONFIG, LOCALES, blogListHref, buildListHreflangs, localeCategoryHref } from "@/lib/blog-locales";
 import { FlagIcon } from "@/components/blog/FlagIcon";
 
 const BASE_URL = "https://www.nidahgroup.com.tr";
@@ -64,6 +64,15 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
   const hasMore = rows.length > PAGE_SIZE;
   const posts   = rows.slice(0, PAGE_SIZE);
 
+  const categories = db
+    ? await db
+        .selectDistinct({ id: blogCategories.id, name: blogCategories.name, slug: blogCategories.slug })
+        .from(blogCategories)
+        .innerJoin(blogPosts, eq(blogPosts.categoryId, blogCategories.id))
+        .where(eq(blogPosts.status, "published"))
+        .orderBy(blogCategories.name)
+    : [];
+
   const otherLocales = LOCALES.filter(l => l !== "tr");
 
   return (
@@ -104,6 +113,27 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
       {/* Posts */}
       <section className="bg-nidah-light py-16 min-h-[400px]">
         <div className="max-w-6xl mx-auto px-4">
+          {categories.length > 0 && (
+            <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-8">
+              <div className="flex items-center gap-2 mb-1">
+                <Folder className="size-4 text-nidah-yellow shrink-0" />
+                <h2 className="text-sm font-bold text-nidah-dark">Kategoriler</h2>
+              </div>
+              <p className="text-xs text-nidah-gray mb-4">Konuya göre blog yazılarını keşfedin.</p>
+              <div className="flex flex-wrap gap-2">
+                {categories.map(cat => (
+                  <Link
+                    key={cat.slug}
+                    href={localeCategoryHref("tr", cat.slug)}
+                    className="inline-flex items-center text-xs font-medium bg-nidah-light border border-gray-200 text-nidah-dark px-3 py-1.5 rounded-full hover:bg-nidah-yellow/10 hover:border-nidah-yellow/40 transition-colors"
+                  >
+                    {cat.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
           {posts.length === 0 ? (
             <div className="text-center py-20 text-gray-400">
               <p>Henüz yayınlanmış yazı bulunmuyor.</p>

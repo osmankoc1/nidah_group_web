@@ -5,6 +5,7 @@ import { desc, eq } from "drizzle-orm";
 import { Plus, Edit, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { BlogSubNav } from "@/components/admin/BlogSubNav";
 
 export const dynamic = "force-dynamic";
 
@@ -45,6 +46,7 @@ export default async function AdminBlogPage({ searchParams }: { searchParams: Pr
 
   return (
     <div>
+      <BlogSubNav />
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Blog Yazıları</h1>

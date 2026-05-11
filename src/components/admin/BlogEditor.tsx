@@ -328,10 +328,11 @@ export default function BlogEditor({
     const slug = slugify(name);
 
     // Reuse existing tag if already loaded locally
-    const existing = tags.find(t => t.slug === slug);
-    if (existing) {
-      if (!form.tagIds.includes(existing.id)) {
-        setShared("tagIds", [...form.tagIds, existing.id]);
+    const localExisting = tags.find(t => t.slug === slug);
+    if (localExisting) {
+      if (!form.tagIds.includes(localExisting.id)) {
+        setShared("tagIds", [...form.tagIds, localExisting.id]);
+        toast.info(`"${localExisting.name}" zaten mevcut, seçildi`);
       }
       setNewTag("");
       return;
@@ -343,11 +344,21 @@ export default function BlogEditor({
         body: JSON.stringify({ name, slug }),
       });
       const json = await res.json().catch(() => ({}));
+      // Server-side duplicate — auto-select existing
+      if (res.status === 409 && json.existing) {
+        const dup: BlogTag = json.existing;
+        if (!tags.find(t => t.id === dup.id)) setTags(t => [...t, dup]);
+        if (!form.tagIds.includes(dup.id)) setShared("tagIds", [...form.tagIds, dup.id]);
+        setNewTag("");
+        toast.info(`"${dup.name}" zaten mevcut, seçildi`);
+        return;
+      }
       if (!res.ok) throw new Error(json.error ?? "Etiket oluşturulamadı");
       const tag: BlogTag = json.data;
       setTags(t => [...t, tag]);
       setShared("tagIds", [...form.tagIds, tag.id]);
       setNewTag("");
+      toast.success("Etiket oluşturuldu");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Etiket oluşturulamadı");
     }
@@ -359,10 +370,11 @@ export default function BlogEditor({
     const slug = slugify(name);
 
     // Reuse existing category if already loaded locally
-    const existing = categories.find(c => c.slug === slug);
-    if (existing) {
-      setShared("categoryId", existing.id);
+    const localExisting = categories.find(c => c.slug === slug);
+    if (localExisting) {
+      setShared("categoryId", localExisting.id);
       setNewCat("");
+      toast.info(`"${localExisting.name}" zaten mevcut, seçildi`);
       return;
     }
 
@@ -372,11 +384,21 @@ export default function BlogEditor({
         body: JSON.stringify({ name, slug }),
       });
       const json = await res.json().catch(() => ({}));
+      // Server-side duplicate — auto-select existing
+      if (res.status === 409 && json.existing) {
+        const dup: BlogCategory = json.existing;
+        if (!categories.find(c => c.id === dup.id)) setCategories(c => [...c, dup]);
+        setShared("categoryId", dup.id);
+        setNewCat("");
+        toast.info(`"${dup.name}" zaten mevcut, seçildi`);
+        return;
+      }
       if (!res.ok) throw new Error(json.error ?? "Kategori oluşturulamadı");
       const cat: BlogCategory = json.data;
       setCategories(c => [...c, cat]);
       setShared("categoryId", cat.id);
       setNewCat("");
+      toast.success("Kategori oluşturuldu");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Kategori oluşturulamadı");
     }
