@@ -6,14 +6,15 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import CookieConsentBanner from "@/components/shared/CookieConsentBanner";
 import "./globals.css";
 
+// latin-ext: Türkçe karakterler (İ, ş, ğ, ü…) fallback fonta düşmesin
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
 });
 
 export const metadata: Metadata = {
