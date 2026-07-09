@@ -11,6 +11,7 @@ import {
   Truck,
 } from "lucide-react";
 import { getPart } from "@/lib/prosis";
+import { isPageEnabled } from "@/lib/site-settings";
 import type {
   CrossRefEntry,
   DocumentEntry,
@@ -31,6 +32,9 @@ export const dynamic = "force-dynamic";
 
 // ── Metadata ──────────────────────────────────────────────────────────────────
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  if (!await isPageEnabled("page_catalog")) {
+    return { title: "Sayfa Bulunamadı | NİDAH GROUP" };
+  }
   const { id } = await params;
   try {
     const part = await getPart(decodeURIComponent(id));
@@ -63,6 +67,9 @@ interface Tab {
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default async function CatalogDetailPage({ params }: PageProps) {
+  // Admin > Sayfalar > "Canlı Katalog (Prosis)" toggle'ı tek otoritedir.
+  if (!await isPageEnabled("page_catalog")) notFound();
+
   const { id } = await params;
 
   let part;
