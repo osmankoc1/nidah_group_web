@@ -4,6 +4,11 @@ import { Globe, TrendingUp } from "lucide-react";
 // Extra brands beyond the main 8 — shown as text list
 const ALSO_SUPPORTED = ["LIEBHERR", "JOHN DEERE", "HITACHI", "DOOSAN", "CASE", "JCB", "TADANO", "MANITOWOC"];
 
+// public/images/brands/ altında gerçek logosu bulunan markalar.
+// Logosu olmayanlar (champion, hidromek, hamm) baş harfli daire ile gösterilir;
+// ileride aynı isimle SVG eklenirse bu listeye slug eklemek yeterli.
+const BRAND_LOGOS = new Set(["volvo", "komatsu", "cat", "bomag", "ammann"]);
+
 export default function BrandsSection() {
   return (
     <section className="py-20 bg-nidah-light">
@@ -34,12 +39,25 @@ export default function BrandsSection() {
               {/* Accent line */}
               <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-nidah-yellow/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
-              {/* Brand initial circle */}
-              <div className="w-12 h-12 rounded-full bg-nidah-dark/5 flex items-center justify-center mb-3 group-hover:bg-nidah-yellow/10 transition-colors">
-                <span className="text-lg font-black text-nidah-dark/50 group-hover:text-nidah-yellow-dark transition-colors">
-                  {brand.name[0]}
-                </span>
-              </div>
+              {/* Gerçek logo (varsa) — gri başlar, hover'da renklenir */}
+              {BRAND_LOGOS.has(brand.slug) ? (
+                <div className="h-12 flex items-center justify-center mb-3 px-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- statik SVG wordmark, optimizasyon gerektirmez */}
+                  <img
+                    src={`/images/brands/${brand.slug}.svg`}
+                    alt={`${brand.name} logosu`}
+                    width={120}
+                    height={36}
+                    className="h-9 w-auto max-w-[130px] object-contain grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                  />
+                </div>
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-nidah-dark/5 flex items-center justify-center mb-3 group-hover:bg-nidah-yellow/10 transition-colors">
+                  <span className="text-lg font-black text-nidah-dark/50 group-hover:text-nidah-yellow-dark transition-colors">
+                    {brand.name[0]}
+                  </span>
+                </div>
+              )}
 
               <span className="text-base font-bold text-nidah-dark tracking-wide leading-tight">
                 {brand.name}
