@@ -153,7 +153,7 @@ export default function SplashOverlay({ variant }: Props) {
               İş Makinası Servisi &amp; Yedek Parça
             </p>
             <h1 className="splash-title splash-title--site">NİDAH GROUP</h1>
-            <p className="splash-sub">Türkiye Genelinde 81 İlde Hizmet</p>
+            <p className="splash-sub">3 Kıtada 13+ Ülkeye İhracat &amp; Tedarik</p>
           </>
         )}
       </div>
