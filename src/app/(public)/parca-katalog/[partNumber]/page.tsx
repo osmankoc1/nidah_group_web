@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import { CONTACTS, WHATSAPP_URL } from "@/lib/constants";
 import { getProductByPartNumber, type FitmentRow } from "@/lib/queries/product";
+import { isPageEnabled } from "@/lib/site-settings";
 import ProductGallery from "@/components/catalog/ProductGallery";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -32,6 +33,9 @@ export async function generateMetadata({
 }: {
   params: Promise<{ partNumber: string }>;
 }): Promise<Metadata> {
+  if (!await isPageEnabled("page_parca_katalog")) {
+    return { title: "Sayfa Bulunamadı | NİDAH GROUP" };
+  }
   const { partNumber } = await params;
   const decodedPN = decodeURIComponent(partNumber);
   const product = await getProductByPartNumber(decodedPN);
@@ -151,6 +155,10 @@ export default async function ProductDetailPage({
 }: {
   params: Promise<{ partNumber: string }>;
 }) {
+  // Admin > Sayfalar > "Parça Kataloğu" toggle'ı tek otoritedir —
+  // hub kapalıyken ürün detayları da kapanır, açılınca otomatik yayına girer.
+  if (!await isPageEnabled("page_parca_katalog")) notFound();
+
   const { partNumber } = await params;
   const decodedPN = decodeURIComponent(partNumber);
   const product = await getProductByPartNumber(decodedPN);

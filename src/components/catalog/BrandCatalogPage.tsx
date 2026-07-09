@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 import { PackageSearch, CheckCircle, Clock, ArrowRight } from "lucide-react";
+import { isPageEnabled } from "@/lib/site-settings";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
@@ -46,6 +48,10 @@ export default async function BrandCatalogPage({
   brandDescription,
   brandMachineTypes,
 }: BrandCatalogPageProps) {
+  // Admin > Sayfalar > "Parça Kataloğu" toggle'ı tek otoritedir —
+  // hub kapalıyken tüm marka sayfaları da kapanır, açılınca otomatik yayına girer.
+  if (!await isPageEnabled("page_parca_katalog")) notFound();
+
   // Fetch products for this brand via fitments → machines → manufacturers join
   let brandProducts: BrandProductItem[] = [];
 
