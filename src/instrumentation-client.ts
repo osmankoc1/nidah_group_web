@@ -20,3 +20,6 @@ Sentry.init({
     }),
   ],
 });
+
+// Next.js App Router gezinme enstrümantasyonu (Sentry v9+ konvansiyonu)
+export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
