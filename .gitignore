@@ -56,3 +56,6 @@ next-env.d.ts
 # Runtime logs
 nextjs.log
 services/**/*.log
+
+# Claude gorev notlari repoya girmesin
+nidahgroupclaudeokuyacak*.txt
