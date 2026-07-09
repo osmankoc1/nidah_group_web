@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { isPageEnabled } from "@/lib/site-settings";
 import HeroSection               from "@/components/home/HeroSection";
 import BrandsSection              from "@/components/home/BrandsSection";
 import ServicesOverview           from "@/components/home/ServicesOverview";
@@ -32,22 +33,29 @@ export const metadata: Metadata = {
   },
 };
 
-const websiteJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: "NİDAH GROUP",
-  url: "https://www.nidahgroup.com.tr",
-  potentialAction: {
-    "@type": "SearchAction",
-    target: {
-      "@type": "EntryPoint",
-      urlTemplate: "https://www.nidahgroup.com.tr/parca-katalog?search={search_term_string}",
-    },
-    "query-input": "required name=search_term_string",
-  },
-};
+function buildWebsiteJsonLd(catalogEnabled: boolean) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "NİDAH GROUP",
+    url: "https://www.nidahgroup.com.tr",
+    // SearchAction yalnızca katalog admin toggle'ıyla yayındayken sunulur —
+    // kapalı bir sayfayı Google'a site içi arama hedefi olarak göstermeyiz.
+    ...(catalogEnabled && {
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: "https://www.nidahgroup.com.tr/parca-katalog?search={search_term_string}",
+        },
+        "query-input": "required name=search_term_string",
+      },
+    }),
+  };
+}
 
-export default function HomePage() {
+export default async function HomePage() {
+  const websiteJsonLd = buildWebsiteJsonLd(await isPageEnabled("page_parca_katalog"));
   return (
     <>
       <script
