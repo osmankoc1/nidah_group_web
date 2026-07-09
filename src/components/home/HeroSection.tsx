@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CONTACTS, WHATSAPP_URL } from "@/lib/constants";
@@ -111,6 +112,19 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center gradient-hero overflow-hidden">
+
+      {/* ── Background image ── */}
+      <Image
+        src="/images/home/hero-bg.png"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        quality={85}
+        className="object-cover object-center"
+      />
+      {/* ── Dark overlay — left stays dark for readability, right reveals machinery ── */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#1A1A2E]/95 via-[#1A1A2E]/75 to-[#1A1A2E]/40 pointer-events-none" />
 
       {/* ── Machinery skyline — full width, bottom ── */}
       <div className="absolute bottom-0 left-0 w-full text-white opacity-[0.042] pointer-events-none select-none">

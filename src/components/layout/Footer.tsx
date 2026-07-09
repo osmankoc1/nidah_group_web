@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Phone, Mail, MapPin, MessageCircle, Globe2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -51,10 +52,25 @@ export default function Footer({ navItems, teklifAlEnabled, hizmetlerEnabled }: 
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-nidah-dark text-white">
+    <footer className="bg-nidah-dark text-white relative overflow-hidden">
+
+      {/* ── Decorative silhouette strip — bottom band only ── */}
+      <div className="absolute bottom-0 left-0 w-full h-[420px] z-0 pointer-events-none select-none overflow-hidden">
+        <Image
+          src="/images/home/footer-bg.png"
+          alt=""
+          fill
+          loading="lazy"
+          sizes="100vw"
+          quality={75}
+          className="object-cover object-bottom opacity-[0.55]"
+        />
+        {/* Gradient mask: top stays fully dark, silhouettes emerge from bottom */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-b from-nidah-dark/95 via-nidah-dark/30 to-transparent" />
+      </div>
 
       {/* Global strip */}
-      <div className="border-b border-white/5 bg-[#111827]">
+      <div className="relative z-20 border-b border-white/5 bg-[#111827]">
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-2 text-xs text-nidah-yellow font-semibold uppercase tracking-wider shrink-0">
@@ -74,7 +90,7 @@ export default function Footer({ navItems, teklifAlEnabled, hizmetlerEnabled }: 
       </div>
 
       {/* Main footer */}
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <div className="relative z-20 mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-12">
 
           {/* Col 1: Company */}
@@ -237,7 +253,7 @@ export default function Footer({ navItems, teklifAlEnabled, hizmetlerEnabled }: 
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-white/5 bg-[#111827]">
+      <div className="relative z-20 border-t border-white/5 bg-[#111827]">
         <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
             <p className="text-xs text-gray-600">

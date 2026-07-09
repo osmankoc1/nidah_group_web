@@ -2,16 +2,27 @@
 
 import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
-import { Plus, Trash2, Loader2, Pencil, X, Check } from "lucide-react";
+import { Plus, Trash2, Loader2, Pencil, X, Check, ChevronUp, Globe } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+
+interface TagTrans {
+  locale: string;
+  name: string;
+  slug: string;
+}
 
 interface Tag {
   id: string;
   name: string;
   slug: string;
   postCount: number;
+  translations: TagTrans[];
 }
+
+const TRANS_LOCALES = ["en", "ru", "ar"] as const;
+type TransLocale = (typeof TRANS_LOCALES)[number];
+const LOCALE_LABEL: Record<TransLocale, string> = { en: "EN", ru: "RU", ar: "AR" };
 
 function slugPreview(name: string) {
   return name
@@ -35,6 +46,12 @@ export function TagManager() {
 
   const [deleteTarget, setDeleteTarget] = useState<Tag | null>(null);
   const [deleting,     setDeleting]     = useState(false);
+
+  // Translation panel state
+  const [expandedId,        setExpandedId]        = useState<string | null>(null);
+  const [activeTransLocale, setActiveTransLocale] = useState<TransLocale>("en");
+  const [transInputs, setTransInputs] = useState<Record<string, string>>({}); // key: `${tagId}-${locale}`
+  const [transSaving, setTransSaving] = useState<string | null>(null); // key: `${tagId}-${locale}`
 
   useEffect(() => { load(); }, []);
   useEffect(() => { if (editingId && editRef.current) editRef.current.focus(); }, [editingId]);
@@ -65,7 +82,7 @@ export function TagManager() {
       }
       if (!res.ok) throw new Error(json.error ?? "Oluşturulamadı");
       setTags(ts =>
-        [...ts, { ...json.data, postCount: 0 }].sort((a, b) => a.name.localeCompare(b.name, "tr"))
+        [...ts, { ...json.data, postCount: 0, translations: [] }].sort((a, b) => a.name.localeCompare(b.name, "tr"))
       );
       setNewName("");
       toast.success("Etiket oluşturuldu");
@@ -134,6 +151,82 @@ export function TagManager() {
     }
   }
 
+  // ── Translation panel helpers ──────────────────────────────────────────────
+
+  function toggleExpand(tag: Tag) {
+    if (expandedId === tag.id) {
+      setExpandedId(null);
+      return;
+    }
+    setExpandedId(tag.id);
+    setActiveTransLocale("en");
+    // Pre-fill inputs from existing translations
+    const next: Record<string, string> = { ...transInputs };
+    for (const locale of TRANS_LOCALES) {
+      const key = `${tag.id}-${locale}`;
+      if (!next[key]) {
+        const existing = tag.translations.find(t => t.locale === locale);
+        next[key] = existing?.name ?? "";
+      }
+    }
+    setTransInputs(next);
+  }
+
+  function getTransInput(tagId: string, locale: TransLocale): string {
+    return transInputs[`${tagId}-${locale}`] ?? "";
+  }
+
+  function setTransInput(tagId: string, locale: TransLocale, value: string) {
+    const key = `${tagId}-${locale}`;
+    setTransInputs(prev => ({ ...prev, [key]: value }));
+  }
+
+  function autoFill(tagId: string, locale: TransLocale, trName: string) {
+    setTransInput(tagId, locale, trName);
+  }
+
+  async function saveTranslation(tag: Tag, locale: TransLocale) {
+    const name   = getTransInput(tag.id, locale);
+    const key    = `${tag.id}-${locale}`;
+    setTransSaving(key);
+    try {
+      const res = await fetch(`/api/admin/blog/tags/${tag.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          translations: [{ locale, name }],
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (res.status === 409) {
+        toast.error(json.error ?? "Bu slug başka bir etikette kullanılıyor");
+        return;
+      }
+      if (!res.ok) throw new Error(json.error ?? "Kaydedilemedi");
+
+      const tName = name.trim();
+      setTags(ts => ts.map(t => {
+        if (t.id !== tag.id) return t;
+        const filtered = t.translations.filter(tr => tr.locale !== locale);
+        const updated  = tName
+          ? [...filtered, { locale, name: tName, slug: slugPreview(tName) }]
+          : filtered;
+        return { ...t, translations: updated };
+      }));
+
+      toast.success(tName
+        ? `${LOCALE_LABEL[locale]} çevirisi kaydedildi`
+        : `${LOCALE_LABEL[locale]} çevirisi silindi`
+      );
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Hata oluştu");
+    } finally {
+      setTransSaving(null);
+    }
+  }
+
+  // ── Render ─────────────────────────────────────────────────────────────────
+
   const filtered = search
     ? tags.filter(t =>
         t.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -200,79 +293,185 @@ export function TagManager() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b text-xs">
               <tr>
-                <th className="text-left px-4 py-2.5 font-medium text-gray-600">Ad</th>
+                <th className="text-left px-4 py-2.5 font-medium text-gray-600">Ad (TR)</th>
                 <th className="text-left px-4 py-2.5 font-medium text-gray-600 hidden sm:table-cell">Slug</th>
                 <th className="text-center px-4 py-2.5 font-medium text-gray-600">Blog</th>
-                <th className="w-10" />
+                <th className="text-center px-4 py-2.5 font-medium text-gray-600 hidden sm:table-cell">Çeviri</th>
+                <th className="w-16" />
               </tr>
             </thead>
             <tbody className="divide-y">
               {filtered.map(tag => (
-                <tr key={tag.id} className="hover:bg-gray-50 group">
-                  <td className="px-4 py-2.5">
-                    {editingId === tag.id ? (
-                      <div className="flex items-center gap-1">
-                        <input
-                          ref={editRef}
-                          value={editValue}
-                          onChange={e => setEditValue(e.target.value)}
-                          onKeyDown={e => {
-                            if (e.key === "Enter")  commitEdit(tag.id);
-                            if (e.key === "Escape") cancelEdit();
-                          }}
-                          disabled={savingId === tag.id}
-                          className="border rounded px-2 py-1 text-sm flex-1 focus:outline-none focus:ring-2 focus:ring-nidah-yellow/50"
-                        />
-                        {savingId === tag.id ? (
-                          <Loader2 className="size-4 animate-spin shrink-0 text-gray-400" />
-                        ) : (
-                          <>
-                            <button
-                              onClick={() => commitEdit(tag.id)}
-                              className="shrink-0 text-green-500 hover:text-green-600 p-0.5"
-                              title="Kaydet"
-                            >
-                              <Check className="size-3.5" />
-                            </button>
-                            <button
-                              onClick={cancelEdit}
-                              className="shrink-0 text-gray-400 hover:text-gray-600 p-0.5"
-                              title="İptal"
-                            >
-                              <X className="size-3.5" />
-                            </button>
-                          </>
-                        )}
+                <>
+                  <tr key={tag.id} className="hover:bg-gray-50 group">
+                    <td className="px-4 py-2.5">
+                      {editingId === tag.id ? (
+                        <div className="flex items-center gap-1">
+                          <input
+                            ref={editRef}
+                            value={editValue}
+                            onChange={e => setEditValue(e.target.value)}
+                            onKeyDown={e => {
+                              if (e.key === "Enter")  commitEdit(tag.id);
+                              if (e.key === "Escape") cancelEdit();
+                            }}
+                            disabled={savingId === tag.id}
+                            className="border rounded px-2 py-1 text-sm flex-1 focus:outline-none focus:ring-2 focus:ring-nidah-yellow/50"
+                          />
+                          {savingId === tag.id ? (
+                            <Loader2 className="size-4 animate-spin shrink-0 text-gray-400" />
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => commitEdit(tag.id)}
+                                className="shrink-0 text-green-500 hover:text-green-600 p-0.5"
+                                title="Kaydet"
+                              >
+                                <Check className="size-3.5" />
+                              </button>
+                              <button
+                                onClick={cancelEdit}
+                                className="shrink-0 text-gray-400 hover:text-gray-600 p-0.5"
+                                title="İptal"
+                              >
+                                <X className="size-3.5" />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => startEdit(tag)}
+                          className="text-left hover:text-nidah-steel w-full flex items-center gap-1.5 group/name"
+                          title="Düzenlemek için tıklayın"
+                        >
+                          {tag.name}
+                          <Pencil className="size-3 opacity-0 group-hover/name:opacity-40 text-gray-400 shrink-0" />
+                        </button>
+                      )}
+                    </td>
+                    <td className="px-4 py-2.5 font-mono text-xs text-gray-400 hidden sm:table-cell">
+                      {tag.slug}
+                    </td>
+                    <td className="px-4 py-2.5 text-center">
+                      <span className={`text-xs font-medium ${tag.postCount > 0 ? "text-nidah-dark" : "text-gray-400"}`}>
+                        {tag.postCount}
+                      </span>
+                    </td>
+                    <td className="px-4 py-2.5 text-center hidden sm:table-cell">
+                      <span className={`text-[10px] font-mono ${tag.translations.length > 0 ? "text-nidah-steel" : "text-gray-300"}`}>
+                        {tag.translations.map(t => t.locale.toUpperCase()).join(" ")}
+                      </span>
+                    </td>
+                    <td className="px-2 py-2.5">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => toggleExpand(tag)}
+                          className="text-gray-300 hover:text-nidah-steel transition-colors p-1"
+                          title="Çevirileri yönet"
+                        >
+                          {expandedId === tag.id
+                            ? <ChevronUp className="size-3.5" />
+                            : <Globe className="size-3.5" />}
+                        </button>
+                        <button
+                          onClick={() => setDeleteTarget(tag)}
+                          className="text-gray-200 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-1"
+                          title="Sil"
+                        >
+                          <Trash2 className="size-3.5" />
+                        </button>
                       </div>
-                    ) : (
-                      <button
-                        onClick={() => startEdit(tag)}
-                        className="text-left hover:text-nidah-steel w-full flex items-center gap-1.5 group/name"
-                        title="Düzenlemek için tıklayın"
-                      >
-                        {tag.name}
-                        <Pencil className="size-3 opacity-0 group-hover/name:opacity-40 text-gray-400 shrink-0" />
-                      </button>
-                    )}
-                  </td>
-                  <td className="px-4 py-2.5 font-mono text-xs text-gray-400 hidden sm:table-cell">
-                    {tag.slug}
-                  </td>
-                  <td className="px-4 py-2.5 text-center">
-                    <span className={`text-xs font-medium ${tag.postCount > 0 ? "text-nidah-dark" : "text-gray-400"}`}>
-                      {tag.postCount}
-                    </span>
-                  </td>
-                  <td className="px-2 py-2.5">
-                    <button
-                      onClick={() => setDeleteTarget(tag)}
-                      className="text-gray-200 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-1"
-                      title="Sil"
-                    >
-                      <Trash2 className="size-3.5" />
-                    </button>
-                  </td>
-                </tr>
+                    </td>
+                  </tr>
+
+                  {/* Translation panel */}
+                  {expandedId === tag.id && (
+                    <tr key={`${tag.id}-trans`}>
+                      <td colSpan={5} className="bg-gray-50/80 border-t border-dashed border-gray-200 px-4 py-4">
+                        <div className="max-w-lg space-y-3">
+                          <p className="text-xs font-semibold text-gray-500 flex items-center gap-1.5">
+                            <Globe className="size-3" /> Çeviriler — EN / RU / AR
+                          </p>
+
+                          {/* Locale tabs */}
+                          <div className="flex gap-1">
+                            {TRANS_LOCALES.map(loc => (
+                              <button
+                                key={loc}
+                                onClick={() => setActiveTransLocale(loc)}
+                                className={`px-3 py-1 text-xs rounded font-medium transition-colors ${
+                                  activeTransLocale === loc
+                                    ? "bg-nidah-dark text-white"
+                                    : "bg-white border border-gray-200 text-gray-500 hover:border-gray-400"
+                                }`}
+                              >
+                                {LOCALE_LABEL[loc]}
+                              </button>
+                            ))}
+                          </div>
+
+                          {/* Active locale editor */}
+                          {TRANS_LOCALES.map(loc => {
+                            if (loc !== activeTransLocale) return null;
+                            const inputVal = getTransInput(tag.id, loc);
+                            const savKey   = `${tag.id}-${loc}`;
+                            const isSaving = transSaving === savKey;
+                            const slugPrev = inputVal.trim() ? slugPreview(inputVal.trim()) : null;
+
+                            return (
+                              <div key={loc} className="space-y-2">
+                                {/* Name */}
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-2">
+                                    <label className="text-xs text-gray-500 w-14 shrink-0">Ad</label>
+                                    <Input
+                                      value={inputVal}
+                                      onChange={e => setTransInput(tag.id, loc, e.target.value)}
+                                      onKeyDown={e => e.key === "Enter" && saveTranslation(tag, loc)}
+                                      placeholder={`${LOCALE_LABEL[loc]} adı...`}
+                                      disabled={isSaving}
+                                      className="text-sm flex-1"
+                                    />
+                                    <button
+                                      onClick={() => autoFill(tag.id, loc, tag.name)}
+                                      className="text-[11px] text-nidah-steel hover:text-nidah-dark whitespace-nowrap shrink-0 transition-colors"
+                                      title="TR adını kopyala (sonra değiştirebilirsiniz)"
+                                    >
+                                      TR'den doldur
+                                    </button>
+                                  </div>
+                                  {slugPrev && (
+                                    <p className="text-[11px] text-gray-400 font-mono pl-16">slug: {slugPrev}</p>
+                                  )}
+                                </div>
+
+                                {/* Save */}
+                                <div className="flex items-center gap-3 pl-16">
+                                  <Button
+                                    size="sm"
+                                    onClick={() => saveTranslation(tag, loc)}
+                                    disabled={isSaving}
+                                    className="text-xs"
+                                  >
+                                    {isSaving && <Loader2 className="size-3 animate-spin mr-1" />}
+                                    Kaydet
+                                  </Button>
+                                  {!inputVal.trim() && tag.translations.find(t => t.locale === loc) && (
+                                    <span className="text-[11px] text-amber-500">Ad boş bırakılırsa çeviri silinir</span>
+                                  )}
+                                  {!inputVal.trim() && !tag.translations.find(t => t.locale === loc) && (
+                                    <span className="text-[11px] text-gray-400">Çeviri yok — boş bırakılırsa TR ad gösterilir</span>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </>
               ))}
             </tbody>
           </table>
@@ -296,6 +495,9 @@ export function TagManager() {
                   <strong className="text-nidah-dark">{deleteTarget.postCount} yazıda</strong>{" "}
                   kullanılıyor. Etiket silinir, yazılar etkilenmez.
                 </>
+              )}
+              {deleteTarget.translations.length > 0 && (
+                <>{" "}Buna ait {deleteTarget.translations.length} çeviri de silinecek.</>
               )}
             </p>
             <div className="flex justify-end gap-2">

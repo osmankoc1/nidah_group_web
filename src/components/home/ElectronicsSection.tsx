@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Cpu, MonitorCheck, Truck, Shield, ShoppingBag, ArrowRight, Zap } from "lucide-react";
 import Link from "next/link";
 
@@ -12,6 +13,19 @@ const SERVICES = [
 export default function ElectronicsSection() {
   return (
     <section className="py-24 bg-[#0A0F1E] relative overflow-hidden">
+      {/* ── Background image ── */}
+      <Image
+        src="/images/home/ecu-bg.png"
+        alt=""
+        fill
+        loading="lazy"
+        sizes="100vw"
+        quality={80}
+        className="object-cover object-right"
+      />
+      {/* ── Dark overlay — left dark for text, right reveals ECU visual ── */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#0A0F1E]/92 via-[#0A0F1E]/75 to-[#0A0F1E]/45 pointer-events-none" />
+
       <div className="absolute inset-0 opacity-[0.04]" style={{
         backgroundImage: "linear-gradient(rgba(255,255,255,.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.15) 1px, transparent 1px)",
         backgroundSize: "60px 60px",

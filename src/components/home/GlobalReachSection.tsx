@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Globe2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
@@ -44,6 +45,19 @@ const KEY_STATS = [
 export default function GlobalReachSection() {
   return (
     <section className="py-24 bg-[#0F1B2D] relative overflow-hidden">
+
+      {/* ── Background image ── */}
+      <Image
+        src="/images/home/global-bg.png"
+        alt=""
+        fill
+        loading="lazy"
+        sizes="100vw"
+        quality={80}
+        className="object-cover object-center"
+      />
+      {/* ── Dark overlay ── */}
+      <div className="absolute inset-0 bg-[#0F1B2D]/80 pointer-events-none" />
 
       {/* Background texture */}
       <div className="absolute inset-0 opacity-[0.04]" style={{

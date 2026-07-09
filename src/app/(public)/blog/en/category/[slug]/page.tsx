@@ -13,16 +13,16 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const { slug } = await params;
   const { page } = await searchParams;
   const pageNum = Math.max(1, Number(page) || 1);
-  const cat = await getLocaleCategoryData("en", slug);
-  if (!cat) return { title: "Blog | NİDAH GROUP" };
+  const resolved = await getLocaleCategoryData("en", slug);
+  if (!resolved) return { title: "Blog | NİDAH GROUP" };
   return {
-    title: `${cat.name} | Blog | NİDAH GROUP`,
-    description: cat.description ?? `NİDAH GROUP — articles in the "${cat.name}" category.`,
+    title: `${resolved.localeName} | Blog | NİDAH GROUP`,
+    description: resolved.localeDescription ?? `NİDAH GROUP — articles in the "${resolved.localeName}" category.`,
     alternates: {
       canonical: pageNum > 1
         ? `${BASE_URL}/blog/en/category/${slug}?page=${pageNum}`
         : `${BASE_URL}/blog/en/category/${slug}`,
-      languages: buildCategoryHreflangs(slug),
+      languages: buildCategoryHreflangs(resolved.allSlugs),
     },
   };
 }

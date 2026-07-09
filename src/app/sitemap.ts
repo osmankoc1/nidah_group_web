@@ -1,6 +1,14 @@
 import type { MetadataRoute } from "next";
 import { db } from "@/lib/db";
-import { products, blogPosts, blogPostTranslations, blogCategories, blogTags } from "@/lib/db/schema";
+import {
+  products,
+  blogPosts,
+  blogPostTranslations,
+  blogCategories,
+  blogCategoryTranslations,
+  blogTags,
+  blogTagTranslations,
+} from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 
 const BASE_URL = "https://www.nidahgroup.com.tr";
@@ -66,9 +74,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .from(products)
     .where(eq(products.isActive, true));
 
-  // Blog category and tag hub pages
-  const dbCategories = await db.select({ slug: blogCategories.slug }).from(blogCategories);
-  const dbTags       = await db.select({ slug: blogTags.slug }).from(blogTags);
+  // Blog categories (TR slugs)
+  const dbCategories = await db.select({ id: blogCategories.id, slug: blogCategories.slug }).from(blogCategories);
+
+  // Blog tags (TR slugs)
+  const dbTags = await db.select({ id: blogTags.id, slug: blogTags.slug }).from(blogTags);
+
+  // Category translations for locale-specific slugs (graceful fallback if migration not yet applied)
+  const catTranslations = await db
+    .select({
+      categoryId: blogCategoryTranslations.categoryId,
+      locale:     blogCategoryTranslations.locale,
+      slug:       blogCategoryTranslations.slug,
+    })
+    .from(blogCategoryTranslations)
+    .catch(() => [] as { categoryId: string; locale: string; slug: string }[]);
+
+  // Tag translations
+  const tagTranslations = await db
+    .select({
+      tagId:  blogTagTranslations.tagId,
+      locale: blogTagTranslations.locale,
+      slug:   blogTagTranslations.slug,
+    })
+    .from(blogTagTranslations)
+    .catch(() => [] as { tagId: string; locale: string; slug: string }[]);
 
   const trBlogUrls: MetadataRoute.Sitemap = trPosts.map(p => ({
     url: `${BASE_URL}/blog/${p.slug}`,
@@ -105,20 +135,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
-  // Locale-specific category and tag hub pages (EN / RU / AR)
+  // Locale-specific category and tag hub pages — use translated slugs, fall back to TR slug
   const localeHubUrls: MetadataRoute.Sitemap = [];
   for (const locale of ["en", "ru", "ar"] as const) {
     for (const cat of dbCategories) {
+      const trans = catTranslations.find(t => t.categoryId === cat.id && t.locale === locale);
       localeHubUrls.push({
-        url: `${BASE_URL}/blog/${locale}/category/${cat.slug}`,
+        url: `${BASE_URL}/blog/${locale}/category/${trans?.slug ?? cat.slug}`,
         lastModified: new Date(),
         changeFrequency: "weekly" as const,
         priority: 0.5,
       });
     }
     for (const tag of dbTags) {
+      const trans = tagTranslations.find(t => t.tagId === tag.id && t.locale === locale);
       localeHubUrls.push({
-        url: `${BASE_URL}/blog/${locale}/tag/${tag.slug}`,
+        url: `${BASE_URL}/blog/${locale}/tag/${trans?.slug ?? tag.slug}`,
         lastModified: new Date(),
         changeFrequency: "weekly" as const,
         priority: 0.4,

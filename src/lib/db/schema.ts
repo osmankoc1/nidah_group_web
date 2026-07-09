@@ -356,12 +356,53 @@ export const blogPostTranslations = pgTable(
   ]
 );
 
-export type BlogCategory          = typeof blogCategories.$inferSelect;
-export type BlogTag               = typeof blogTags.$inferSelect;
-export type BlogPost              = typeof blogPosts.$inferSelect;
-export type NewBlogPost           = typeof blogPosts.$inferInsert;
-export type BlogPostTranslation   = typeof blogPostTranslations.$inferSelect;
-export type NewBlogPostTranslation = typeof blogPostTranslations.$inferInsert;
+export const blogCategoryTranslations = pgTable(
+  "blog_category_translations",
+  {
+    id:          uuid("id").defaultRandom().primaryKey(),
+    categoryId:  uuid("category_id").notNull().references(() => blogCategories.id, { onDelete: "cascade" }),
+    locale:      varchar("locale", { length: 10 }).notNull(),
+    name:        varchar("name", { length: 255 }).notNull(),
+    slug:        varchar("slug", { length: 255 }).notNull(),
+    description: text("description"),
+    createdAt:   timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt:   timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("uq_blog_cat_trans_category_locale").on(table.categoryId, table.locale),
+    uniqueIndex("uq_blog_cat_trans_locale_slug").on(table.locale, table.slug),
+    index("idx_blog_cat_trans_category").on(table.categoryId),
+    index("idx_blog_cat_trans_slug").on(table.slug),
+  ]
+);
+
+export const blogTagTranslations = pgTable(
+  "blog_tag_translations",
+  {
+    id:        uuid("id").defaultRandom().primaryKey(),
+    tagId:     uuid("tag_id").notNull().references(() => blogTags.id, { onDelete: "cascade" }),
+    locale:    varchar("locale", { length: 10 }).notNull(),
+    name:      varchar("name", { length: 100 }).notNull(),
+    slug:      varchar("slug", { length: 100 }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("uq_blog_tag_trans_tag_locale").on(table.tagId, table.locale),
+    uniqueIndex("uq_blog_tag_trans_locale_slug").on(table.locale, table.slug),
+    index("idx_blog_tag_trans_tag").on(table.tagId),
+    index("idx_blog_tag_trans_slug").on(table.slug),
+  ]
+);
+
+export type BlogCategory              = typeof blogCategories.$inferSelect;
+export type BlogTag                   = typeof blogTags.$inferSelect;
+export type BlogPost                  = typeof blogPosts.$inferSelect;
+export type NewBlogPost               = typeof blogPosts.$inferInsert;
+export type BlogPostTranslation       = typeof blogPostTranslations.$inferSelect;
+export type NewBlogPostTranslation    = typeof blogPostTranslations.$inferInsert;
+export type BlogCategoryTranslation   = typeof blogCategoryTranslations.$inferSelect;
+export type BlogTagTranslation        = typeof blogTagTranslations.$inferSelect;
 
 // ── Site Settings ─────────────────────────────────────────────────────────────
 

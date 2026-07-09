@@ -3,11 +3,12 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { db } from "@/lib/db";
-import { blogPosts, blogCategories } from "@/lib/db/schema";
+import { blogPosts } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { Clock, Tag, ArrowRight } from "lucide-react";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import { buildCategoryHreflangs } from "@/lib/blog-locales";
+import { resolveCategory } from "@/lib/blog-taxonomy";
 
 const BASE_URL = "https://www.nidahgroup.com.tr";
 const PAGE_SIZE = 12;
@@ -17,29 +18,20 @@ interface PageProps {
   searchParams: Promise<{ page?: string }>;
 }
 
-async function getCategory(slug: string) {
-  if (!db) return null;
-  const [cat] = await db
-    .select({ id: blogCategories.id, name: blogCategories.name, slug: blogCategories.slug, description: blogCategories.description })
-    .from(blogCategories)
-    .where(eq(blogCategories.slug, slug));
-  return cat ?? null;
-}
-
 export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const { page } = await searchParams;
   const pageNum = Math.max(1, Number(page) || 1);
-  const cat = await getCategory(slug);
-  if (!cat) return { title: "Blog | NİDAH GROUP" };
+  const resolved = await resolveCategory("tr", slug);
+  if (!resolved) return { title: "Blog | NİDAH GROUP" };
   return {
-    title: `${cat.name} | Blog | NİDAH GROUP`,
-    description: cat.description ?? `NİDAH GROUP blog — ${cat.name} kategorisindeki yazılar.`,
+    title: `${resolved.localeName} | Blog | NİDAH GROUP`,
+    description: resolved.localeDescription ?? `NİDAH GROUP blog — ${resolved.localeName} kategorisindeki yazılar.`,
     alternates: {
       canonical: pageNum > 1
         ? `${BASE_URL}/blog/kategori/${slug}?page=${pageNum}`
         : `${BASE_URL}/blog/kategori/${slug}`,
-      languages: buildCategoryHreflangs(slug),
+      languages: buildCategoryHreflangs(resolved.allSlugs),
     },
   };
 }
@@ -51,8 +43,8 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
   const { page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
 
-  const cat = await getCategory(slug);
-  if (!cat) notFound();
+  const resolved = await resolveCategory("tr", slug);
+  if (!resolved) notFound();
   if (!db) notFound();
 
   const rows = await db
@@ -66,7 +58,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
       readingTimeMinutes: blogPosts.readingTimeMinutes,
     })
     .from(blogPosts)
-    .where(and(eq(blogPosts.status, "published"), eq(blogPosts.categoryId, cat.id)))
+    .where(and(eq(blogPosts.status, "published"), eq(blogPosts.categoryId, resolved.id)))
     .orderBy(desc(blogPosts.publishedAt))
     .limit(PAGE_SIZE + 1)
     .offset((page - 1) * PAGE_SIZE);
@@ -87,15 +79,15 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
             <Tag className="size-3.5 text-nidah-yellow" />
             <span>Kategori</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">{cat.name}</h1>
-          {cat.description && (
-            <p className="text-lg text-white/70 max-w-xl mx-auto">{cat.description}</p>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">{resolved.localeName}</h1>
+          {resolved.localeDescription && (
+            <p className="text-lg text-white/70 max-w-xl mx-auto">{resolved.localeDescription}</p>
           )}
         </div>
       </section>
 
       <PageBreadcrumb
-        items={[{ label: "Blog", href: "/blog" }, { label: cat.name }]}
+        items={[{ label: "Blog", href: "/blog" }, { label: resolved.localeName }]}
       />
 
       {/* Posts */}

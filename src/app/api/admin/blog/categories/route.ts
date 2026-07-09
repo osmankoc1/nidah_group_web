@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { blogCategories, blogPosts } from "@/lib/db/schema";
+import { blogCategories, blogCategoryTranslations, blogPosts } from "@/lib/db/schema";
 import { eq, asc, sql } from "drizzle-orm";
+import { slugifyTaxonomy } from "@/lib/blog-taxonomy";
 
 export async function GET() {
   if (!db) return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+
   const rows = await db
     .select({
       id:          blogCategories.id,
@@ -24,7 +26,25 @@ export async function GET() {
       blogCategories.createdAt,
     )
     .orderBy(asc(blogCategories.name));
-  return NextResponse.json({ data: rows });
+
+  const allTrans = await db
+    .select({
+      categoryId:  blogCategoryTranslations.categoryId,
+      locale:      blogCategoryTranslations.locale,
+      name:        blogCategoryTranslations.name,
+      slug:        blogCategoryTranslations.slug,
+      description: blogCategoryTranslations.description,
+    })
+    .from(blogCategoryTranslations);
+
+  const data = rows.map(cat => ({
+    ...cat,
+    translations: allTrans
+      .filter(t => t.categoryId === cat.id)
+      .map(({ categoryId: _, ...rest }) => rest),
+  }));
+
+  return NextResponse.json({ data });
 }
 
 export async function POST(req: NextRequest) {
@@ -36,9 +56,8 @@ export async function POST(req: NextRequest) {
   }
 
   const name = body.name.trim();
-  const slug = body.slug?.trim() || slugifyCategory(name);
+  const slug = body.slug?.trim() || slugifyTaxonomy(name);
 
-  // Explicit duplicate check — return existing so callers can auto-select
   const [existing] = await db
     .select()
     .from(blogCategories)
@@ -59,14 +78,5 @@ export async function POST(req: NextRequest) {
 
   if (!cat) return NextResponse.json({ error: "Kategori oluşturulamadı" }, { status: 500 });
 
-  return NextResponse.json({ data: cat }, { status: 201 });
-}
-
-function slugifyCategory(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/ğ/g, "g").replace(/ü/g, "u").replace(/ş/g, "s")
-    .replace(/ı/g, "i").replace(/ö/g, "o").replace(/ç/g, "c")
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim().replace(/\s+/g, "-").replace(/-+/g, "-");
+  return NextResponse.json({ data: { ...cat, translations: [] } }, { status: 201 });
 }

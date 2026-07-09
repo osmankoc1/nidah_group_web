@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { blogTags, blogPostTags } from "@/lib/db/schema";
+import { blogTags, blogTagTranslations, blogPostTags } from "@/lib/db/schema";
 import { eq, asc, sql } from "drizzle-orm";
+import { slugifyTaxonomy } from "@/lib/blog-taxonomy";
 
 export async function GET() {
   if (!db) return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+
   const rows = await db
     .select({
       id:        blogTags.id,
@@ -17,7 +19,24 @@ export async function GET() {
     .leftJoin(blogPostTags, eq(blogPostTags.tagId, blogTags.id))
     .groupBy(blogTags.id, blogTags.name, blogTags.slug, blogTags.createdAt)
     .orderBy(asc(blogTags.name));
-  return NextResponse.json({ data: rows });
+
+  const allTrans = await db
+    .select({
+      tagId:  blogTagTranslations.tagId,
+      locale: blogTagTranslations.locale,
+      name:   blogTagTranslations.name,
+      slug:   blogTagTranslations.slug,
+    })
+    .from(blogTagTranslations);
+
+  const data = rows.map(tag => ({
+    ...tag,
+    translations: allTrans
+      .filter(t => t.tagId === tag.id)
+      .map(({ tagId: _, ...rest }) => rest),
+  }));
+
+  return NextResponse.json({ data });
 }
 
 export async function POST(req: NextRequest) {
@@ -29,9 +48,8 @@ export async function POST(req: NextRequest) {
   }
 
   const name = body.name.trim();
-  const slug = body.slug?.trim() || slugifyTag(name);
+  const slug = body.slug?.trim() || slugifyTaxonomy(name);
 
-  // Explicit duplicate check — return existing so callers can auto-select
   const [existing] = await db
     .select()
     .from(blogTags)
@@ -52,14 +70,5 @@ export async function POST(req: NextRequest) {
 
   if (!tag) return NextResponse.json({ error: "Etiket oluşturulamadı" }, { status: 500 });
 
-  return NextResponse.json({ data: tag }, { status: 201 });
-}
-
-function slugifyTag(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/ğ/g, "g").replace(/ü/g, "u").replace(/ş/g, "s")
-    .replace(/ı/g, "i").replace(/ö/g, "o").replace(/ç/g, "c")
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim().replace(/\s+/g, "-").replace(/-+/g, "-");
+  return NextResponse.json({ data: { ...tag, translations: [] } }, { status: 201 });
 }

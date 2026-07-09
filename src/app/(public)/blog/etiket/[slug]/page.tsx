@@ -3,11 +3,12 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { db } from "@/lib/db";
-import { blogPosts, blogCategories, blogPostTags, blogTags } from "@/lib/db/schema";
+import { blogPosts, blogCategories, blogPostTags } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { Clock, Hash, ArrowRight } from "lucide-react";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import { buildTagHreflangs } from "@/lib/blog-locales";
+import { resolveTag } from "@/lib/blog-taxonomy";
 
 const BASE_URL = "https://www.nidahgroup.com.tr";
 const PAGE_SIZE = 12;
@@ -17,29 +18,20 @@ interface PageProps {
   searchParams: Promise<{ page?: string }>;
 }
 
-async function getTag(slug: string) {
-  if (!db) return null;
-  const [tag] = await db
-    .select({ id: blogTags.id, name: blogTags.name, slug: blogTags.slug })
-    .from(blogTags)
-    .where(eq(blogTags.slug, slug));
-  return tag ?? null;
-}
-
 export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const { page } = await searchParams;
   const pageNum = Math.max(1, Number(page) || 1);
-  const tag = await getTag(slug);
-  if (!tag) return { title: "Blog | NİDAH GROUP" };
+  const resolved = await resolveTag("tr", slug);
+  if (!resolved) return { title: "Blog | NİDAH GROUP" };
   return {
-    title: `#${tag.name} | Blog | NİDAH GROUP`,
-    description: `NİDAH GROUP blog — "${tag.name}" etiketli tüm yazılar.`,
+    title: `#${resolved.localeName} | Blog | NİDAH GROUP`,
+    description: `NİDAH GROUP blog — "${resolved.localeName}" etiketli tüm yazılar.`,
     alternates: {
       canonical: pageNum > 1
         ? `${BASE_URL}/blog/etiket/${slug}?page=${pageNum}`
         : `${BASE_URL}/blog/etiket/${slug}`,
-      languages: buildTagHreflangs(slug),
+      languages: buildTagHreflangs(resolved.allSlugs),
     },
   };
 }
@@ -51,8 +43,8 @@ export default async function TagPage({ params, searchParams }: PageProps) {
   const { page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
 
-  const tag = await getTag(slug);
-  if (!tag) notFound();
+  const resolved = await resolveTag("tr", slug);
+  if (!resolved) notFound();
   if (!db) notFound();
 
   const rows = await db
@@ -69,7 +61,7 @@ export default async function TagPage({ params, searchParams }: PageProps) {
     .from(blogPostTags)
     .innerJoin(blogPosts, eq(blogPostTags.postId, blogPosts.id))
     .leftJoin(blogCategories, eq(blogPosts.categoryId, blogCategories.id))
-    .where(and(eq(blogPostTags.tagId, tag.id), eq(blogPosts.status, "published")))
+    .where(and(eq(blogPostTags.tagId, resolved.id), eq(blogPosts.status, "published")))
     .orderBy(desc(blogPosts.publishedAt))
     .limit(PAGE_SIZE + 1)
     .offset((page - 1) * PAGE_SIZE);
@@ -90,12 +82,12 @@ export default async function TagPage({ params, searchParams }: PageProps) {
             <Hash className="size-3.5 text-nidah-yellow" />
             <span>Etiket</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">#{tag.name}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">#{resolved.localeName}</h1>
         </div>
       </section>
 
       <PageBreadcrumb
-        items={[{ label: "Blog", href: "/blog" }, { label: `#${tag.name}` }]}
+        items={[{ label: "Blog", href: "/blog" }, { label: `#${resolved.localeName}` }]}
       />
 
       {/* Posts */}

@@ -161,26 +161,34 @@ export function buildPostHreflangs(slugsByLocale: Partial<Record<Locale, string>
   return result;
 }
 
-/** Build hreflang alternates for category hub pages (all 4 locales) */
-export function buildCategoryHreflangs(slug: string): Record<string, string> {
-  return {
-    tr: `${SITE_BASE}/blog/kategori/${slug}`,
-    en: `${SITE_BASE}/blog/en/category/${slug}`,
-    ru: `${SITE_BASE}/blog/ru/category/${slug}`,
-    ar: `${SITE_BASE}/blog/ar/category/${slug}`,
-    "x-default": `${SITE_BASE}/blog/kategori/${slug}`,
-  };
+/** Build hreflang alternates for category hub pages.
+ *  Accepts per-locale slugs — only locales with a slug are included.
+ *  Falls back to x-default = TR slug. */
+export function buildCategoryHreflangs(
+  slugsByLocale: Partial<Record<Locale, string>>,
+): Record<string, string> {
+  const result: Record<string, string> = {};
+  if (slugsByLocale.tr) result.tr = `${SITE_BASE}/blog/kategori/${slugsByLocale.tr}`;
+  if (slugsByLocale.en) result.en = `${SITE_BASE}/blog/en/category/${slugsByLocale.en}`;
+  if (slugsByLocale.ru) result.ru = `${SITE_BASE}/blog/ru/category/${slugsByLocale.ru}`;
+  if (slugsByLocale.ar) result.ar = `${SITE_BASE}/blog/ar/category/${slugsByLocale.ar}`;
+  // x-default = TR if available, else first available
+  result["x-default"] = result.tr ?? Object.values(result)[0] ?? "";
+  return result;
 }
 
-/** Build hreflang alternates for tag hub pages (all 4 locales) */
-export function buildTagHreflangs(slug: string): Record<string, string> {
-  return {
-    tr: `${SITE_BASE}/blog/etiket/${slug}`,
-    en: `${SITE_BASE}/blog/en/tag/${slug}`,
-    ru: `${SITE_BASE}/blog/ru/tag/${slug}`,
-    ar: `${SITE_BASE}/blog/ar/tag/${slug}`,
-    "x-default": `${SITE_BASE}/blog/etiket/${slug}`,
-  };
+/** Build hreflang alternates for tag hub pages.
+ *  Accepts per-locale slugs — only locales with a slug are included. */
+export function buildTagHreflangs(
+  slugsByLocale: Partial<Record<Locale, string>>,
+): Record<string, string> {
+  const result: Record<string, string> = {};
+  if (slugsByLocale.tr) result.tr = `${SITE_BASE}/blog/etiket/${slugsByLocale.tr}`;
+  if (slugsByLocale.en) result.en = `${SITE_BASE}/blog/en/tag/${slugsByLocale.en}`;
+  if (slugsByLocale.ru) result.ru = `${SITE_BASE}/blog/ru/tag/${slugsByLocale.ru}`;
+  if (slugsByLocale.ar) result.ar = `${SITE_BASE}/blog/ar/tag/${slugsByLocale.ar}`;
+  result["x-default"] = result.tr ?? Object.values(result)[0] ?? "";
+  return result;
 }
 
 /** Build hreflang alternates for blog list pages */

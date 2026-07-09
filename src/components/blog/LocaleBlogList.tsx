@@ -2,8 +2,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { db } from "@/lib/db";
-import { blogPosts, blogCategories, blogPostTranslations } from "@/lib/db/schema";
-import { desc, eq, and } from "drizzle-orm";
+import { blogPosts, blogCategories, blogCategoryTranslations, blogPostTranslations } from "@/lib/db/schema";
+import { desc, eq, and, sql } from "drizzle-orm";
 import { Clock, Tag, ArrowRight, Folder } from "lucide-react";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import {
@@ -32,7 +32,8 @@ export async function LocaleBlogList({ locale, page = 1 }: Props) {
           excerpt:            blogPostTranslations.excerpt,
           coverImageUrl:      blogPosts.coverImageUrl,
           publishedAt:        blogPosts.publishedAt,
-          categoryName:       blogCategories.name,
+          // Show locale category name on post cards; fall back to TR name
+          categoryName:       sql<string | null>`COALESCE(${blogCategoryTranslations.name}, ${blogCategories.name})`,
           readingTimeMinutes: blogPosts.readingTimeMinutes,
         })
         .from(blogPosts)
@@ -44,6 +45,13 @@ export async function LocaleBlogList({ locale, page = 1 }: Props) {
           ),
         )
         .leftJoin(blogCategories, eq(blogPosts.categoryId, blogCategories.id))
+        .leftJoin(
+          blogCategoryTranslations,
+          and(
+            eq(blogCategoryTranslations.categoryId, blogPosts.categoryId),
+            eq(blogCategoryTranslations.locale, locale),
+          ),
+        )
         .where(eq(blogPosts.status, "published"))
         .orderBy(desc(blogPosts.publishedAt))
         .limit(PAGE_SIZE + 1)
@@ -53,9 +61,16 @@ export async function LocaleBlogList({ locale, page = 1 }: Props) {
   const hasMore = rows.length > PAGE_SIZE;
   const posts   = rows.slice(0, PAGE_SIZE);
 
-  const categories = db
+  // Category chips — include locale-specific name/slug with TR fallback
+  const rawCategories = db
     ? await db
-        .selectDistinct({ id: blogCategories.id, name: blogCategories.name, slug: blogCategories.slug })
+        .select({
+          id:          blogCategories.id,
+          name:        blogCategories.name,
+          slug:        blogCategories.slug,
+          localeName:  blogCategoryTranslations.name,
+          localeSlug:  blogCategoryTranslations.slug,
+        })
         .from(blogCategories)
         .innerJoin(blogPosts, eq(blogPosts.categoryId, blogCategories.id))
         .innerJoin(
@@ -65,9 +80,24 @@ export async function LocaleBlogList({ locale, page = 1 }: Props) {
             eq(blogPostTranslations.locale, locale),
           ),
         )
+        .leftJoin(
+          blogCategoryTranslations,
+          and(
+            eq(blogCategoryTranslations.categoryId, blogCategories.id),
+            eq(blogCategoryTranslations.locale, locale),
+          ),
+        )
         .where(eq(blogPosts.status, "published"))
         .orderBy(blogCategories.name)
     : [];
+
+  // Deduplicate by category id (selectDistinct with nullable columns can produce dupes)
+  const seen = new Set<string>();
+  const categories = rawCategories.filter(c => {
+    if (seen.has(c.id)) return false;
+    seen.add(c.id);
+    return true;
+  });
 
   // Language nav pills for the hero
   const otherLocales = LOCALES.filter(l => l !== locale);
@@ -124,11 +154,11 @@ export async function LocaleBlogList({ locale, page = 1 }: Props) {
               <div className="flex flex-wrap gap-2">
                 {categories.map(cat => (
                   <Link
-                    key={cat.slug}
-                    href={localeCategoryHref(locale, cat.slug)}
+                    key={cat.id}
+                    href={localeCategoryHref(locale, cat.localeSlug ?? cat.slug)}
                     className="inline-flex items-center text-xs font-medium bg-nidah-light border border-gray-200 text-nidah-dark px-3 py-1.5 rounded-full hover:bg-nidah-yellow/10 hover:border-nidah-yellow/40 transition-colors"
                   >
-                    {cat.name}
+                    {cat.localeName ?? cat.name}
                   </Link>
                 ))}
               </div>

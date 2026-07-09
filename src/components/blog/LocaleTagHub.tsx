@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { db } from "@/lib/db";
-import { blogPosts, blogPostTags, blogTags, blogPostTranslations } from "@/lib/db/schema";
+import { blogPosts, blogPostTags, blogPostTranslations } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { Clock, Hash, ArrowRight } from "lucide-react";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
@@ -13,6 +13,7 @@ import {
   blogListHref,
   blogPostHref,
 } from "@/lib/blog-locales";
+import { resolveTag, type ResolvedTag } from "@/lib/blog-taxonomy";
 
 const PAGE_SIZE = 12;
 
@@ -34,20 +35,18 @@ interface Props {
   page?: number;
 }
 
-export async function getLocaleTagData(locale: TranslationLocale, tagSlug: string) {
-  if (!db) return null;
-  const [tag] = await db
-    .select({ id: blogTags.id, name: blogTags.name, slug: blogTags.slug })
-    .from(blogTags)
-    .where(eq(blogTags.slug, tagSlug));
-  return tag ?? null;
+export async function getLocaleTagData(
+  locale: TranslationLocale,
+  tagSlug: string,
+): Promise<ResolvedTag | null> {
+  return resolveTag(locale, tagSlug);
 }
 
 export async function LocaleTagHub({ locale, tagSlug, page = 1 }: Props) {
   if (!db) notFound();
 
-  const tag = await getLocaleTagData(locale, tagSlug);
-  if (!tag) notFound();
+  const resolved = await resolveTag(locale, tagSlug);
+  if (!resolved) notFound();
 
   const cfg = LOCALE_CONFIG[locale];
   const s   = STRINGS[locale];
@@ -70,12 +69,14 @@ export async function LocaleTagHub({ locale, tagSlug, page = 1 }: Props) {
         eq(blogPostTranslations.locale, locale),
       ),
     )
-    .innerJoin(blogPostTags, eq(blogPostTags.postId, blogPosts.id))
-    .innerJoin(blogTags, eq(blogPostTags.tagId, blogTags.id))
-    .where(and(
-      eq(blogPosts.status, "published"),
-      eq(blogTags.slug, tagSlug),
-    ))
+    .innerJoin(
+      blogPostTags,
+      and(
+        eq(blogPostTags.postId, blogPosts.id),
+        eq(blogPostTags.tagId, resolved.id),
+      ),
+    )
+    .where(eq(blogPosts.status, "published"))
     .orderBy(desc(blogPosts.publishedAt))
     .limit(PAGE_SIZE + 1)
     .offset((page - 1) * PAGE_SIZE);
@@ -96,12 +97,12 @@ export async function LocaleTagHub({ locale, tagSlug, page = 1 }: Props) {
             <Hash className="size-3.5 text-nidah-yellow" />
             <span>{s.tagLabel}</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">#{tag.name}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">#{resolved.localeName}</h1>
         </div>
       </section>
 
       <PageBreadcrumb
-        items={[{ label: `Blog (${cfg.label})`, href: blogListHref(locale) }, { label: `#${tag.name}` }]}
+        items={[{ label: `Blog (${cfg.label})`, href: blogListHref(locale) }, { label: `#${resolved.localeName}` }]}
       />
 
       {/* Posts */}
