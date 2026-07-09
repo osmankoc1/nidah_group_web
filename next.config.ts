@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
   compress: true,
   images: {
     formats: ["image/avif", "image/webp"],
+    // Sayfalarda kullanılan quality değerleri (hero: 85, ecu/global: 80, varsayılan: 75)
+    qualities: [75, 80, 85],
     // Allow Cloudinary-delivered images
     remotePatterns: [{ protocol: "https", hostname: "res.cloudinary.com" }],
   },
