@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CheckCircle2, ArrowRight, Wrench, AlertTriangle, Settings2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
+import CatalogCtaButton from "@/components/shared/CatalogCtaButton";
 
 export const metadata: Metadata = {
   title: "Hidrolik Pompa Revizyonu | İş Makinası Hidrolik Servis | NİDAH GROUP",
@@ -115,9 +116,7 @@ export default function HidrolikPompaRevizyonuPage() {
               <Button asChild size="lg" className="bg-nidah-yellow text-nidah-dark hover:bg-nidah-yellow-dark font-bold">
                 <Link href="/teklif-al">Servis Talebi Al</Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 hover:border-white/50 bg-transparent">
-                <Link href="/parca-katalog">Parça Kataloğu</Link>
-              </Button>
+              <CatalogCtaButton className="border-white/30 text-white hover:bg-white/10 hover:border-white/50 bg-transparent" />
             </div>
           </div>
         </section>
@@ -278,9 +277,7 @@ export default function HidrolikPompaRevizyonuPage() {
                   <Button asChild size="lg" variant="outline" className="w-full border-gray-200 text-nidah-steel">
                     <Link href="/hizmetler">Tüm Hizmetler</Link>
                   </Button>
-                  <Button asChild size="lg" variant="outline" className="w-full border-gray-200 text-nidah-steel">
-                    <Link href="/parca-katalog">Parça Kataloğu</Link>
-                  </Button>
+                  <CatalogCtaButton className="w-full border-gray-200 text-nidah-steel" />
                 </div>
               </div>
             </div>

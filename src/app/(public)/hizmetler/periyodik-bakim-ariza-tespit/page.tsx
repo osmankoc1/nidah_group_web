@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CheckCircle2, ArrowRight, Wrench, Search, ClipboardList, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
+import CatalogCtaButton from "@/components/shared/CatalogCtaButton";
 
 export const metadata: Metadata = {
   title: "Periyodik Bakım & Arıza Tespit | İş Makinası Servisi | NİDAH GROUP",
@@ -95,9 +96,10 @@ export default function PeriyodikBakimArizaTespitPage() {
               <Button asChild size="lg" className="bg-nidah-yellow text-nidah-dark hover:bg-nidah-yellow-dark font-bold">
                 <Link href="/teklif-al">Bakım Talebi Al</Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 bg-transparent">
-                <Link href="/parca-katalog">Filtre & Yağ Parçaları</Link>
-              </Button>
+              <CatalogCtaButton
+                className="border-white/30 text-white hover:bg-white/10 bg-transparent"
+                label="Filtre & Yağ Parçaları"
+              />
             </div>
           </div>
         </section>

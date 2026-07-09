@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Cog, Droplets, Search, Package, ArrowRight } from "lucide-react";
+import { getCatalogAccess } from "@/lib/catalog-access";
 
 const CORE_SERVICES = [
   {
@@ -24,11 +25,13 @@ const CORE_SERVICES = [
     icon: Package,
     title: "Yedek Parça Tedariği",
     desc: "VOLVO, KOMATSU, CAT ve daha fazlası. Orijinal, OEM ve muadil — Türkiye ve dünya genelinde teslimat.",
-    href: "/parca-katalog",
+    // href admin katalog toggle'ına göre render sırasında belirlenir
+    href: null,
   },
 ] as const;
 
-export default function ServicesOverview() {
+export default async function ServicesOverview() {
+  const catalog = await getCatalogAccess();
   return (
     <section className="py-24 bg-white">
       <div className="max-w-6xl mx-auto px-6">
@@ -56,7 +59,7 @@ export default function ServicesOverview() {
             return (
               <Link
                 key={s.title}
-                href={s.href}
+                href={s.href ?? catalog.hubHref}
                 className="group flex flex-col rounded-2xl border border-gray-100 bg-white p-6 hover:shadow-lg hover:border-nidah-yellow/30 hover:-translate-y-0.5 transition-all duration-300"
               >
                 <div className="w-12 h-12 rounded-xl bg-nidah-yellow/10 flex items-center justify-center mb-5 group-hover:bg-nidah-yellow/20 transition-colors">

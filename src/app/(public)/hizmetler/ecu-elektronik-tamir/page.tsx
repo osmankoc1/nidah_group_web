@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CheckCircle2, ArrowRight, Cpu, AlertTriangle, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
+import CatalogCtaButton from "@/components/shared/CatalogCtaButton";
 
 export const metadata: Metadata = {
   title: "ECU Tamiri & Elektronik Sistem Servisi | İş Makinası | NİDAH GROUP",
@@ -242,9 +243,7 @@ export default function EcuElektronikTamirPage() {
                   <Button asChild className="bg-nidah-yellow text-nidah-dark hover:bg-nidah-yellow-dark font-bold">
                     <Link href="/teklif-al">Servis Talebi Al <ArrowRight className="size-4 ml-2" /></Link>
                   </Button>
-                  <Button asChild variant="outline" className="border-white/20 text-white hover:bg-white/10">
-                    <Link href="/parca-katalog">Parça Kataloğu</Link>
-                  </Button>
+                  <CatalogCtaButton size="default" className="border-white/20 text-white hover:bg-white/10" />
                 </div>
               </div>
             </div>

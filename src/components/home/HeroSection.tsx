@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CONTACTS, WHATSAPP_URL } from "@/lib/constants";
+import { getCatalogAccess } from "@/lib/catalog-access";
 import { Globe, Zap, ShieldCheck, Package } from "lucide-react";
 
 const STATS = [
@@ -104,11 +105,14 @@ function MachinerySkyline() {
   );
 }
 
-export default function HeroSection() {
+export default async function HeroSection() {
   const whatsappLink = WHATSAPP_URL(
     CONTACTS.mustafa.phoneRaw,
     "Merhaba, iş makinası yedek parça konusunda bilgi almak istiyorum."
   );
+  // Admin katalog toggle'ı: açıkken kataloğa, kapalıyken WhatsApp parça
+  // sorgusuna yönlenir (birincil CTA zaten /teklif-al).
+  const catalog = await getCatalogAccess();
 
   return (
     <section className="relative min-h-screen flex items-center justify-center gradient-hero overflow-hidden">
@@ -199,7 +203,20 @@ export default function HeroSection() {
             variant="outline"
             className="border-white/25 text-white hover:bg-white/10 hover:text-white hover:border-white/45 px-10 h-14 text-base rounded-xl bg-transparent transition-all"
           >
-            <Link href="/parca-katalog">Parça Kataloğu</Link>
+            {catalog.enabled ? (
+              <Link href={catalog.hubHref}>Parça Kataloğu</Link>
+            ) : (
+              <a
+                href={WHATSAPP_URL(
+                  CONTACTS.mustafa.phoneRaw,
+                  "Merhaba, yedek parça sorgulamak istiyorum."
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                WhatsApp ile Parça Sorgula
+              </a>
+            )}
           </Button>
         </div>
 

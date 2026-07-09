@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
+import CatalogCtaButton from "@/components/shared/CatalogCtaButton";
 
 export const metadata: Metadata = {
   title: "Hizmetlerimiz | NİDAH GROUP",
@@ -89,9 +90,7 @@ export default async function HizmetlerPage() {
             <Button asChild size="lg" className="bg-nidah-yellow text-nidah-dark hover:bg-nidah-yellow-dark font-bold">
               <Link href="/teklif-al">Teklif Al</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 hover:border-white/50 bg-transparent">
-              <Link href="/parca-katalog">Parça Kataloğu</Link>
-            </Button>
+            <CatalogCtaButton className="border-white/30 text-white hover:bg-white/10 hover:border-white/50 bg-transparent" />
           </div>
         </div>
       </section>
@@ -177,9 +176,11 @@ export default async function HizmetlerPage() {
                 <Button asChild className="bg-nidah-yellow text-nidah-dark hover:bg-nidah-yellow-dark font-bold">
                   <Link href="/teklif-al">Parça Teklifi Al</Link>
                 </Button>
-                <Button asChild variant="outline" className="border-gray-200 text-nidah-steel hover:border-nidah-yellow/40">
-                  <Link href="/parca-katalog">Kataloğu İncele <ArrowRight className="size-4 ml-1" /></Link>
-                </Button>
+                <CatalogCtaButton
+                  size="default"
+                  className="border-gray-200 text-nidah-steel hover:border-nidah-yellow/40"
+                  label={<>Kataloğu İncele <ArrowRight className="size-4 ml-1" /></>}
+                />
               </div>
             </div>
 

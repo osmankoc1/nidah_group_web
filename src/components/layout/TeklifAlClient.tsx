@@ -476,7 +476,12 @@ function ServiceForm() {
 // ── Main page ──────────────────────────────────────────────────────────────────
 
 function TeklifContent() {
-  const [requestType, setRequestType] = useState<RequestType>(null);
+  const searchParams = useSearchParams();
+  // Katalog CTA'larından ön-dolu gelinmişse (?partNumber= / ?brand=) tip seçim
+  // ekranını atla, doğrudan parça formunu aç — parametreler PartsForm'da okunur.
+  const [requestType, setRequestType] = useState<RequestType>(() =>
+    searchParams.get("partNumber") || searchParams.get("brand") ? "parts" : null
+  );
 
   return (
     <>

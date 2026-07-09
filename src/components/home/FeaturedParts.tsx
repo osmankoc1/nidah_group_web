@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { products } from "@/data/products";
+import { getCatalogAccess, partLink } from "@/lib/catalog-access";
 import { Package, ArrowRight, ChevronRight } from "lucide-react";
 
 const CONDITION_STYLE: Record<string, { cls: string; label: string }> = {
@@ -10,8 +11,11 @@ const CONDITION_STYLE: Record<string, { cls: string; label: string }> = {
   Yenilenmiş:  { cls: "bg-violet-50 text-violet-700 border-violet-200",   label: "Yenilenmiş" },
 };
 
-export default function FeaturedParts() {
+export default async function FeaturedParts() {
   const featured = products.slice(0, 4);
+  // Admin katalog toggle'ı: açıkken kartlar katalogda ön-dolu aramaya,
+  // kapalıyken ön-dolu Teklif Al formuna gider — hiçbir durumda 404 üretmez.
+  const catalog = await getCatalogAccess();
 
   return (
     <section className="py-24 bg-white">
@@ -29,10 +33,10 @@ export default function FeaturedParts() {
             </h2>
           </div>
           <Link
-            href="/parca-katalog"
+            href={catalog.hubHref}
             className="text-sm font-semibold text-nidah-steel hover:text-nidah-yellow-dark transition-colors inline-flex items-center gap-1 shrink-0"
           >
-            Tümünü Gör <ChevronRight className="size-4" />
+            {catalog.enabled ? "Tümünü Gör" : "Teklif Al"} <ChevronRight className="size-4" />
           </Link>
         </div>
 
@@ -43,7 +47,7 @@ export default function FeaturedParts() {
             return (
               <Link
                 key={product.slug}
-                href={`/parca-katalog/${product.slug}`}
+                href={partLink(catalog, product.partNumber, product.brand)}
                 className="group flex flex-col bg-white rounded-2xl border border-gray-100 hover:border-nidah-yellow/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
               >
                 {/* Image / placeholder */}
@@ -99,8 +103,8 @@ export default function FeaturedParts() {
             size="lg"
             className="bg-nidah-dark hover:bg-nidah-navy text-white px-10 h-12 text-base rounded-xl transition-all hover:-translate-y-0.5 shadow-md hover:shadow-lg"
           >
-            <Link href="/parca-katalog">
-              Tüm Kataloğu İncele
+            <Link href={catalog.hubHref}>
+              {catalog.enabled ? "Tüm Kataloğu İncele" : "Parça Talebi Oluştur"}
               <ArrowRight className="ml-2 size-4" />
             </Link>
           </Button>

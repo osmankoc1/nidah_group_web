@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CheckCircle2, ArrowRight, Wrench, AlertTriangle, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
+import CatalogCtaButton from "@/components/shared/CatalogCtaButton";
 
 export const metadata: Metadata = {
   title: "Şanzıman Revizyonu | Powershift & Hidrolik Şanzıman Servisi | NİDAH GROUP",
@@ -123,9 +124,7 @@ export default function SanzimanRevizyonuPage() {
               <Button asChild size="lg" className="bg-nidah-yellow text-nidah-dark hover:bg-nidah-yellow-dark font-bold">
                 <Link href="/teklif-al">Servis Talebi Al</Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 bg-transparent">
-                <Link href="/parca-katalog">Parça Kataloğu</Link>
-              </Button>
+              <CatalogCtaButton className="border-white/30 text-white hover:bg-white/10 bg-transparent" />
             </div>
           </div>
         </section>

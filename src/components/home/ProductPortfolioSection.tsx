@@ -1,5 +1,6 @@
 import { Droplets, Settings2, Thermometer, Lightbulb, Filter, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { getCatalogAccess } from "@/lib/catalog-access";
 
 const GROUPS = [
   {
@@ -34,7 +35,8 @@ const GROUPS = [
   },
 ] as const;
 
-export default function ProductPortfolioSection() {
+export default async function ProductPortfolioSection() {
+  const catalog = await getCatalogAccess();
   return (
     <section className="py-24 bg-nidah-light">
       <div className="max-w-6xl mx-auto px-6">
@@ -66,10 +68,11 @@ export default function ProductPortfolioSection() {
 
         <div className="text-center">
           <Link
-            href="/parca-katalog"
+            href={catalog.hubHref}
             className="inline-flex items-center gap-2 text-sm font-bold text-nidah-steel hover:text-nidah-yellow-dark transition-colors"
           >
-            Tüm Parça Kataloğunu İncele <ArrowRight className="size-4" />
+            {catalog.enabled ? "Tüm Parça Kataloğunu İncele" : "Parça Talebi Oluştur"}{" "}
+            <ArrowRight className="size-4" />
           </Link>
         </div>
       </div>
