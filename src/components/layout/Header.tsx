@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu } from "lucide-react";
+import { Menu, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -13,6 +13,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import type { NavItem } from "@/lib/site-settings";
+import { CONTACTS } from "@/lib/constants";
 
 interface HeaderProps {
   navItems: NavItem[];
@@ -55,6 +56,17 @@ export default function Header({ navItems, teklifAlEnabled }: HeaderProps) {
               {item.label}
             </Link>
           ))}
+
+          {/* Telefon — geniş masaüstünde görünür (B2B'de standart güven sinyali) */}
+          <a
+            href={`tel:${CONTACTS.mustafa.phoneRaw}`}
+            className="hidden xl:flex items-center gap-2 ml-3 pl-4 border-l border-gray-200 text-sm font-semibold text-nidah-dark hover:text-nidah-yellow-dark transition-colors whitespace-nowrap"
+          >
+            <span className="flex size-7 items-center justify-center rounded-full bg-nidah-yellow/10">
+              <Phone className="size-3.5 text-nidah-yellow-dark" />
+            </span>
+            {CONTACTS.mustafa.phone}
+          </a>
 
           {teklifAlEnabled && (
             <div className="ml-4">
