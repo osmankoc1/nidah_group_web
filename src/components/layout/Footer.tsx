@@ -79,11 +79,11 @@ export default function Footer({ navItems, teklifAlEnabled, hizmetlerEnabled }: 
             </div>
             <div className="flex flex-wrap gap-1.5">
               {EXPORT_COUNTRIES.map((c) => (
-                <span key={c} className="text-xs text-gray-500 border border-white/5 rounded-full px-2.5 py-0.5">
+                <span key={c} className="text-xs text-gray-400 border border-white/10 rounded-full px-2.5 py-0.5">
                   {c}
                 </span>
               ))}
-              <span className="text-xs text-gray-600 self-center">ve daha fazlası…</span>
+              <span className="text-xs text-gray-400 self-center">ve daha fazlası…</span>
             </div>
           </div>
         </div>
@@ -199,7 +199,7 @@ export default function Footer({ navItems, teklifAlEnabled, hizmetlerEnabled }: 
 
             {/* Mustafa */}
             <div className="space-y-2">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-gray-500">
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
                 {CONTACTS.mustafa.role}
               </p>
               <div className="flex items-center gap-2 text-sm text-gray-400">
@@ -226,7 +226,7 @@ export default function Footer({ navItems, teklifAlEnabled, hizmetlerEnabled }: 
 
             {/* Osman */}
             <div className="space-y-2">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-gray-500">
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
                 {CONTACTS.osman.role}
               </p>
               <div className="flex items-center gap-2 text-sm text-gray-400">
@@ -256,12 +256,12 @@ export default function Footer({ navItems, teklifAlEnabled, hizmetlerEnabled }: 
       <div className="relative z-20 border-t border-white/5 bg-[#111827]">
         <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
-            <p className="text-xs text-gray-600">
+            <p className="text-xs text-gray-400">
               &copy; {currentYear} {SITE_CONFIG.legalName} — Tüm hakları saklıdır.
             </p>
             <Link
               href="/kvkk"
-              className="text-xs text-gray-600 hover:text-gray-400 transition-colors underline underline-offset-2"
+              className="text-xs text-gray-400 hover:text-white transition-colors underline underline-offset-2"
             >
               KVKK & Gizlilik
             </Link>
@@ -273,7 +273,7 @@ export default function Footer({ navItems, teklifAlEnabled, hizmetlerEnabled }: 
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
-                  className="text-gray-600 hover:text-gray-400 transition-colors"
+                  className="text-gray-400 hover:text-white transition-colors"
                 >
                   {s.icon}
                 </a>

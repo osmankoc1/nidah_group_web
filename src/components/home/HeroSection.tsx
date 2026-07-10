@@ -221,7 +221,7 @@ export default async function HeroSection() {
         </div>
 
         {/* WhatsApp */}
-        <p className="text-sm text-white/45 mb-16">
+        <p className="text-sm text-white/70 mb-16">
           veya{" "}
           <a
             href={whatsappLink}
@@ -242,7 +242,7 @@ export default async function HeroSection() {
             >
               <Icon className="size-5 text-nidah-yellow mb-0.5" />
               <span className="text-2xl font-black text-white leading-none tracking-tight">{value}</span>
-              <span className="text-xs text-white/45 tracking-wide">{label}</span>
+              <span className="text-xs text-white/70 tracking-wide">{label}</span>
             </div>
           ))}
         </div>

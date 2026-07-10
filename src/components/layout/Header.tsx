@@ -39,7 +39,7 @@ export default function Header({ navItems, teklifAlEnabled }: HeaderProps) {
             <span className="text-xl font-black tracking-tight text-nidah-dark sm:text-2xl block leading-none">
               NİDAH GROUP
             </span>
-            <span className="text-[9px] text-nidah-gray tracking-widest uppercase leading-none hidden sm:block mt-0.5">
+            <span className="text-[10px] text-nidah-gray tracking-widest uppercase leading-none hidden sm:block mt-0.5">
               Global Parts &amp; Service
             </span>
           </div>
@@ -101,7 +101,7 @@ export default function Header({ navItems, teklifAlEnabled }: HeaderProps) {
                     </div>
                     <div>
                       <span className="text-base font-black text-nidah-dark block leading-none">NİDAH GROUP</span>
-                      <span className="text-[9px] text-nidah-gray tracking-widest uppercase">Global Parts &amp; Service</span>
+                      <span className="text-[10px] text-nidah-gray tracking-widest uppercase">Global Parts &amp; Service</span>
                     </div>
                   </div>
                 </SheetTitle>
