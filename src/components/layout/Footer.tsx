@@ -57,7 +57,7 @@ export default function Footer({ navItems, teklifAlEnabled, hizmetlerEnabled }: 
       {/* ── Decorative silhouette strip — bottom band only ── */}
       <div className="absolute bottom-0 left-0 w-full h-[420px] z-0 pointer-events-none select-none overflow-hidden">
         <Image
-          src="/images/home/footer-bg.png"
+          src="/images/home/footer-bg.webp"
           alt=""
           fill
           loading="lazy"

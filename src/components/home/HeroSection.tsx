@@ -119,7 +119,7 @@ export default async function HeroSection() {
 
       {/* ── Background image ── */}
       <Image
-        src="/images/home/hero-bg.png"
+        src="/images/home/hero-bg.webp"
         alt=""
         fill
         priority

@@ -48,7 +48,7 @@ export default function GlobalReachSection() {
 
       {/* ── Background image ── */}
       <Image
-        src="/images/home/global-bg.png"
+        src="/images/home/global-bg.webp"
         alt=""
         fill
         loading="lazy"

@@ -15,7 +15,7 @@ export default function ElectronicsSection() {
     <section className="py-24 bg-[#0A0F1E] relative overflow-hidden">
       {/* ── Background image ── */}
       <Image
-        src="/images/home/ecu-bg.png"
+        src="/images/home/ecu-bg.webp"
         alt=""
         fill
         loading="lazy"
