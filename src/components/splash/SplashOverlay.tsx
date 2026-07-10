@@ -4,9 +4,11 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import MachineryMarquee from "./MachineryMarquee";
 
 // ── Timing constants ──────────────────────────────────────────────────────────
-const PROGRESS_MS = { site: 1800, admin: 1300 } as const;
+// Kısa tutulur: splash ilk izlenim içindir, kullanıcıyı bekletmek için değil.
+// (1800ms → 900ms: LCP ve dönüşüm maliyetini yarıya indirir)
+const PROGRESS_MS = { site: 900, admin: 650 } as const;
 const FADE_MS     = 380;   // must match CSS splash-out duration
-const MAX_GUARD   = 4500;  // failsafe: force-close if rAF stalls
+const MAX_GUARD   = 2500;  // failsafe: force-close if rAF stalls
 
 // ── Session keys ──────────────────────────────────────────────────────────────
 function sessionKey(variant: "site" | "admin") {
