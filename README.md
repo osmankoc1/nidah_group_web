@@ -108,6 +108,6 @@ VOLVO · CHAMPION · KOMATSU · CAT · HİDROMEK · HAMM · BOMAG · AMMANN
 
 ## İletişim
 
-- **Mustafa KOÇ** — Satış Müdürü — +90 530 884 59 79
-- **Osman Koç** — Genel Müdür — +90 555 182 86 29
+- **Osman Koç** — Satış Müdürü — +90 530 884 59 79
+- **Mustafa KOÇ** — Genel Müdür — +90 555 182 86 29
 - **Ankara, Türkiye**
