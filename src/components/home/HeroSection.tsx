@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CONTACTS, WHATSAPP_URL } from "@/lib/constants";
 import { getCatalogAccess } from "@/lib/catalog-access";
-import { Globe, Zap, ShieldCheck, Package } from "lucide-react";
+import { Globe, Zap, ShieldCheck, Package, Search } from "lucide-react";
 
 const STATS = [
   { icon: Globe,       value: "13+",  label: "Ülke"              },
@@ -219,6 +219,36 @@ export default async function HeroSection() {
             )}
           </Button>
         </div>
+
+        {/* Parça numarası arama — admin katalog toggle'ına duyarlı:
+            açıkken katalogda arar, kapalıyken ön-dolu teklif formuna gider.
+            (teklif-al da kapalıysa kutu gizlenir) */}
+        {catalog.hubHref !== "/iletisim" && (
+          <form
+            action={catalog.enabled ? "/parca-katalog" : "/teklif-al"}
+            method="GET"
+            className="max-w-xl mx-auto mb-10"
+            role="search"
+            aria-label="Parça numarası ile arama"
+          >
+            <div className="flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-sm rounded-2xl p-2 focus-within:border-nidah-yellow/60 transition-colors">
+              <Search className="size-5 text-white/50 ml-3 shrink-0" aria-hidden="true" />
+              <input
+                type="text"
+                name={catalog.enabled ? "search" : "partNumber"}
+                required
+                placeholder="Parça numarası girin — örn: VOE 15172797"
+                className="flex-1 min-w-0 bg-transparent text-white placeholder:text-white/50 text-sm sm:text-base outline-none py-2"
+              />
+              <button
+                type="submit"
+                className="shrink-0 bg-nidah-yellow hover:bg-nidah-yellow-dark text-nidah-dark font-bold text-sm px-4 sm:px-6 py-2.5 rounded-xl transition-colors"
+              >
+                {catalog.enabled ? "Parçayı Ara" : "Teklif Al"}
+              </button>
+            </div>
+          </form>
+        )}
 
         {/* WhatsApp */}
         <p className="text-sm text-white/70 mb-16">
