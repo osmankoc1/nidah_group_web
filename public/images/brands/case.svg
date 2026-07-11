@@ -1,13 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg xmlns="http://www.w3.org/2000/svg" height="212.06" width="626.35" version="1.0">
- <defs>
-  <clipPath id="b">
-   <path d="m220.28 691.34h82.2v26.59h-82.2v-26.59z"/>
-  </clipPath>
-  <clipPath id="a">
-   <path d="m220.46 691.23h82.2v26.6h-82.2v-26.6z"/>
-  </clipPath>
- </defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 590 168" role="img" aria-label="Case Construction">
+ <!-- CASE Construction — kalın wordmark + otantik CONSTRUCTION şeridi -->
+ <text x="295" y="88" text-anchor="middle" font-family="Arial Black, Arial, Helvetica, sans-serif"
+       font-weight="900" font-size="92" letter-spacing="14"
+       textLength="500" lengthAdjust="spacingAndGlyphs" fill="#231f20">CASE</text>
+ <g transform="translate(-1 -40)">
  <g transform="translate(111.75 -346.33)">
   <path d="m-57.027 489.17h525.18l-15.96 62.09h-555.11" fill="#fba928"/>
   <path d="m40.016 504.43c-4.934-2.06-8.699-2.96-12.413-2.96-11.502 0-19.834 8.03-19.834 19.04 0 7.57 5.942 18 19.518 18 5.67 0 9.545-1.32 13.097-3.18v-5.67c-4.081 2.66-8.538 4.08-12.619 4.08-8.7 0-14.635-5.61-14.635-13.69 0-7.96 6.148-13.82 14.421-13.82 4.192 0 8.009 1.16 12.465 3.75" fill="#231f20"/>
@@ -21,5 +17,6 @@
   <path d="m337.66 501.92h-30.21v4.67h12.51v31.44h5.19v-31.44h12.51" fill="#231f20"/>
   <path d="m346.78 538.03v-36.11" stroke="#231f20" stroke-miterlimit="10" stroke-width="5.1846" fill="none"/>
   <path d="m363.79 519.99c0-7.94 6-13.76 14.07-13.76 8.1 0 14.1 5.82 14.1 13.76 0 7.89-6 13.75-14.1 13.75-8.07 0-14.07-5.86-14.07-13.75zm-5.34 0c0 9.78 7.48 18.52 19.3 18.52 12.25 0 19.57-8.78 19.57-18.52 0-10.07-7.53-18.52-19.46-18.52-11.73 0-19.41 8.51-19.41 18.52" fill-rule="evenodd" fill="#231f20"/>
+ </g>
  </g>
 </svg>
