@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { JsonLd } from "@/lib/json-ld";
 import { ChevronRight, Home } from "lucide-react";
 
 const BASE_URL = "https://www.nidahgroup.com.tr";
@@ -8,7 +9,21 @@ export interface BreadcrumbItem {
   href?: string;
 }
 
-export function PageBreadcrumb({ items }: { items: BreadcrumbItem[] }) {
+/**
+ * Sitedeki TEK BreadcrumbList structured data üreticisi.
+ * Sayfalar ayrıca kendi BreadcrumbList şemasını tanımlamamalıdır — aksi hâlde
+ * aynı sayfada iki BreadcrumbList düğümü oluşur.
+ *
+ * `currentUrl`: son (linksiz) öğe için yalnızca ŞEMADA kullanılacak URL.
+ * Görsel breadcrumb'da son öğe her zaman düz metindir; bu prop onu link yapmaz.
+ */
+export function PageBreadcrumb({
+  items,
+  currentUrl,
+}: {
+  items: BreadcrumbItem[];
+  currentUrl?: string;
+}) {
   const allItems = [
     { label: "Ana Sayfa", href: "/" },
     ...items,
@@ -17,20 +32,21 @@ export function PageBreadcrumb({ items }: { items: BreadcrumbItem[] }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    itemListElement: allItems.map((item, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      name: item.label,
-      ...(item.href ? { item: `${BASE_URL}${item.href}` } : {}),
-    })),
+    itemListElement: allItems.map((item, i) => {
+      const isLast = i === allItems.length - 1;
+      const url = item.href ?? (isLast ? currentUrl : undefined);
+      return {
+        "@type": "ListItem",
+        position: i + 1,
+        name: item.label,
+        ...(url ? { item: `${BASE_URL}${url}` } : {}),
+      };
+    }),
   };
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
       <nav aria-label="Breadcrumb" className="bg-white border-b border-gray-100">
         <div className="container mx-auto px-4 py-2.5">
           <ol className="flex items-center gap-1 text-xs text-gray-500 flex-wrap">

@@ -16,9 +16,9 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const { page } = await searchParams;
   const pageNum = Math.max(1, Number(page) || 1);
   const resolved = await getLocaleCategoryData("ru", slug);
-  if (!resolved) return { title: "Блог | NİDAH GROUP" };
+  if (!resolved) return { title: "Блог" };
   return {
-    title: `${resolved.localeName} | Блог | NİDAH GROUP`,
+    title: `${resolved.localeName} | Блог`,
     description: resolved.localeDescription ?? `NİDAH GROUP — статьи в категории "${resolved.localeName}".`,
     alternates: {
       canonical: pageNum > 1

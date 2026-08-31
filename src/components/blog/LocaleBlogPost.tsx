@@ -1,5 +1,6 @@
 // Shared server component — renders a blog post for EN / RU / AR
 import { notFound } from "next/navigation";
+import { JsonLd } from "@/lib/json-ld";
 import Link from "next/link";
 import Image from "next/image";
 import { db } from "@/lib/db";
@@ -144,15 +145,9 @@ export async function LocaleBlogPost({ locale, slug }: Props) {
 
   return (
     <main dir={cfg.dir} lang={cfg.lang}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
-      />
+      <JsonLd data={articleJsonLd} />
       {faqJsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-        />
+        <JsonLd data={faqJsonLd} />
       )}
 
       {/* Hero */}

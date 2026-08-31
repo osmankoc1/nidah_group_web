@@ -4,6 +4,8 @@ import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import CookieConsentBanner from "@/components/shared/CookieConsentBanner";
+import { JsonLd } from "@/lib/json-ld";
+import { OG_IMAGE } from "@/lib/constants";
 import "./globals.css";
 
 // latin-ext: Türkçe karakterler (İ, ş, ğ, ü…) fallback fonta düşmesin
@@ -22,7 +24,13 @@ export const metadata: Metadata = {
   verification: {
     google: "_WRmlhOjW5o6UDhjFOcqh4c7rY8MoOBsF9fa64nbixc",
   },
-  title: "NİDAH GROUP | İş Makinası Servisi & Yedek Parça",
+  title: {
+    // Kendi title'ı olmayan sayfalar bunu alır (template UYGULANMAZ).
+    default: "NİDAH GROUP | İş Makinası Servisi & Yedek Parça",
+    // Alt sayfalar markasız title verir; son ek buradan otomatik eklenir.
+    // Markayı başta/ortada taşıyan sayfalar title.absolute ile devre dışı bırakır.
+    template: "%s | NİDAH GROUP",
+  },
   description:
     "NİDAH GROUP — İş makinası yedek parça tedariği, hidrolik şanzıman ve pompa revizyonu, ECU onarımı. Türkiye merkezli, 3 kıtada 13+ ülkeye DHL ile ihracat. Volvo, Komatsu, CAT, Hidromek, BOMAG, HAMM ve daha fazlası.",
   keywords: [
@@ -49,14 +57,7 @@ export const metadata: Metadata = {
     title: "NİDAH GROUP | İş Makinası Servisi & Yedek Parça",
     description:
       "İş makinası yedek parça tedariği, teknik revizyon ve ECU onarımı. Türkiye merkezli, 3 kıtada 13+ ülkeye ihracat.",
-    images: [
-      {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
-        alt: "NİDAH GROUP | İş Makinası Servisi & Yedek Parça",
-      },
-    ],
+    images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
@@ -171,11 +172,7 @@ export default function RootLayout({
       <head>
         {/* JSON-LD structured data */}
         {jsonLd.map((schema, i) => (
-          <script
-            key={i}
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-          />
+          <JsonLd key={i} data={schema} />
         ))}
         {/* Blocking splash script: runs before body paints */}
         <script dangerouslySetInnerHTML={{ __html: splashBlockScript }} />

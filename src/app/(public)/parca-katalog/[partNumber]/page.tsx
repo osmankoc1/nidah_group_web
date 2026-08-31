@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/lib/json-ld";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
@@ -39,7 +40,7 @@ export async function generateMetadata({
   const product = await getProductByPartNumber(decodedPN);
 
   if (!product) {
-    return { ...DISABLED_PAGE_METADATA, title: "Ürün Bulunamadı | NİDAH GROUP" };
+    return { ...DISABLED_PAGE_METADATA, title: "Ürün Bulunamadı" };
   }
 
   const brands = [...new Set(product.fitments.map((f) => f.manufacturerName))];
@@ -52,7 +53,7 @@ export async function generateMetadata({
     : "/opengraph-image";
 
   return {
-    title: `${product.partNumber} — ${product.name} | NİDAH GROUP`,
+    title: `${product.partNumber} — ${product.name}`,
     description,
     alternates: { canonical },
     openGraph: {
@@ -191,25 +192,14 @@ export default async function ProductDetailPage({
     },
   };
 
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: "https://www.nidahgroup.com.tr" },
-      { "@type": "ListItem", position: 2, name: "Parça Kataloğu", item: "https://www.nidahgroup.com.tr/parca-katalog" },
-      { "@type": "ListItem", position: 3, name: product.name, item: `https://www.nidahgroup.com.tr/parca-katalog/${product.partNumber}` },
-    ],
-  };
-
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <JsonLd data={productJsonLd} />
       <main>
         <PageBreadcrumb items={[
           { label: "Parça Kataloğu", href: "/parca-katalog" },
           { label: product.name },
-        ]} />
+        ]} currentUrl={`/parca-katalog/${product.partNumber}`} />
 
         {/* Main */}
         <section className="bg-white py-10 md:py-16">

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isPageEnabled, metadataForPage } from "@/lib/site-settings";
+import { JsonLd } from "@/lib/json-ld";
+import { ORGANIZATION_REF } from "@/lib/constants";
 import Link from "next/link";
 import {
   Globe2,
@@ -22,7 +24,7 @@ import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 
 export function generateMetadata(): Promise<Metadata> {
   return metadataForPage("page_hakkimizda", {
-    title: "Hakkımızda | NİDAH GROUP",
+    title: "Hakkımızda",
     description:
       "NİDAH GROUP — 20+ yıllık deneyimle iş makinası yedek parça tedariği, teknik servis ve elektronik sistem onarımında global ölçekte faaliyet gösteren kurumsal çözüm ortağınız.",
     alternates: {
@@ -110,10 +112,29 @@ const VALUES = [
   },
 ] as const;
 
+// ── AboutPage ────────────────────────────────────────────────────────────────
+// Firma bilgisi TEKRAR EDİLMEZ: about/mainEntity, root layout'ta tanımlı
+// Organization düğümüne @id ile bağlanır. Böylece sayfada tek bir firma
+// varlığı bulunur, ikinci ve çelişkili bir Organization oluşmaz.
+const aboutPageJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "@id": "https://www.nidahgroup.com.tr/hakkimizda#webpage",
+  url: "https://www.nidahgroup.com.tr/hakkimizda",
+  name: "Hakkımızda | NİDAH GROUP",
+  description:
+    "NİDAH GROUP — 20+ yıllık deneyimle iş makinası yedek parça tedariği, teknik servis ve elektronik sistem onarımında global ölçekte faaliyet gösteren kurumsal çözüm ortağınız.",
+  inLanguage: "tr-TR",
+  about: ORGANIZATION_REF,
+  mainEntity: ORGANIZATION_REF,
+};
+
 export default async function HakkimizdaPage() {
   if (!await isPageEnabled("page_hakkimizda")) notFound();
   return (
-    <main>
+    <>
+      <JsonLd data={aboutPageJsonLd} />
+      <main>
 
       {/* ── Hero ── */}
       <section className="gradient-hero py-24 md:py-32 relative overflow-hidden">
@@ -351,6 +372,7 @@ export default async function HakkimizdaPage() {
         </div>
       </section>
 
-    </main>
+      </main>
+    </>
   );
 }

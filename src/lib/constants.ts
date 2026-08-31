@@ -34,6 +34,42 @@ export const WHATSAPP_URL = (phoneRaw: string, message?: string) => {
   return base;
 };
 
+// ── Sosyal paylaşım görselleri ───────────────────────────────────────────────
+// app/opengraph-image.tsx ve app/twitter-image.tsx tarafından üretilir.
+// metadataBase (root layout) ile mutlak URL'e çözülür.
+// TEK KAYNAK: root layout ve ana sayfa aynı sabiti kullanır — drift olmaz.
+
+export const OG_IMAGE = {
+  url: "/opengraph-image",
+  width: 1200,
+  height: 630,
+  alt: "NİDAH GROUP | İş Makinası Servisi & Yedek Parça",
+} as const;
+
+export const TWITTER_IMAGE = "/twitter-image";
+
+/** Marka son eki — root layout'taki title.template ile aynı olmalı. */
+export const TITLE_SUFFIX = " | NİDAH GROUP";
+
+// ── Structured data kimlikleri ───────────────────────────────────────────────
+// Organization düğümü root layout'ta BİR KEZ tanımlanır. Diğer tüm şemalar
+// (Service.provider, AboutPage.about, ContactPage.mainEntity …) firma bilgisini
+// tekrar etmek yerine bu @id'ye referans verir — böylece sayfada ikinci bir
+// bağımsız Organization oluşmaz ve veri drift'i imkânsız hâle gelir.
+
+export const ORGANIZATION_ID = "https://www.nidahgroup.com.tr/#organization";
+
+/** Şemalarda firma referansı olarak kullanılır: provider, about, mainEntity… */
+export const ORGANIZATION_REF = { "@id": ORGANIZATION_ID } as const;
+
+/** Servis sayfalarının hizmet alanı — ülke geneli + Ankara merkez sinyali.
+ *  LocalBusiness.areaServed ("Worldwide", parça ihracatı) ile çelişmez:
+ *  bu, fiziksel servis işinin coğrafyasıdır. */
+export const SERVICE_AREA_SERVED = [
+  { "@type": "Country", name: "Turkey" },
+  { "@type": "City", name: "Ankara" },
+] as const;
+
 export const BRANDS = [
   { name: "VOLVO", slug: "volvo" },
   { name: "CHAMPION", slug: "champion" },

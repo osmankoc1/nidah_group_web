@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/lib/json-ld";
 import { isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -62,13 +63,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!(await isPageEnabled("page_blog"))) return DISABLED_PAGE_METADATA;
   const { slug } = await params;
   const post = await getTrPost(slug);
-  if (!post) return { title: "Blog | NİDAH GROUP" };
+  if (!post) return { title: "Blog" };
 
   const title       = post.metaTitle || post.title;
   const description = post.metaDescription || post.excerpt || "";
 
   return {
-    title: `${title} | NİDAH GROUP`,
+    title: `${title}`,
     description,
     keywords: post.keywords ?? undefined,
     alternates: {
@@ -148,9 +149,9 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   return (
     <main>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
+      <JsonLd data={articleJsonLd} />
       {faqJsonLd && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+        <JsonLd data={faqJsonLd} />
       )}
 
       {/* Hero */}

@@ -4,7 +4,7 @@ import { metadataForPage } from "@/lib/site-settings";
 
 export function generateMetadata(): Promise<Metadata> {
   return metadataForPage("page_parca_katalog", {
-    title: "CHAMPION Yedek Parça | İş Makinası Parçaları | NİDAH GROUP",
+    title: "CHAMPION Yedek Parça | İş Makinası Parçaları",
     description:
       "CHAMPION motorlu greyder ve yol yapım ekipmanları için OEM ve muadil yedek parça. Hidrolik pompalar, şanzıman parçaları, motor parçaları ve daha fazlası. Stok ve sipariş üzeri tedarik.",
     alternates: {

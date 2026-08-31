@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { ORGANIZATION_REF, SERVICE_AREA_SERVED } from "@/lib/constants";
+import { JsonLd } from "@/lib/json-ld";
 import { metadataForPage } from "@/lib/site-settings";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Wrench, AlertTriangle, Settings2 } from "lucide-react";
@@ -8,7 +10,7 @@ import CatalogCtaButton from "@/components/shared/CatalogCtaButton";
 
 export function generateMetadata(): Promise<Metadata> {
   return metadataForPage("page_hizmetler", {
-    title: "Diferansiyel Revizyonu | Aks & Tahrik Sistemi Servisi | NİDAH GROUP",
+    title: "Diferansiyel Revizyonu | Aks & Tahrik Sistemi Servisi",
     description:
       "İş makinası ve ağır vasıta diferansiyel revizyonu. Greyder, damperli kamyon, yol silindiri için aks tamiri ve diferansiyel revizyon hizmeti. OEM parça kalitesi, titiz test.",
     alternates: {
@@ -34,21 +36,11 @@ const serviceJsonLd = {
   "@context": "https://schema.org",
   "@type": "Service",
   name: "Diferansiyel Revizyonu",
-  provider: { "@type": "Organization", name: "NİDAH GROUP", url: "https://www.nidahgroup.com.tr" },
+  provider: ORGANIZATION_REF,
   description: "Motorlu greyder, damperli kamyon, yol silindiri ve ekskavatörler için diferansiyel ve aks revizyonu.",
   serviceType: "Diferansiyel & Aks Servisi",
-  areaServed: { "@type": "Country", name: "Turkey" },
+  areaServed: SERVICE_AREA_SERVED,
   url: "https://www.nidahgroup.com.tr/hizmetler/diferansiyel-revizyonu",
-};
-
-const breadcrumbJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: "https://www.nidahgroup.com.tr" },
-    { "@type": "ListItem", position: 2, name: "Hizmetler", item: "https://www.nidahgroup.com.tr/hizmetler" },
-    { "@type": "ListItem", position: 3, name: "Diferansiyel Revizyonu", item: "https://www.nidahgroup.com.tr/hizmetler/diferansiyel-revizyonu" },
-  ],
 };
 
 const SYMPTOMS = [
@@ -84,8 +76,7 @@ const VEHICLES = [
 export default function DiferanstiyelRevizyonuPage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <JsonLd data={serviceJsonLd} />
       <main>
         {/* Hero */}
         <section className="gradient-hero py-20 md:py-24 relative overflow-hidden">
@@ -115,7 +106,7 @@ export default function DiferanstiyelRevizyonuPage() {
         <PageBreadcrumb items={[
           { label: "Hizmetler", href: "/hizmetler" },
           { label: "Diferansiyel Revizyonu" },
-        ]} />
+        ]} currentUrl="/hizmetler/diferansiyel-revizyonu" />
 
         {/* Why needed */}
         <section className="bg-white py-20 md:py-28">

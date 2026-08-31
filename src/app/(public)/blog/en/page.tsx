@@ -12,7 +12,7 @@ export async function generateMetadata(
   const { page } = await searchParams;
   const pageNum = Math.max(1, Number(page) || 1);
   return {
-    title: "Blog | NİDAH GROUP — Heavy Equipment Technical Guide",
+    title: { absolute: "Blog | NİDAH GROUP — Heavy Equipment Technical Guide" },
     description:
       "Technical guides for construction machinery maintenance, spare parts selection, and hydraulic systems. Expert content by NİDAH GROUP.",
     alternates: {

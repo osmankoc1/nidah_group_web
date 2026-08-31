@@ -6,7 +6,7 @@ import CatalogClient from "./CatalogClient";
 export async function generateMetadata(): Promise<Metadata> {
   if (!await isPageEnabled("page_catalog")) return DISABLED_PAGE_METADATA;
   return {
-    title: "Canlı Parça Kataloğu | NİDAH GROUP",
+    title: "Canlı Parça Kataloğu",
     description:
       "Parça numarası veya açıklama ile canlı katalog araması. Volvo, Champion ve daha fazlası için uygunluk, süpersesyon ve diyagram bilgisi.",
     alternates: {

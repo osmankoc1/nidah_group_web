@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { ORGANIZATION_REF } from "@/lib/constants";
+import { JsonLd } from "@/lib/json-ld";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PackageSearch, CheckCircle, Clock, ArrowRight } from "lucide-react";
@@ -124,23 +126,12 @@ export default async function BrandCatalogPage({
     name: `${brandDisplayName} Yedek Parça`,
     description: `${brandDisplayName} iş makinaları için OEM ve muadil yedek parça kataloğu.`,
     url: `https://www.nidahgroup.com.tr/parca-katalog/${brandSlug}`,
-    provider: { "@type": "Organization", name: "NİDAH GROUP" },
-  };
-
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: "https://www.nidahgroup.com.tr" },
-      { "@type": "ListItem", position: 2, name: "Parça Kataloğu", item: "https://www.nidahgroup.com.tr/parca-katalog" },
-      { "@type": "ListItem", position: 3, name: `${brandDisplayName} Yedek Parça`, item: `https://www.nidahgroup.com.tr/parca-katalog/${brandSlug}` },
-    ],
+    provider: ORGANIZATION_REF,
   };
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionPageJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <JsonLd data={collectionPageJsonLd} />
       <main>
         {/* Hero */}
         <section className="gradient-hero py-20 md:py-24 relative overflow-hidden">
@@ -179,7 +170,7 @@ export default async function BrandCatalogPage({
         <PageBreadcrumb items={[
           { label: "Parça Kataloğu", href: "/parca-katalog" },
           { label: `${brandDisplayName} Yedek Parça` },
-        ]} />
+        ]} currentUrl={`/parca-katalog/${brandSlug}`} />
 
         {/* Products grid */}
         <section className="bg-nidah-light py-10 min-h-[60vh]">

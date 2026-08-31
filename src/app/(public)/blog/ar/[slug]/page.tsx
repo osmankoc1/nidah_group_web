@@ -11,13 +11,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!(await isPageEnabled("page_blog"))) return DISABLED_PAGE_METADATA;
   const { slug } = await params;
   const post = await getLocaleBlogPostData("ar", slug);
-  if (!post) return { title: "المدونة | NİDAH GROUP" };
+  if (!post) return { title: "المدونة" };
 
   const title       = post.seoTitle || post.title;
   const description = post.seoDescription || post.excerpt || "";
 
   return {
-    title: `${title} | NİDAH GROUP`,
+    title: `${title}`,
     description,
     keywords: post.keywords ?? undefined,
     alternates: {

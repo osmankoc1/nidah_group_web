@@ -12,7 +12,7 @@ export async function generateMetadata(
   const { page } = await searchParams;
   const pageNum = Math.max(1, Number(page) || 1);
   return {
-    title: "المدونة | NİDAH GROUP — دليل المعدات الثقيلة",
+    title: { absolute: "المدونة | NİDAH GROUP — دليل المعدات الثقيلة" },
     description:
       "أدلة تقنية لصيانة معدات البناء واختيار قطع الغيار وأنظمة الهيدروليك. محتوى متخصص من NİDAH GROUP.",
     alternates: {

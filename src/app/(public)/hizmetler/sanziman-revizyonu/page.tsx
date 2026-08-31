@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { ORGANIZATION_REF, SERVICE_AREA_SERVED } from "@/lib/constants";
+import { JsonLd } from "@/lib/json-ld";
 import { metadataForPage } from "@/lib/site-settings";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Wrench, AlertTriangle, Settings2 } from "lucide-react";
@@ -8,7 +10,7 @@ import CatalogCtaButton from "@/components/shared/CatalogCtaButton";
 
 export function generateMetadata(): Promise<Metadata> {
   return metadataForPage("page_hizmetler", {
-    title: "Şanzıman Revizyonu | Powershift & Hidrolik Şanzıman Servisi | NİDAH GROUP",
+    title: "Şanzıman Revizyonu | Powershift & Hidrolik Şanzıman Servisi",
     description:
       "İş makinası şanzıman revizyonu: powershift, otomatik ve manuel şanzıman revizyonu. Ekskavatör, yükleyici, dozer için OEM kalitesinde şanzıman tamir ve bakım hizmeti.",
     alternates: {
@@ -34,21 +36,11 @@ const serviceJsonLd = {
   "@context": "https://schema.org",
   "@type": "Service",
   name: "Şanzıman Revizyonu",
-  provider: { "@type": "Organization", name: "NİDAH GROUP", url: "https://www.nidahgroup.com.tr" },
+  provider: ORGANIZATION_REF,
   description: "İş makinalarında powershift, otomatik, hidrolik-mekanik ve manuel şanzıman revizyonu. Debriyaj paketi değişimi, yatak ve keçe revizyonu, basınç ve yük testi.",
   serviceType: "Şanzıman Servisi",
-  areaServed: { "@type": "Country", name: "Turkey" },
+  areaServed: SERVICE_AREA_SERVED,
   url: "https://www.nidahgroup.com.tr/hizmetler/sanziman-revizyonu",
-};
-
-const breadcrumbJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: "https://www.nidahgroup.com.tr" },
-    { "@type": "ListItem", position: 2, name: "Hizmetler", item: "https://www.nidahgroup.com.tr/hizmetler" },
-    { "@type": "ListItem", position: 3, name: "Şanzıman Revizyonu", item: "https://www.nidahgroup.com.tr/hizmetler/sanziman-revizyonu" },
-  ],
 };
 
 const TRANSMISSION_TYPES = [
@@ -104,8 +96,7 @@ const MODELS = [
 export default function SanzimanRevizyonuPage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <JsonLd data={serviceJsonLd} />
       <main>
         {/* Hero */}
         <section className="gradient-hero py-20 md:py-24 relative overflow-hidden">
@@ -135,7 +126,7 @@ export default function SanzimanRevizyonuPage() {
         <PageBreadcrumb items={[
           { label: "Hizmetler", href: "/hizmetler" },
           { label: "Şanzıman Revizyonu" },
-        ]} />
+        ]} currentUrl="/hizmetler/sanziman-revizyonu" />
 
         {/* Transmission types */}
         <section className="bg-white py-20 md:py-28">

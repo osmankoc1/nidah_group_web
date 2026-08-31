@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { ORGANIZATION_REF, SERVICE_AREA_SERVED } from "@/lib/constants";
+import { JsonLd } from "@/lib/json-ld";
 import { metadataForPage } from "@/lib/site-settings";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Cpu, AlertTriangle, Zap } from "lucide-react";
@@ -8,7 +10,7 @@ import CatalogCtaButton from "@/components/shared/CatalogCtaButton";
 
 export function generateMetadata(): Promise<Metadata> {
   return metadataForPage("page_hizmetler", {
-    title: "ECU Tamiri & Elektronik Sistem Servisi | İş Makinası | NİDAH GROUP",
+    title: "ECU Tamiri & Elektronik Sistem Servisi | İş Makinası",
     description:
       "İş makinası ECU tamiri ve kontrol ünitesi revizyonu. Ekskavatör, kamyon, savunma araçları için elektronik sistem teşhis, onarım ve yeni ECU temini.",
     alternates: {
@@ -34,21 +36,11 @@ const serviceJsonLd = {
   "@context": "https://schema.org",
   "@type": "Service",
   name: "ECU & Elektronik Sistem Tamiri",
-  provider: { "@type": "Organization", name: "NİDAH GROUP", url: "https://www.nidahgroup.com.tr" },
+  provider: ORGANIZATION_REF,
   description: "İş makinası ECU tamiri, kontrol ünitesi revizyonu, elektronik sistem teşhisi ve yeni ECU temin hizmeti.",
   serviceType: "Elektronik Sistem Servisi",
-  areaServed: { "@type": "Country", name: "Turkey" },
+  areaServed: SERVICE_AREA_SERVED,
   url: "https://www.nidahgroup.com.tr/hizmetler/ecu-elektronik-tamir",
-};
-
-const breadcrumbJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: "https://www.nidahgroup.com.tr" },
-    { "@type": "ListItem", position: 2, name: "Hizmetler", item: "https://www.nidahgroup.com.tr/hizmetler" },
-    { "@type": "ListItem", position: 3, name: "ECU & Elektronik Tamir", item: "https://www.nidahgroup.com.tr/hizmetler/ecu-elektronik-tamir" },
-  ],
 };
 
 const FAILURE_CAUSES = [
@@ -93,8 +85,7 @@ const VEHICLE_TYPES = [
 export default function EcuElektronikTamirPage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <JsonLd data={serviceJsonLd} />
       <main>
         {/* Hero */}
         <section className="py-20 md:py-24 bg-[#0A0F1E] relative overflow-hidden">
@@ -127,7 +118,7 @@ export default function EcuElektronikTamirPage() {
         <PageBreadcrumb items={[
           { label: "Hizmetler", href: "/hizmetler" },
           { label: "ECU & Elektronik Tamir" },
-        ]} />
+        ]} currentUrl="/hizmetler/ecu-elektronik-tamir" />
 
         {/* Why ECU fails */}
         <section className="bg-white py-20 md:py-28">

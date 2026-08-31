@@ -20,7 +20,7 @@ export async function generateMetadata(
   const { page } = await searchParams;
   const pageNum = Math.max(1, Number(page) || 1);
   return {
-    title: "Blog | NİDAH GROUP — İş Makinası Teknik Rehber",
+    title: { absolute: "Blog | NİDAH GROUP — İş Makinası Teknik Rehber" },
     description:
       "İş makinası bakımı, yedek parça rehberleri, teknik servis ipuçları ve sektör haberleri. NİDAH GROUP uzman blog içerikleri.",
     alternates: {

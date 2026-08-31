@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { ORGANIZATION_REF, SERVICE_AREA_SERVED } from "@/lib/constants";
+import { JsonLd } from "@/lib/json-ld";
 import { metadataForPage } from "@/lib/site-settings";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Wrench, Search, ClipboardList, Truck } from "lucide-react";
@@ -8,7 +10,7 @@ import CatalogCtaButton from "@/components/shared/CatalogCtaButton";
 
 export function generateMetadata(): Promise<Metadata> {
   return metadataForPage("page_hizmetler", {
-    title: "Periyodik Bakım & Arıza Tespit | İş Makinası Servisi | NİDAH GROUP",
+    title: "Periyodik Bakım & Arıza Tespit | İş Makinası Servisi",
     description:
       "İş makinası periyodik bakım ve kapsamlı arıza tespit hizmeti. Dijital teşhis cihazları, yağ analizi, filtre değişimi ve önleyici bakım programı.",
     alternates: {
@@ -34,21 +36,11 @@ const serviceJsonLd = {
   "@context": "https://schema.org",
   "@type": "Service",
   name: "Periyodik Bakım & Arıza Tespit",
-  provider: { "@type": "Organization", name: "NİDAH GROUP", url: "https://www.nidahgroup.com.tr" },
+  provider: ORGANIZATION_REF,
   description: "İş makinası periyodik bakım, yağ-filtre değişimi, dijital teşhis ve önleyici bakım programı hizmetleri. Atölye ve saha hizmeti.",
   serviceType: "Periyodik Bakım & Arıza Tespit Servisi",
-  areaServed: { "@type": "Country", name: "Turkey" },
+  areaServed: SERVICE_AREA_SERVED,
   url: "https://www.nidahgroup.com.tr/hizmetler/periyodik-bakim-ariza-tespit",
-};
-
-const breadcrumbJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: "https://www.nidahgroup.com.tr" },
-    { "@type": "ListItem", position: 2, name: "Hizmetler", item: "https://www.nidahgroup.com.tr/hizmetler" },
-    { "@type": "ListItem", position: 3, name: "Periyodik Bakım & Arıza Tespit", item: "https://www.nidahgroup.com.tr/hizmetler/periyodik-bakim-ariza-tespit" },
-  ],
 };
 
 const MAINTENANCE_CHECKLIST = [
@@ -76,8 +68,7 @@ const INTERVALS = [
 export default function PeriyodikBakimArizaTespitPage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <JsonLd data={serviceJsonLd} />
       <main>
         {/* Hero */}
         <section className="gradient-hero py-20 md:py-24 relative overflow-hidden">
@@ -110,7 +101,7 @@ export default function PeriyodikBakimArizaTespitPage() {
         <PageBreadcrumb items={[
           { label: "Hizmetler", href: "/hizmetler" },
           { label: "Periyodik Bakım & Arıza Tespit" },
-        ]} />
+        ]} currentUrl="/hizmetler/periyodik-bakim-ariza-tespit" />
 
         {/* Maintenance checklist */}
         <section className="bg-white py-20 md:py-28">

@@ -5,7 +5,7 @@ import ParcaKatalogClient from "@/components/catalog/ParcaKatalogClient";
 
 export function generateMetadata(): Promise<Metadata> {
   return metadataForPage("page_parca_katalog", {
-    title: "Parça Kataloğu | İş Makinası Yedek Parça | NİDAH GROUP",
+    title: "Parça Kataloğu | İş Makinası Yedek Parça",
     description:
       "VOLVO, KOMATSU, CAT, HİDROMEK, HAMM, BOMAG yedek parça kataloğu. Parça numarasıyla arama, stok durumu ve anlık teklif. Türkiye merkezli, dünya geneline teslimat.",
     alternates: {

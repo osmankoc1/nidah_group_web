@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { ORGANIZATION_REF, SERVICE_AREA_SERVED } from "@/lib/constants";
+import { JsonLd } from "@/lib/json-ld";
 import { metadataForPage } from "@/lib/site-settings";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Wrench, AlertTriangle, Settings2, ShieldCheck } from "lucide-react";
@@ -8,7 +10,7 @@ import CatalogCtaButton from "@/components/shared/CatalogCtaButton";
 
 export function generateMetadata(): Promise<Metadata> {
   return metadataForPage("page_hizmetler", {
-    title: "Hidrolik Pompa Revizyonu | İş Makinası Hidrolik Servis | NİDAH GROUP",
+    title: "Hidrolik Pompa Revizyonu | İş Makinası Hidrolik Servis",
     description:
       "İş makinası hidrolik pompa revizyonu hizmeti. Ekskavatör, yükleyici, dozer, greyder için dişli, pistonlu ve paletli pompa revizyonu. OEM kalitesinde parça, titiz test.",
     alternates: {
@@ -34,21 +36,11 @@ const serviceJsonLd = {
   "@context": "https://schema.org",
   "@type": "Service",
   name: "Hidrolik Pompa Revizyonu",
-  provider: { "@type": "Organization", name: "NİDAH GROUP", url: "https://www.nidahgroup.com.tr" },
+  provider: ORGANIZATION_REF,
   description: "İş makinaları için dişli pompa, pistonlu pompa ve palet tipi pompa revizyonu. OEM kalitesinde parça ve kapsamlı test süreci.",
   serviceType: "Hidrolik Sistem Servisi",
-  areaServed: { "@type": "Country", name: "Turkey" },
+  areaServed: SERVICE_AREA_SERVED,
   url: "https://www.nidahgroup.com.tr/hizmetler/hidrolik-pompa-revizyonu",
-};
-
-const breadcrumbJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: "https://www.nidahgroup.com.tr" },
-    { "@type": "ListItem", position: 2, name: "Hizmetler", item: "https://www.nidahgroup.com.tr/hizmetler" },
-    { "@type": "ListItem", position: 3, name: "Hidrolik Pompa Revizyonu", item: "https://www.nidahgroup.com.tr/hizmetler/hidrolik-pompa-revizyonu" },
-  ],
 };
 
 const PUMP_TYPES = [
@@ -96,8 +88,7 @@ const BRANDS = ["VOLVO", "KOMATSU", "CAT", "HİDROMEK", "LIEBHERR", "DOOSAN", "H
 export default function HidrolikPompaRevizyonuPage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <JsonLd data={serviceJsonLd} />
       <main>
         {/* Hero */}
         <section className="gradient-hero py-20 md:py-24 relative overflow-hidden">
@@ -127,7 +118,7 @@ export default function HidrolikPompaRevizyonuPage() {
         <PageBreadcrumb items={[
           { label: "Hizmetler", href: "/hizmetler" },
           { label: "Hidrolik Pompa Revizyonu" },
-        ]} />
+        ]} currentUrl="/hizmetler/hidrolik-pompa-revizyonu" />
 
         {/* Pump types */}
         <section className="bg-white py-20 md:py-28">

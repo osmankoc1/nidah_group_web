@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/lib/json-ld";
 import { isPageEnabled } from "@/lib/site-settings";
+import { OG_IMAGE, TWITTER_IMAGE } from "@/lib/constants";
 import HeroSection               from "@/components/home/HeroSection";
 import BrandsSection              from "@/components/home/BrandsSection";
 import ServicesOverview           from "@/components/home/ServicesOverview";
@@ -12,24 +14,30 @@ import TestimonialsSection        from "@/components/home/TestimonialsSection";
 import CtaSection                 from "@/components/home/CtaSection";
 
 export const metadata: Metadata = {
-  title: "NİDAH GROUP | Global İş Makinası Yedek Parça & Teknik Servis",
+  title: { absolute: "NİDAH GROUP | Global İş Makinası Yedek Parça & Teknik Servis" },
   description:
     "İş makinası yedek parça tedariği, hidrolik şanzıman & pompa revizyonu, ECU onarımı. VOLVO, KOMATSU, CAT, HİDROMEK için OEM kalitesinde parça. 13+ ülkeye DHL ile ihracat.",
   alternates: {
     canonical: "https://www.nidahgroup.com.tr",
   },
+  // NOT: sayfa seviyesindeki openGraph, root layout'taki objenin TAMAMINI ezer.
+  // siteName / locale / images burada tekrar verilmezse sosyal paylaşımda kaybolur.
   openGraph: {
     title: "NİDAH GROUP | Global İş Makinası Yedek Parça & Teknik Servis",
     description:
       "İş makinası yedek parça tedariği, hidrolik şanzıman & pompa revizyonu, ECU onarımı. VOLVO, KOMATSU, CAT, HİDROMEK için OEM kalitesinde parça. 13+ ülkeye DHL ile ihracat.",
     url: "https://www.nidahgroup.com.tr",
     type: "website",
+    siteName: "NİDAH GROUP",
+    locale: "tr_TR",
+    images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: "NİDAH GROUP | Global İş Makinası Yedek Parça & Teknik Servis",
     description:
       "İş makinası yedek parça tedariği, hidrolik şanzıman & pompa revizyonu, ECU onarımı. VOLVO, KOMATSU, CAT, HİDROMEK için OEM kalitesinde parça. 13+ ülkeye DHL ile ihracat.",
+    images: [TWITTER_IMAGE],
   },
 };
 
@@ -58,10 +66,7 @@ export default async function HomePage() {
   const websiteJsonLd = buildWebsiteJsonLd(await isPageEnabled("page_parca_katalog"));
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
-      />
+      <JsonLd data={websiteJsonLd} />
       <main>
       {/* 1. Hero — güçlü giriş, global mesajlar */}
       <HeroSection />

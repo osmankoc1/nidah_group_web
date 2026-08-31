@@ -65,7 +65,7 @@ export async function getAllPageSettings(): Promise<
 // noindex sinyali üretilir, canonical/OG/Twitter miras alınmaz.
 
 export const DISABLED_PAGE_METADATA: Metadata = {
-  title: "Sayfa Bulunamadı | NİDAH GROUP",
+  title: "Sayfa Bulunamadı",
   robots: { index: false, follow: false },
   // null → root layout'tan miras alınan değerleri açıkça kaldırır.
   alternates: { canonical: null },

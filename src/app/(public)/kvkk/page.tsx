@@ -3,7 +3,7 @@ import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import { CONTACTS, SITE_CONFIG } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "KVKK Aydınlatma Metni & Gizlilik Politikası | NİDAH GROUP",
+  title: "KVKK Aydınlatma Metni & Gizlilik Politikası",
   description:
     "NİDAH GROUP kişisel verilerin işlenmesine ilişkin KVKK kapsamındaki aydınlatma metni ve çerez politikası.",
   alternates: { canonical: "https://www.nidahgroup.com.tr/kvkk" },

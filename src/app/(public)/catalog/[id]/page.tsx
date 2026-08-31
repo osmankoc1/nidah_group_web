@@ -36,16 +36,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { id } = await params;
   try {
     const part = await getPart(decodeURIComponent(id));
-    if (!part) return { ...DISABLED_PAGE_METADATA, title: "Parça Bulunamadı | NİDAH GROUP" };
+    if (!part) return { ...DISABLED_PAGE_METADATA, title: "Parça Bulunamadı" };
     const desc = part.description
       ? `${part.part_number} — ${part.description}`
       : `${part.part_number} parça numaralı ürün detayları.`;
     return {
-      title: `${part.part_number} | NİDAH GROUP Parça Kataloğu`,
+      title: { absolute: `${part.part_number} | NİDAH GROUP Parça Kataloğu` },
       description: desc,
     };
   } catch {
-    return { title: "Parça Kataloğu | NİDAH GROUP" };
+    return { title: "Parça Kataloğu" };
   }
 }
 

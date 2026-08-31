@@ -26,7 +26,7 @@ import CatalogCtaButton from "@/components/shared/CatalogCtaButton";
 
 export function generateMetadata(): Promise<Metadata> {
   return metadataForPage("page_hizmetler", {
-    title: "Hizmetlerimiz | NİDAH GROUP",
+    title: "Hizmetlerimiz",
     description:
       "Yedek parça tedariği, diferansiyel ve şanzıman revizyonu, hidrolik sistem servisi, ECU onarımı ve elektronik sistem desteği — NİDAH GROUP kapsamlı teknik hizmetleri.",
     alternates: {

@@ -7,7 +7,7 @@ import { CONTACTS, WHATSAPP_URL } from "@/lib/constants";
 
 export function generateMetadata(): Promise<Metadata> {
   return metadataForPage("page_teklif_al", {
-    title: "Teklif Talebiniz Alındı | NİDAH GROUP",
+    title: "Teklif Talebiniz Alındı",
     robots: { index: false },
   });
 }

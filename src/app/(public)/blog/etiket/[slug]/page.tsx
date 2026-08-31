@@ -25,9 +25,9 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const { page } = await searchParams;
   const pageNum = Math.max(1, Number(page) || 1);
   const resolved = await resolveTag("tr", slug);
-  if (!resolved) return { title: "Blog | NİDAH GROUP" };
+  if (!resolved) return { title: "Blog" };
   return {
-    title: `#${resolved.localeName} | Blog | NİDAH GROUP`,
+    title: `#${resolved.localeName} | Blog`,
     description: `NİDAH GROUP blog — "${resolved.localeName}" etiketli tüm yazılar.`,
     alternates: {
       canonical: pageNum > 1

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/lib/json-ld";
 import { notFound } from "next/navigation";
 import { isPageEnabled, metadataForPage } from "@/lib/site-settings";
 import Link from "next/link";
@@ -16,7 +17,7 @@ import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 
 export function generateMetadata(): Promise<Metadata> {
   return metadataForPage("page_sss", {
-    title: "Sıkça Sorulan Sorular | NİDAH GROUP",
+    title: "Sıkça Sorulan Sorular",
     description:
       "Yedek parça tedariği, teknik revizyon, ECU onarımı, ihracat koşulları ve teklif süreci hakkında sıkça sorulan sorular.",
     alternates: {
@@ -58,10 +59,7 @@ export default async function SSSPage() {
 
   return (
     <main>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
+      <JsonLd data={faqJsonLd} />
 
       {/* Hero */}
       <section className="gradient-hero py-20 md:py-24 relative overflow-hidden">

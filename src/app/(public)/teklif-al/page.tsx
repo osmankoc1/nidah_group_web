@@ -5,7 +5,7 @@ import TeklifAlClient from "@/components/layout/TeklifAlClient";
 
 export function generateMetadata(): Promise<Metadata> {
   return metadataForPage("page_teklif_al", {
-    title: "Teklif Al | İş Makinası Yedek Parça & Servis | NİDAH GROUP",
+    title: "Teklif Al | İş Makinası Yedek Parça & Servis",
     description:
       "İş makinası yedek parça veya teknik servis için ücretsiz teklif alın. VOLVO, KOMATSU, CAT ve daha fazlası için hızlı parça talebi. Türkiye merkezli, dünya geneline.",
     alternates: {
