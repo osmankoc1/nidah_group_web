@@ -6,7 +6,7 @@ import {
   blogTagTranslations,
 } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
-import type { Locale } from "@/lib/blog-locales";
+import { isUsableSlug, type Locale } from "@/lib/blog-locales";
 
 // Shared slugify for categories and tags (TR-aware).
 // Centralizes the function duplicated across 7 API routes.
@@ -127,7 +127,9 @@ export async function resolveCategory(
   // Build allSlugs map
   const allSlugs: Partial<Record<Locale, string>> = { tr: cat.slug };
   for (const t of translations) {
-    allSlugs[t.locale as Locale] = t.slug;
+    // Kullanılamaz slug'lar (Kiril/Arapça adlardan üretilen boş string vb.)
+    // haritaya girmez — aksi hâlde bozuk hreflang URL'i üretilir.
+    if (isUsableSlug(t.slug)) allSlugs[t.locale as Locale] = t.slug;
   }
 
   return {
@@ -208,7 +210,9 @@ export async function resolveTag(
 
   const allSlugs: Partial<Record<Locale, string>> = { tr: tag.slug };
   for (const t of translations) {
-    allSlugs[t.locale as Locale] = t.slug;
+    // Kullanılamaz slug'lar (Kiril/Arapça adlardan üretilen boş string vb.)
+    // haritaya girmez — aksi hâlde bozuk hreflang URL'i üretilir.
+    if (isUsableSlug(t.slug)) allSlugs[t.locale as Locale] = t.slug;
   }
 
   return {

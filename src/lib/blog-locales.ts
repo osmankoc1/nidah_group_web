@@ -145,17 +145,32 @@ export function localeTagHref(locale: Locale, slug: string): string {
 
 const SITE_BASE = "https://www.nidahgroup.com.tr";
 
+/**
+ * Bir slug'ın URL'de kullanılabilir olup olmadığını söyler.
+ *
+ * `slugifyTaxonomy` Latin olmayan alfabeleri tamamen soyar
+ * (Kiril "Гидравлика" → "", Arapça "الهيدروليك" → ""), ve DB'deki
+ * slug sütunu NOT NULL olsa da boş string'e izin verir. Bu değerler
+ * `/blog/ru/category/` gibi bozuk URL'ler üretir.
+ *
+ * Kullanılabilir sayılması için en az bir harf/rakam gerekir; böylece
+ * "", "   ", "-", "---" ve null/undefined elenir.
+ */
+export function isUsableSlug(slug: string | null | undefined): slug is string {
+  return typeof slug === "string" && /[a-z0-9]/i.test(slug);
+}
+
 /** Build hreflang alternates for a blog post given slugs per locale */
 export function buildPostHreflangs(slugsByLocale: Partial<Record<Locale, string>>) {
   const result: Record<string, string> = {};
   for (const [locale, slug] of Object.entries(slugsByLocale) as [Locale, string][]) {
-    if (slug) result[locale] = `${SITE_BASE}${blogPostHref(locale, slug)}`;
+    if (isUsableSlug(slug)) result[locale] = `${SITE_BASE}${blogPostHref(locale, slug)}`;
   }
   // x-default points to the Turkish version; fall back to the first available locale
-  if (slugsByLocale.tr) {
+  if (isUsableSlug(slugsByLocale.tr)) {
     result["x-default"] = `${SITE_BASE}${blogPostHref("tr", slugsByLocale.tr)}`;
   } else {
-    const first = (Object.entries(slugsByLocale) as [Locale, string][]).find(([, s]) => s);
+    const first = (Object.entries(slugsByLocale) as [Locale, string][]).find(([, s]) => isUsableSlug(s));
     if (first) result["x-default"] = `${SITE_BASE}${blogPostHref(first[0], first[1])}`;
   }
   return result;
@@ -168,12 +183,13 @@ export function buildCategoryHreflangs(
   slugsByLocale: Partial<Record<Locale, string>>,
 ): Record<string, string> {
   const result: Record<string, string> = {};
-  if (slugsByLocale.tr) result.tr = `${SITE_BASE}/blog/kategori/${slugsByLocale.tr}`;
-  if (slugsByLocale.en) result.en = `${SITE_BASE}/blog/en/category/${slugsByLocale.en}`;
-  if (slugsByLocale.ru) result.ru = `${SITE_BASE}/blog/ru/category/${slugsByLocale.ru}`;
-  if (slugsByLocale.ar) result.ar = `${SITE_BASE}/blog/ar/category/${slugsByLocale.ar}`;
+  if (isUsableSlug(slugsByLocale.tr)) result.tr = `${SITE_BASE}/blog/kategori/${slugsByLocale.tr}`;
+  if (isUsableSlug(slugsByLocale.en)) result.en = `${SITE_BASE}/blog/en/category/${slugsByLocale.en}`;
+  if (isUsableSlug(slugsByLocale.ru)) result.ru = `${SITE_BASE}/blog/ru/category/${slugsByLocale.ru}`;
+  if (isUsableSlug(slugsByLocale.ar)) result.ar = `${SITE_BASE}/blog/ar/category/${slugsByLocale.ar}`;
   // x-default = TR if available, else first available
-  result["x-default"] = result.tr ?? Object.values(result)[0] ?? "";
+  const xDefault = result.tr ?? Object.values(result)[0];
+  if (xDefault) result["x-default"] = xDefault;
   return result;
 }
 
@@ -183,11 +199,12 @@ export function buildTagHreflangs(
   slugsByLocale: Partial<Record<Locale, string>>,
 ): Record<string, string> {
   const result: Record<string, string> = {};
-  if (slugsByLocale.tr) result.tr = `${SITE_BASE}/blog/etiket/${slugsByLocale.tr}`;
-  if (slugsByLocale.en) result.en = `${SITE_BASE}/blog/en/tag/${slugsByLocale.en}`;
-  if (slugsByLocale.ru) result.ru = `${SITE_BASE}/blog/ru/tag/${slugsByLocale.ru}`;
-  if (slugsByLocale.ar) result.ar = `${SITE_BASE}/blog/ar/tag/${slugsByLocale.ar}`;
-  result["x-default"] = result.tr ?? Object.values(result)[0] ?? "";
+  if (isUsableSlug(slugsByLocale.tr)) result.tr = `${SITE_BASE}/blog/etiket/${slugsByLocale.tr}`;
+  if (isUsableSlug(slugsByLocale.en)) result.en = `${SITE_BASE}/blog/en/tag/${slugsByLocale.en}`;
+  if (isUsableSlug(slugsByLocale.ru)) result.ru = `${SITE_BASE}/blog/ru/tag/${slugsByLocale.ru}`;
+  if (isUsableSlug(slugsByLocale.ar)) result.ar = `${SITE_BASE}/blog/ar/tag/${slugsByLocale.ar}`;
+  const xDefault = result.tr ?? Object.values(result)[0];
+  if (xDefault) result["x-default"] = xDefault;
   return result;
 }
 

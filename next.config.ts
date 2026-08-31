@@ -11,6 +11,18 @@ const nextConfig: NextConfig = {
     // Allow Cloudinary-delivered images
     remotePatterns: [{ protocol: "https", hostname: "res.cloudinary.com" }],
   },
+  // ── Legacy URL yönlendirmeleri ─────────────────────────────────────────────
+  // Sayfa içi redirect() streaming nedeniyle gerçek HTTP redirect üretmiyordu
+  // (/blog/tr → 200, /en/blog → 307). next.config redirects() filesystem
+  // routing'den ÖNCE çalışır: tek hop, kalıcı 308, link equity aktarılır.
+  async redirects() {
+    return [
+      { source: "/en/blog",        destination: "/blog/en",        permanent: true },
+      { source: "/en/blog/:slug",  destination: "/blog/en/:slug",  permanent: true },
+      { source: "/blog/tr",        destination: "/blog",           permanent: true },
+      { source: "/blog/tr/:slug",  destination: "/blog/:slug",     permanent: true },
+    ];
+  },
   experimental: {
     // Raise the proxy body size limit so large product photo uploads (up to 50 MB) pass through
     // the Next.js middleware layer to the route handler.
