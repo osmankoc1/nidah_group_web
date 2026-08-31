@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
 import { LocaleBlogList } from "@/components/blog/LocaleBlogList";
 import { buildListHreflangs } from "@/lib/blog-locales";
 
@@ -7,6 +8,7 @@ const BASE_URL = "https://www.nidahgroup.com.tr";
 export async function generateMetadata(
   { searchParams }: { searchParams: Promise<{ page?: string }> }
 ): Promise<Metadata> {
+  if (!(await isPageEnabled("page_blog"))) return DISABLED_PAGE_METADATA;
   const { page } = await searchParams;
   const pageNum = Math.max(1, Number(page) || 1);
   return {

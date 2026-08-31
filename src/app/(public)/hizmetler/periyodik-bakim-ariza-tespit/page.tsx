@@ -1,31 +1,34 @@
 import type { Metadata } from "next";
+import { metadataForPage } from "@/lib/site-settings";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Wrench, Search, ClipboardList, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import CatalogCtaButton from "@/components/shared/CatalogCtaButton";
 
-export const metadata: Metadata = {
-  title: "Periyodik Bakım & Arıza Tespit | İş Makinası Servisi | NİDAH GROUP",
-  description:
-    "İş makinası periyodik bakım ve kapsamlı arıza tespit hizmeti. Dijital teşhis cihazları, yağ analizi, filtre değişimi ve önleyici bakım programı.",
-  alternates: {
-    canonical: "https://www.nidahgroup.com.tr/hizmetler/periyodik-bakim-ariza-tespit",
-  },
-  openGraph: {
+export function generateMetadata(): Promise<Metadata> {
+  return metadataForPage("page_hizmetler", {
     title: "Periyodik Bakım & Arıza Tespit | İş Makinası Servisi | NİDAH GROUP",
     description:
       "İş makinası periyodik bakım ve kapsamlı arıza tespit hizmeti. Dijital teşhis cihazları, yağ analizi, filtre değişimi ve önleyici bakım programı.",
-    url: "https://www.nidahgroup.com.tr/hizmetler/periyodik-bakim-ariza-tespit",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Periyodik Bakım & Arıza Tespit | İş Makinası Servisi | NİDAH GROUP",
-    description:
-      "İş makinası periyodik bakım ve kapsamlı arıza tespit hizmeti. Dijital teşhis cihazları, yağ analizi, filtre değişimi ve önleyici bakım programı.",
-  },
-};
+    alternates: {
+      canonical: "https://www.nidahgroup.com.tr/hizmetler/periyodik-bakim-ariza-tespit",
+    },
+    openGraph: {
+      title: "Periyodik Bakım & Arıza Tespit | İş Makinası Servisi | NİDAH GROUP",
+      description:
+        "İş makinası periyodik bakım ve kapsamlı arıza tespit hizmeti. Dijital teşhis cihazları, yağ analizi, filtre değişimi ve önleyici bakım programı.",
+      url: "https://www.nidahgroup.com.tr/hizmetler/periyodik-bakim-ariza-tespit",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Periyodik Bakım & Arıza Tespit | İş Makinası Servisi | NİDAH GROUP",
+      description:
+        "İş makinası periyodik bakım ve kapsamlı arıza tespit hizmeti. Dijital teşhis cihazları, yağ analizi, filtre değişimi ve önleyici bakım programı.",
+    },
+  });
+}
 
 const serviceJsonLd = {
   "@context": "https://schema.org",

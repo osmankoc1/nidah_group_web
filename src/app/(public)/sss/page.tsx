@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { isPageEnabled } from "@/lib/site-settings";
+import { isPageEnabled, metadataForPage } from "@/lib/site-settings";
 import Link from "next/link";
 import { MessageCircle, ArrowRight } from "lucide-react";
 import { faqItems, FAQ_CATEGORIES, type FaqCategory } from "@/data/faq";
@@ -14,20 +14,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 
-export const metadata: Metadata = {
-  title: "Sıkça Sorulan Sorular | NİDAH GROUP",
-  description:
-    "Yedek parça tedariği, teknik revizyon, ECU onarımı, ihracat koşulları ve teklif süreci hakkında sıkça sorulan sorular.",
-  alternates: {
-    canonical: "https://www.nidahgroup.com.tr/sss",
-  },
-  twitter: {
-    card: "summary_large_image",
+export function generateMetadata(): Promise<Metadata> {
+  return metadataForPage("page_sss", {
     title: "Sıkça Sorulan Sorular | NİDAH GROUP",
     description:
       "Yedek parça tedariği, teknik revizyon, ECU onarımı, ihracat koşulları ve teklif süreci hakkında sıkça sorulan sorular.",
-  },
-};
+    alternates: {
+      canonical: "https://www.nidahgroup.com.tr/sss",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Sıkça Sorulan Sorular | NİDAH GROUP",
+      description:
+        "Yedek parça tedariği, teknik revizyon, ECU onarımı, ihracat koşulları ve teklif süreci hakkında sıkça sorulan sorular.",
+    },
+  });
+}
 
 const CATEGORY_META: Record<FaqCategory, { emoji: string; color: string }> = {
   "Yedek Parça":               { emoji: "📦", color: "bg-amber-50 border-amber-100 text-amber-700"  },

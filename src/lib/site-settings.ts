@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
 import { siteSettings } from "@/lib/db/schema";
@@ -52,6 +53,38 @@ export async function getAllPageSettings(): Promise<
     label: p.label,
     enabled: p.key in settings ? settings[p.key] === "true" : p.defaultEnabled,
   }));
+}
+
+// ── Kapalı sayfa metadata'sı ─────────────────────────────────────────────────
+// Bir sayfa admin toggle'ı ile kapatıldığında layout/page `notFound()` çağırır,
+// ancak Next.js statik `metadata` export'unu yine de emit eder. Bu durumda
+// sayfa hem "index, follow" hem de not-found kaynaklı "noindex" etiketi
+// taşır; ayrıca canonical/OG bilgileri 404 gövdesiyle çelişir.
+//
+// Aşağıdaki yardımcılar bu çelişkiyi kaldırır: kapalıyken TEK ve net bir
+// noindex sinyali üretilir, canonical/OG/Twitter miras alınmaz.
+
+export const DISABLED_PAGE_METADATA: Metadata = {
+  title: "Sayfa Bulunamadı | NİDAH GROUP",
+  robots: { index: false, follow: false },
+  // null → root layout'tan miras alınan değerleri açıkça kaldırır.
+  alternates: { canonical: null },
+  openGraph: null,
+  twitter: null,
+};
+
+/**
+ * Toggle AÇIK ise verilen metadata'yı, KAPALI ise çelişkisiz noindex
+ * metadata'sını döner. Açık durumdaki çıktı hiçbir şekilde değişmez.
+ */
+export async function metadataForPage(
+  key: PageKey,
+  enabledMetadata: Metadata | (() => Metadata | Promise<Metadata>)
+): Promise<Metadata> {
+  if (!(await isPageEnabled(key))) return DISABLED_PAGE_METADATA;
+  return typeof enabledMetadata === "function"
+    ? await enabledMetadata()
+    : enabledMetadata;
 }
 
 // ── Nav visibility ────────────────────────────────────────────────────────────

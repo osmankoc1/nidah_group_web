@@ -1,31 +1,34 @@
 import type { Metadata } from "next";
+import { metadataForPage } from "@/lib/site-settings";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Cpu, AlertTriangle, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import CatalogCtaButton from "@/components/shared/CatalogCtaButton";
 
-export const metadata: Metadata = {
-  title: "ECU Tamiri & Elektronik Sistem Servisi | İş Makinası | NİDAH GROUP",
-  description:
-    "İş makinası ECU tamiri ve kontrol ünitesi revizyonu. Ekskavatör, kamyon, savunma araçları için elektronik sistem teşhis, onarım ve yeni ECU temini.",
-  alternates: {
-    canonical: "https://www.nidahgroup.com.tr/hizmetler/ecu-elektronik-tamir",
-  },
-  openGraph: {
+export function generateMetadata(): Promise<Metadata> {
+  return metadataForPage("page_hizmetler", {
     title: "ECU Tamiri & Elektronik Sistem Servisi | İş Makinası | NİDAH GROUP",
     description:
       "İş makinası ECU tamiri ve kontrol ünitesi revizyonu. Ekskavatör, kamyon, savunma araçları için elektronik sistem teşhis, onarım ve yeni ECU temini.",
-    url: "https://www.nidahgroup.com.tr/hizmetler/ecu-elektronik-tamir",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "ECU Tamiri & Elektronik Sistem Servisi | İş Makinası | NİDAH GROUP",
-    description:
-      "İş makinası ECU tamiri ve kontrol ünitesi revizyonu. Ekskavatör, kamyon, savunma araçları için elektronik sistem teşhis, onarım ve yeni ECU temini.",
-  },
-};
+    alternates: {
+      canonical: "https://www.nidahgroup.com.tr/hizmetler/ecu-elektronik-tamir",
+    },
+    openGraph: {
+      title: "ECU Tamiri & Elektronik Sistem Servisi | İş Makinası | NİDAH GROUP",
+      description:
+        "İş makinası ECU tamiri ve kontrol ünitesi revizyonu. Ekskavatör, kamyon, savunma araçları için elektronik sistem teşhis, onarım ve yeni ECU temini.",
+      url: "https://www.nidahgroup.com.tr/hizmetler/ecu-elektronik-tamir",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "ECU Tamiri & Elektronik Sistem Servisi | İş Makinası | NİDAH GROUP",
+      description:
+        "İş makinası ECU tamiri ve kontrol ünitesi revizyonu. Ekskavatör, kamyon, savunma araçları için elektronik sistem teşhis, onarım ve yeni ECU temini.",
+    },
+  });
+}
 
 const serviceJsonLd = {
   "@context": "https://schema.org",

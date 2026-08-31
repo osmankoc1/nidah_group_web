@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { isPageEnabled } from "@/lib/site-settings";
+import { isPageEnabled, metadataForPage } from "@/lib/site-settings";
 import Link from "next/link";
 import {
   Package,
@@ -24,20 +24,22 @@ import { Button } from "@/components/ui/button";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import CatalogCtaButton from "@/components/shared/CatalogCtaButton";
 
-export const metadata: Metadata = {
-  title: "Hizmetlerimiz | NİDAH GROUP",
-  description:
-    "Yedek parça tedariği, diferansiyel ve şanzıman revizyonu, hidrolik sistem servisi, ECU onarımı ve elektronik sistem desteği — NİDAH GROUP kapsamlı teknik hizmetleri.",
-  alternates: {
-    canonical: "https://www.nidahgroup.com.tr/hizmetler",
-  },
-  twitter: {
-    card: "summary_large_image",
+export function generateMetadata(): Promise<Metadata> {
+  return metadataForPage("page_hizmetler", {
     title: "Hizmetlerimiz | NİDAH GROUP",
     description:
       "Yedek parça tedariği, diferansiyel ve şanzıman revizyonu, hidrolik sistem servisi, ECU onarımı ve elektronik sistem desteği — NİDAH GROUP kapsamlı teknik hizmetleri.",
-  },
-};
+    alternates: {
+      canonical: "https://www.nidahgroup.com.tr/hizmetler",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Hizmetlerimiz | NİDAH GROUP",
+      description:
+        "Yedek parça tedariği, diferansiyel ve şanzıman revizyonu, hidrolik sistem servisi, ECU onarımı ve elektronik sistem desteği — NİDAH GROUP kapsamlı teknik hizmetleri.",
+    },
+  });
+}
 
 const PARTS_CATEGORIES = [
   { label: "Hidrolik Pompalar & Motorlar" },

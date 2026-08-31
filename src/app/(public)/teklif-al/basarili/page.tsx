@@ -1,12 +1,16 @@
+import type { Metadata } from "next";
+import { metadataForPage } from "@/lib/site-settings";
 import Link from "next/link";
 import { CheckCircle2, Home, MessageCircle, Clock, Package, CreditCard, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CONTACTS, WHATSAPP_URL } from "@/lib/constants";
 
-export const metadata = {
-  title: "Teklif Talebiniz Alındı | NİDAH GROUP",
-  robots: { index: false },
-};
+export function generateMetadata(): Promise<Metadata> {
+  return metadataForPage("page_teklif_al", {
+    title: "Teklif Talebiniz Alındı | NİDAH GROUP",
+    robots: { index: false },
+  });
+}
 
 const steps = [
   {

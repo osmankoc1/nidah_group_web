@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { isPageEnabled } from "@/lib/site-settings";
+import { isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
 import { db } from "@/lib/db";
 import { blogPosts, blogCategories } from "@/lib/db/schema";
 import { desc, eq } from "drizzle-orm";
@@ -16,6 +16,7 @@ const BASE_URL = "https://www.nidahgroup.com.tr";
 export async function generateMetadata(
   { searchParams }: { searchParams: Promise<{ page?: string }> }
 ): Promise<Metadata> {
+  if (!(await isPageEnabled("page_blog"))) return DISABLED_PAGE_METADATA;
   const { page } = await searchParams;
   const pageNum = Math.max(1, Number(page) || 1);
   return {

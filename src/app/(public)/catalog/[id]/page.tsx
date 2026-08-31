@@ -11,7 +11,7 @@ import {
   Truck,
 } from "lucide-react";
 import { getPart } from "@/lib/prosis";
-import { isPageEnabled } from "@/lib/site-settings";
+import { isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
 import type {
   CrossRefEntry,
   DocumentEntry,
@@ -32,13 +32,11 @@ export const dynamic = "force-dynamic";
 
 // ── Metadata ──────────────────────────────────────────────────────────────────
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  if (!await isPageEnabled("page_catalog")) {
-    return { title: "Sayfa Bulunamadı | NİDAH GROUP" };
-  }
+  if (!await isPageEnabled("page_catalog")) return DISABLED_PAGE_METADATA;
   const { id } = await params;
   try {
     const part = await getPart(decodeURIComponent(id));
-    if (!part) return { title: "Parça Bulunamadı | NİDAH GROUP" };
+    if (!part) return { ...DISABLED_PAGE_METADATA, title: "Parça Bulunamadı | NİDAH GROUP" };
     const desc = part.description
       ? `${part.part_number} — ${part.description}`
       : `${part.part_number} parça numaralı ürün detayları.`;

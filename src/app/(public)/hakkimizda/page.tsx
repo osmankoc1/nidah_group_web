@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { isPageEnabled } from "@/lib/site-settings";
+import { isPageEnabled, metadataForPage } from "@/lib/site-settings";
 import Link from "next/link";
 import {
   Globe2,
@@ -20,20 +20,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 
-export const metadata: Metadata = {
-  title: "Hakkımızda | NİDAH GROUP",
-  description:
-    "NİDAH GROUP — 20+ yıllık deneyimle iş makinası yedek parça tedariği, teknik servis ve elektronik sistem onarımında global ölçekte faaliyet gösteren kurumsal çözüm ortağınız.",
-  alternates: {
-    canonical: "https://www.nidahgroup.com.tr/hakkimizda",
-  },
-  twitter: {
-    card: "summary_large_image",
+export function generateMetadata(): Promise<Metadata> {
+  return metadataForPage("page_hakkimizda", {
     title: "Hakkımızda | NİDAH GROUP",
     description:
       "NİDAH GROUP — 20+ yıllık deneyimle iş makinası yedek parça tedariği, teknik servis ve elektronik sistem onarımında global ölçekte faaliyet gösteren kurumsal çözüm ortağınız.",
-  },
-};
+    alternates: {
+      canonical: "https://www.nidahgroup.com.tr/hakkimizda",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Hakkımızda | NİDAH GROUP",
+      description:
+        "NİDAH GROUP — 20+ yıllık deneyimle iş makinası yedek parça tedariği, teknik servis ve elektronik sistem onarımında global ölçekte faaliyet gösteren kurumsal çözüm ortağınız.",
+    },
+  });
+}
 
 const GLOBAL_STATS = [
   { value: "20+",  label: "Yıl Deneyim"        },

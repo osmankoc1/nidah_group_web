@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import { CONTACTS, WHATSAPP_URL } from "@/lib/constants";
 import { getProductByPartNumber, type FitmentRow } from "@/lib/queries/product";
-import { isPageEnabled } from "@/lib/site-settings";
+import { isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
 import ProductGallery from "@/components/catalog/ProductGallery";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -33,15 +33,13 @@ export async function generateMetadata({
 }: {
   params: Promise<{ partNumber: string }>;
 }): Promise<Metadata> {
-  if (!await isPageEnabled("page_parca_katalog")) {
-    return { title: "Sayfa Bulunamadı | NİDAH GROUP" };
-  }
+  if (!await isPageEnabled("page_parca_katalog")) return DISABLED_PAGE_METADATA;
   const { partNumber } = await params;
   const decodedPN = decodeURIComponent(partNumber);
   const product = await getProductByPartNumber(decodedPN);
 
   if (!product) {
-    return { title: "Ürün Bulunamadı | NİDAH GROUP" };
+    return { ...DISABLED_PAGE_METADATA, title: "Ürün Bulunamadı | NİDAH GROUP" };
   }
 
   const brands = [...new Set(product.fitments.map((f) => f.manufacturerName))];

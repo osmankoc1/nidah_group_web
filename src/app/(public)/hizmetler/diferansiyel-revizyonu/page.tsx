@@ -1,31 +1,34 @@
 import type { Metadata } from "next";
+import { metadataForPage } from "@/lib/site-settings";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Wrench, AlertTriangle, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import CatalogCtaButton from "@/components/shared/CatalogCtaButton";
 
-export const metadata: Metadata = {
-  title: "Diferansiyel Revizyonu | Aks & Tahrik Sistemi Servisi | NİDAH GROUP",
-  description:
-    "İş makinası ve ağır vasıta diferansiyel revizyonu. Greyder, damperli kamyon, yol silindiri için aks tamiri ve diferansiyel revizyon hizmeti. OEM parça kalitesi, titiz test.",
-  alternates: {
-    canonical: "https://www.nidahgroup.com.tr/hizmetler/diferansiyel-revizyonu",
-  },
-  openGraph: {
+export function generateMetadata(): Promise<Metadata> {
+  return metadataForPage("page_hizmetler", {
     title: "Diferansiyel Revizyonu | Aks & Tahrik Sistemi Servisi | NİDAH GROUP",
     description:
       "İş makinası ve ağır vasıta diferansiyel revizyonu. Greyder, damperli kamyon, yol silindiri için aks tamiri ve diferansiyel revizyon hizmeti. OEM parça kalitesi, titiz test.",
-    url: "https://www.nidahgroup.com.tr/hizmetler/diferansiyel-revizyonu",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Diferansiyel Revizyonu | Aks & Tahrik Sistemi Servisi | NİDAH GROUP",
-    description:
-      "İş makinası ve ağır vasıta diferansiyel revizyonu. Greyder, damperli kamyon, yol silindiri için aks tamiri ve diferansiyel revizyon hizmeti. OEM parça kalitesi, titiz test.",
-  },
-};
+    alternates: {
+      canonical: "https://www.nidahgroup.com.tr/hizmetler/diferansiyel-revizyonu",
+    },
+    openGraph: {
+      title: "Diferansiyel Revizyonu | Aks & Tahrik Sistemi Servisi | NİDAH GROUP",
+      description:
+        "İş makinası ve ağır vasıta diferansiyel revizyonu. Greyder, damperli kamyon, yol silindiri için aks tamiri ve diferansiyel revizyon hizmeti. OEM parça kalitesi, titiz test.",
+      url: "https://www.nidahgroup.com.tr/hizmetler/diferansiyel-revizyonu",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Diferansiyel Revizyonu | Aks & Tahrik Sistemi Servisi | NİDAH GROUP",
+      description:
+        "İş makinası ve ağır vasıta diferansiyel revizyonu. Greyder, damperli kamyon, yol silindiri için aks tamiri ve diferansiyel revizyon hizmeti. OEM parça kalitesi, titiz test.",
+    },
+  });
+}
 
 const serviceJsonLd = {
   "@context": "https://schema.org",

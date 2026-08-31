@@ -1,31 +1,34 @@
 import type { Metadata } from "next";
+import { metadataForPage } from "@/lib/site-settings";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Wrench, AlertTriangle, Settings2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import CatalogCtaButton from "@/components/shared/CatalogCtaButton";
 
-export const metadata: Metadata = {
-  title: "Hidrolik Pompa Revizyonu | İş Makinası Hidrolik Servis | NİDAH GROUP",
-  description:
-    "İş makinası hidrolik pompa revizyonu hizmeti. Ekskavatör, yükleyici, dozer, greyder için dişli, pistonlu ve paletli pompa revizyonu. OEM kalitesinde parça, titiz test.",
-  alternates: {
-    canonical: "https://www.nidahgroup.com.tr/hizmetler/hidrolik-pompa-revizyonu",
-  },
-  openGraph: {
+export function generateMetadata(): Promise<Metadata> {
+  return metadataForPage("page_hizmetler", {
     title: "Hidrolik Pompa Revizyonu | İş Makinası Hidrolik Servis | NİDAH GROUP",
     description:
       "İş makinası hidrolik pompa revizyonu hizmeti. Ekskavatör, yükleyici, dozer, greyder için dişli, pistonlu ve paletli pompa revizyonu. OEM kalitesinde parça, titiz test.",
-    url: "https://www.nidahgroup.com.tr/hizmetler/hidrolik-pompa-revizyonu",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Hidrolik Pompa Revizyonu | İş Makinası Hidrolik Servis | NİDAH GROUP",
-    description:
-      "İş makinası hidrolik pompa revizyonu hizmeti. Ekskavatör, yükleyici, dozer, greyder için dişli, pistonlu ve paletli pompa revizyonu. OEM kalitesinde parça, titiz test.",
-  },
-};
+    alternates: {
+      canonical: "https://www.nidahgroup.com.tr/hizmetler/hidrolik-pompa-revizyonu",
+    },
+    openGraph: {
+      title: "Hidrolik Pompa Revizyonu | İş Makinası Hidrolik Servis | NİDAH GROUP",
+      description:
+        "İş makinası hidrolik pompa revizyonu hizmeti. Ekskavatör, yükleyici, dozer, greyder için dişli, pistonlu ve paletli pompa revizyonu. OEM kalitesinde parça, titiz test.",
+      url: "https://www.nidahgroup.com.tr/hizmetler/hidrolik-pompa-revizyonu",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Hidrolik Pompa Revizyonu | İş Makinası Hidrolik Servis | NİDAH GROUP",
+      description:
+        "İş makinası hidrolik pompa revizyonu hizmeti. Ekskavatör, yükleyici, dozer, greyder için dişli, pistonlu ve paletli pompa revizyonu. OEM kalitesinde parça, titiz test.",
+    },
+  });
+}
 
 const serviceJsonLd = {
   "@context": "https://schema.org",

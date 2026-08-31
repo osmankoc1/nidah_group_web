@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
 import { LocaleBlogPost, getLocaleBlogPostData } from "@/components/blog/LocaleBlogPost";
 import { buildPostHreflangs } from "@/lib/blog-locales";
 
@@ -7,6 +8,7 @@ interface PageProps { params: Promise<{ slug: string }> }
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  if (!(await isPageEnabled("page_blog"))) return DISABLED_PAGE_METADATA;
   const { slug } = await params;
   const post = await getLocaleBlogPostData("en", slug);
   if (!post) return { title: "Blog | NİDAH GROUP" };

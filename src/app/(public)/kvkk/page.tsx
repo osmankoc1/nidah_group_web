@@ -7,7 +7,6 @@ export const metadata: Metadata = {
   description:
     "NİDAH GROUP kişisel verilerin işlenmesine ilişkin KVKK kapsamındaki aydınlatma metni ve çerez politikası.",
   alternates: { canonical: "https://www.nidahgroup.com.tr/kvkk" },
-  robots: { index: false },
 };
 
 export default function KvkkPage() {

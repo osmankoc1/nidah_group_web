@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -19,6 +20,7 @@ interface PageProps {
 }
 
 export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
+  if (!(await isPageEnabled("page_blog"))) return DISABLED_PAGE_METADATA;
   const { slug } = await params;
   const { page } = await searchParams;
   const pageNum = Math.max(1, Number(page) || 1);

@@ -1,31 +1,34 @@
 import type { Metadata } from "next";
+import { metadataForPage } from "@/lib/site-settings";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Wrench, AlertTriangle, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import CatalogCtaButton from "@/components/shared/CatalogCtaButton";
 
-export const metadata: Metadata = {
-  title: "Şanzıman Revizyonu | Powershift & Hidrolik Şanzıman Servisi | NİDAH GROUP",
-  description:
-    "İş makinası şanzıman revizyonu: powershift, otomatik ve manuel şanzıman revizyonu. Ekskavatör, yükleyici, dozer için OEM kalitesinde şanzıman tamir ve bakım hizmeti.",
-  alternates: {
-    canonical: "https://www.nidahgroup.com.tr/hizmetler/sanziman-revizyonu",
-  },
-  openGraph: {
+export function generateMetadata(): Promise<Metadata> {
+  return metadataForPage("page_hizmetler", {
     title: "Şanzıman Revizyonu | Powershift & Hidrolik Şanzıman Servisi | NİDAH GROUP",
     description:
       "İş makinası şanzıman revizyonu: powershift, otomatik ve manuel şanzıman revizyonu. Ekskavatör, yükleyici, dozer için OEM kalitesinde şanzıman tamir ve bakım hizmeti.",
-    url: "https://www.nidahgroup.com.tr/hizmetler/sanziman-revizyonu",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Şanzıman Revizyonu | Powershift & Hidrolik Şanzıman Servisi | NİDAH GROUP",
-    description:
-      "İş makinası şanzıman revizyonu: powershift, otomatik ve manuel şanzıman revizyonu. Ekskavatör, yükleyici, dozer için OEM kalitesinde şanzıman tamir ve bakım hizmeti.",
-  },
-};
+    alternates: {
+      canonical: "https://www.nidahgroup.com.tr/hizmetler/sanziman-revizyonu",
+    },
+    openGraph: {
+      title: "Şanzıman Revizyonu | Powershift & Hidrolik Şanzıman Servisi | NİDAH GROUP",
+      description:
+        "İş makinası şanzıman revizyonu: powershift, otomatik ve manuel şanzıman revizyonu. Ekskavatör, yükleyici, dozer için OEM kalitesinde şanzıman tamir ve bakım hizmeti.",
+      url: "https://www.nidahgroup.com.tr/hizmetler/sanziman-revizyonu",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Şanzıman Revizyonu | Powershift & Hidrolik Şanzıman Servisi | NİDAH GROUP",
+      description:
+        "İş makinası şanzıman revizyonu: powershift, otomatik ve manuel şanzıman revizyonu. Ekskavatör, yükleyici, dozer için OEM kalitesinde şanzıman tamir ve bakım hizmeti.",
+    },
+  });
+}
 
 const serviceJsonLd = {
   "@context": "https://schema.org",

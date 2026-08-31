@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { isPageEnabled } from "@/lib/site-settings";
+import { isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
 import CatalogClient from "./CatalogClient";
 
 export async function generateMetadata(): Promise<Metadata> {
-  if (!await isPageEnabled("page_catalog")) {
-    return { title: "Sayfa Bulunamadı | NİDAH GROUP" };
-  }
+  if (!await isPageEnabled("page_catalog")) return DISABLED_PAGE_METADATA;
   return {
     title: "Canlı Parça Kataloğu | NİDAH GROUP",
     description:
