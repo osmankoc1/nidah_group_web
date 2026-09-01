@@ -1,13 +1,16 @@
 import Link from "next/link";
 import { Cog, Wrench, Search, ShieldCheck, RotateCcw, ClipboardList, ArrowRight } from "lucide-react";
 
+// href: kartın temsil ettiği hizmetin GERÇEK detay sayfası.
+// "Şasi Onarımı & Tamir" için ayrı bir detay sayfası bulunmadığından href yok —
+// uydurma URL üretmek yerine kart link olmadan render edilir (mevcut davranış).
 const SERVICES = [
-  { icon: Cog,          title: "Diferansiyel Revizyonu",          desc: "Komple söküm, ölçüm, parça değişimi ve test." },
-  { icon: RotateCcw,    title: "Şanzıman Revizyonu",              desc: "Hidrolik ve mekanik şanzımanlarda tam revizyon ve teknik destek." },
-  { icon: Wrench,       title: "Hidrolik Sistem Revizyonu",       desc: "Pompa, motor, piston ve valf revizyonu." },
-  { icon: ShieldCheck,  title: "Şasi Onarımı & Tamir",           desc: "Yapısal onarım, kaynak ve tadilat işlemleri." },
-  { icon: ClipboardList,title: "Periyodik Bakım",                 desc: "Sistematik bakım programı ile önleyici servis." },
-  { icon: Search,       title: "Arıza Tespit & Teknik Analiz",   desc: "Dijital teşhis cihazları ile hızlı ve kesin tespit." },
+  { icon: Cog,          title: "Diferansiyel Revizyonu",          desc: "Komple söküm, ölçüm, parça değişimi ve test.", href: "/hizmetler/diferansiyel-revizyonu" },
+  { icon: RotateCcw,    title: "Şanzıman Revizyonu",              desc: "Hidrolik ve mekanik şanzımanlarda tam revizyon ve teknik destek.", href: "/hizmetler/sanziman-revizyonu" },
+  { icon: Wrench,       title: "Hidrolik Sistem Revizyonu",       desc: "Pompa, motor, piston ve valf revizyonu.", href: "/hizmetler/hidrolik-pompa-revizyonu" },
+  { icon: ShieldCheck,  title: "Şasi Onarımı & Tamir",           desc: "Yapısal onarım, kaynak ve tadilat işlemleri.", href: null },
+  { icon: ClipboardList,title: "Periyodik Bakım",                 desc: "Sistematik bakım programı ile önleyici servis.", href: "/hizmetler/periyodik-bakim-ariza-tespit" },
+  { icon: Search,       title: "Arıza Tespit & Teknik Analiz",   desc: "Dijital teşhis cihazları ile hızlı ve kesin tespit.", href: "/hizmetler/periyodik-bakim-ariza-tespit" },
 ] as const;
 
 export default function TechnicalServicesSection() {
@@ -34,20 +37,28 @@ export default function TechnicalServicesSection() {
           {SERVICES.map((s, i) => {
             const Icon = s.icon;
             const isDark = i === 0;
-            return (
-              <div
-                key={s.title}
-                className={`group rounded-2xl p-6 border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md ${
-                  isDark
-                    ? "bg-nidah-dark border-nidah-dark"
-                    : "bg-white border-gray-100 hover:border-nidah-yellow/30"
-                }`}
-              >
+            // Sınıflar link/div ayrımından bağımsız — görsel çıktı aynı kalır.
+            const cardClass = `group rounded-2xl p-6 border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md ${
+              isDark
+                ? "bg-nidah-dark border-nidah-dark"
+                : "bg-white border-gray-100 hover:border-nidah-yellow/30"
+            }`;
+            const inner = (
+              <>
                 <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${isDark ? "bg-nidah-yellow/15" : "bg-nidah-yellow/10"}`}>
                   <Icon className={`size-5 ${isDark ? "text-nidah-yellow" : "text-nidah-yellow-dark"}`} />
                 </div>
                 <h3 className={`font-bold text-sm mb-1.5 ${isDark ? "text-white" : "text-nidah-dark"}`}>{s.title}</h3>
                 <p className={`text-xs leading-relaxed ${isDark ? "text-white/60" : "text-nidah-gray"}`}>{s.desc}</p>
+              </>
+            );
+            return s.href ? (
+              <Link key={s.title} href={s.href} className={`block ${cardClass}`}>
+                {inner}
+              </Link>
+            ) : (
+              <div key={s.title} className={cardClass}>
+                {inner}
               </div>
             );
           })}

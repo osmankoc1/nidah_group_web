@@ -9,8 +9,9 @@ import {
   blogCategoryTranslations,
   blogTags,
   blogTagTranslations,
+  blogPostTags,
 } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { getAllPageSettings, type PageKey } from "@/lib/site-settings";
 import { isUsableSlug } from "@/lib/blog-locales";
 
@@ -119,14 +120,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         .where(eq(products.isActive, true))
     : [];
 
-  // Blog categories (TR slugs)
+  // ── Kategori ve etiketler — YALNIZCA yayımlanmış içeriği olanlar ───────────
+  // Boş bir taksonomi sayfası hiçbir yazı listelemez; sitemap'e girerse Google'a
+  // değersiz URL ilan etmiş oluruz. Kural veri-temellidir: bir kategori/etiket
+  // en az 1 "published" yazı kazandığı anda otomatik olarak sitemap'e döner.
+  // (Hiçbir slug/isim hard-code edilmez.)
   const dbCategories = blogEnabled
-    ? await db.select({ id: blogCategories.id, slug: blogCategories.slug }).from(blogCategories)
+    ? await db
+        .selectDistinct({ id: blogCategories.id, slug: blogCategories.slug })
+        .from(blogCategories)
+        .innerJoin(blogPosts, eq(blogPosts.categoryId, blogCategories.id))
+        .where(eq(blogPosts.status, "published"))
     : [];
 
-  // Blog tags (TR slugs)
   const dbTags = blogEnabled
-    ? await db.select({ id: blogTags.id, slug: blogTags.slug }).from(blogTags)
+    ? await db
+        .selectDistinct({ id: blogTags.id, slug: blogTags.slug })
+        .from(blogTags)
+        .innerJoin(blogPostTags, eq(blogPostTags.tagId, blogTags.id))
+        .innerJoin(
+          blogPosts,
+          and(eq(blogPosts.id, blogPostTags.postId), eq(blogPosts.status, "published")),
+        )
     : [];
 
   // Category translations for locale-specific slugs (graceful fallback if migration not yet applied)

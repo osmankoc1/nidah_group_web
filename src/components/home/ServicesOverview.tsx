@@ -7,19 +7,19 @@ const CORE_SERVICES = [
     icon: Cog,
     title: "Hidrolik Şanzıman Revizyonu",
     desc: "Komple sökme, ölçüm, parça değişimi, montaj ve test tezgahında performans kontrolü.",
-    href: "/hizmetler",
+    href: "/hizmetler/sanziman-revizyonu",
   },
   {
     icon: Droplets,
     title: "Hidrolik Pompa Revizyonu",
     desc: "Pistonlu, dişli ve kanatlı tüm pompa tiplerinde revizyon, arıza teşhis ve sıfır pompa tedariki.",
-    href: "/hizmetler",
+    href: "/hizmetler/hidrolik-pompa-revizyonu",
   },
   {
     icon: Search,
     title: "Arıza Tespit & Periyodik Bakım",
     desc: "Dijital teşhis, basınç ve sıcaklık analizleri. Sistematik bakım programı ile arızaları önleyin.",
-    href: "/hizmetler",
+    href: "/hizmetler/periyodik-bakim-ariza-tespit",
   },
   {
     icon: Package,

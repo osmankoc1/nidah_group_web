@@ -12,6 +12,7 @@ import {
   blogListHref,
   blogPostHref,
   localeCategoryHref,
+  isUsableSlug,
   LOCALES,
 } from "@/lib/blog-locales";
 import { FlagIcon } from "@/components/blog/FlagIcon";
@@ -93,11 +94,22 @@ export async function LocaleBlogList({ locale, page = 1 }: Props) {
 
   // Deduplicate by category id (selectDistinct with nullable columns can produce dupes)
   const seen = new Set<string>();
-  const categories = rawCategories.filter(c => {
+  const dedupedCategories = rawCategories.filter(c => {
     if (seen.has(c.id)) return false;
     seen.add(c.id);
     return true;
   });
+
+  // Locale slug'ı kullanılamaz durumdaysa (Kiril/Arapça adlardan üretilen boş
+  // string) TR slug'ına düşeriz — sitemap ve hreflang ile birebir aynı kural.
+  // İkisi de kullanılamazsa link hiç üretilmez; aksi hâlde /blog/ru/category/
+  // gibi soft-404 dönen bir URL'e iç link vermiş oluruz.
+  const categories = dedupedCategories
+    .map(c => ({
+      ...c,
+      href: isUsableSlug(c.localeSlug) ? c.localeSlug : c.slug,
+    }))
+    .filter(c => isUsableSlug(c.href));
 
   // Language nav pills for the hero
   const otherLocales = LOCALES.filter(l => l !== locale);
@@ -155,7 +167,7 @@ export async function LocaleBlogList({ locale, page = 1 }: Props) {
                 {categories.map(cat => (
                   <Link
                     key={cat.id}
-                    href={localeCategoryHref(locale, cat.localeSlug ?? cat.slug)}
+                    href={localeCategoryHref(locale, cat.href)}
                     className="inline-flex items-center text-xs font-medium bg-nidah-light border border-gray-200 text-nidah-dark px-3 py-1.5 rounded-full hover:bg-nidah-yellow/10 hover:border-nidah-yellow/40 transition-colors"
                   >
                     {cat.localeName ?? cat.name}

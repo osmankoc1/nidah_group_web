@@ -176,7 +176,8 @@ export default function Footer({ navItems, teklifAlEnabled, hizmetlerEnabled }: 
                   { label: "Yedek Parça Tedariği", href: "/hizmetler" },
                   { label: "Teknik Servis & Arıza Tespiti", href: "/hizmetler/periyodik-bakim-ariza-tespit" },
                   { label: "Elektronik Sistemler & ECU", href: "/hizmetler/ecu-elektronik-tamir" },
-                  { label: "Diferansiyel & Şanzıman", href: "/hizmetler/sanziman-revizyonu" },
+                  { label: "Şanzıman Revizyonu", href: "/hizmetler/sanziman-revizyonu" },
+                  { label: "Diferansiyel Revizyonu", href: "/hizmetler/diferansiyel-revizyonu" },
                   { label: "Hidrolik Sistem Revizyonu", href: "/hizmetler/hidrolik-pompa-revizyonu" },
                 ].map((item) => (
                   <Link
