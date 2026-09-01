@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import RelatedServiceLinks from "@/components/shared/RelatedServiceLinks";
+import { getServicesForBlogCategory } from "@/lib/services";
 import { JsonLd } from "@/lib/json-ld";
 import { isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
 import { notFound } from "next/navigation";
@@ -303,6 +305,14 @@ export default async function BlogPostPage({ params }: PageProps) {
           <Link href="/teklif-al" className="inline-flex items-center gap-2 bg-nidah-dark hover:bg-nidah-navy text-white font-bold px-6 py-3 rounded-xl transition-colors">
             Teklif Al
           </Link>
+          {/* Kategori bazlı hizmet bağlantısı — eşleşme yoksa hiçbir şey render edilmez.
+              Yalnızca TR; EN/RU/AR blogları Türkçe hizmet sayfalarına bağlanmaz. */}
+          <RelatedServiceLinks
+            services={getServicesForBlogCategory(post.categorySlug)}
+            className="mt-8"
+            labelClassName="text-nidah-dark/60"
+            linkClassName="text-nidah-dark font-medium hover:text-nidah-navy"
+          />
         </div>
       </section>
     </main>

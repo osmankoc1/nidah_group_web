@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import RelatedServiceLinks from "@/components/shared/RelatedServiceLinks";
+import { getRelatedServices } from "@/lib/services";
 import { ORGANIZATION_REF, SERVICE_AREA_SERVED } from "@/lib/constants";
 import { JsonLd } from "@/lib/json-ld";
 import { metadataForPage } from "@/lib/site-settings";
@@ -229,6 +231,12 @@ export default function SanzimanRevizyonuPage() {
                 <Link href="/hizmetler">Tüm Hizmetler</Link>
               </Button>
             </div>
+            <RelatedServiceLinks
+              services={getRelatedServices("sanziman")}
+              className="mt-8"
+              labelClassName="text-nidah-dark/60"
+              linkClassName="text-nidah-dark font-medium hover:text-nidah-navy"
+            />
           </div>
         </section>
       </main>

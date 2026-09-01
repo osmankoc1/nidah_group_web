@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import RelatedServiceLinks from "@/components/shared/RelatedServiceLinks";
+import { getRelatedServices } from "@/lib/services";
 import { ORGANIZATION_REF, SERVICE_AREA_SERVED } from "@/lib/constants";
 import { JsonLd } from "@/lib/json-ld";
 import { metadataForPage } from "@/lib/site-settings";
@@ -241,6 +243,12 @@ export default function EcuElektronikTamirPage() {
                 </div>
               </div>
             </div>
+            <RelatedServiceLinks
+              services={getRelatedServices("ecu")}
+              className="mt-10 text-center"
+              labelClassName="text-gray-400"
+              linkClassName="text-gray-300 font-medium hover:text-white"
+            />
           </div>
         </section>
       </main>
