@@ -74,6 +74,21 @@ export const productConditionEnum = pgEnum("product_condition", [
   "remanufactured",
 ]);
 
+/**
+ * oem_numbers.type — bir numaranın ürünle ilişkisinin cinsi.
+ * `supersedes` / `superseded_by` ayrı iki değer olduğu için Prosis'in
+ * replaces / replaced_by yön bilgisi ek bir ilişki tablosu olmadan korunur.
+ * (drizzle/0007_part_number_types.sql)
+ */
+export const partNumberTypeEnum = pgEnum("part_number_type", [
+  "oem",
+  "cross_ref",
+  "alternate",
+  "supersedes",
+  "superseded_by",
+  "prefixless",
+]);
+
 // ── Categories ───────────────────────────────────────────────────────────────
 
 export const categories = pgTable(
@@ -153,7 +168,15 @@ export const products = pgTable(
   "products",
   {
     id: uuid("id").defaultRandom().primaryKey(),
+    /** İnsan tarafından okunan kanonik değer — "CH 76281". */
     partNumber: varchar("part_number", { length: 100 }).notNull().unique(),
+    /**
+     * Eşleştirme/benzersizlik anahtarı — "CH76281".
+     * `normalizePartNumber()` üretir; `uq_products_pn_norm` benzersiz tutar.
+     * NULLABLE: migration kod deploy'undan önce çalıştığı için o penceredeki
+     * eski INSERT'ler kırılmasın. (drizzle/0006_part_number_identity.sql)
+     */
+    partNumberNormalized: varchar("part_number_normalized", { length: 100 }),
     name: varchar("name", { length: 500 }).notNull(),
     description: text("description"),
     condition: productConditionEnum("condition").default("new").notNull(),
@@ -175,6 +198,7 @@ export const products = pgTable(
     index("idx_products_part_number").on(table.partNumber),
     index("idx_products_is_active").on(table.isActive),
     index("idx_products_category").on(table.categoryId),
+    uniqueIndex("uq_products_pn_norm").on(table.partNumberNormalized),
   ]
 );
 
@@ -245,8 +269,20 @@ export const oemNumbers = pgTable(
     productId: uuid("product_id")
       .notNull()
       .references(() => products.id, { onDelete: "cascade" }),
+    /** İnsan tarafından okunan numara — "11184523". */
     oemNumber: varchar("oem_number", { length: 200 }).notNull(),
+    /**
+     * Eşleştirme anahtarı — `normalizePartNumber()` üretir.
+     * NOT NULL: bu tabloya yazan hiçbir kod yolu henüz yok ve tablo boş, bu
+     * yüzden 0006'daki NULLABLE gerekçesi burada geçerli DEĞİL. Normalize
+     * yazmayı unutan bir INSERT sessizce bozuk satır üretmek yerine hata verir.
+     */
+    numberNormalized: varchar("number_normalized", { length: 200 }).notNull(),
+    /** Numaranın ürünle ilişkisinin cinsi. */
+    type: partNumberTypeEnum("type").default("oem").notNull(),
     manufacturer: varchar("manufacturer", { length: 100 }),
+    /** Serbest not — Prosis cross_refs[].note / supersession[].note karşılığı. */
+    note: text("note"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -254,6 +290,12 @@ export const oemNumbers = pgTable(
   (table) => [
     index("idx_oem_numbers_product").on(table.productId),
     index("idx_oem_numbers_number").on(table.oemNumber),
+    index("idx_oem_number_normalized").on(table.numberNormalized),
+    uniqueIndex("uq_oem_product_number_type").on(
+      table.productId,
+      table.numberNormalized,
+      table.type
+    ),
   ]
 );
 
