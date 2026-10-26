@@ -14,11 +14,19 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { CONTACTS, WHATSAPP_URL, SITE_CONFIG } from "@/lib/constants";
+import { trackContactSubmit, trackWhatsAppClick } from "@/lib/analytics";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
+
+/**
+ * Mobilde rahat dokunma için 44px alan yüksekliği.
+ * Paylaşılan `ui/input` varsayılanı 36px'tir ve admin panelinde de kullanıldığı
+ * için orası değiştirilmez; yalnızca public form alanları büyütülür.
+ */
+const FIELD_H = "h-11";
 
 export default function IletisimClient() {
   const [formData, setFormData] = useState({
@@ -48,6 +56,7 @@ export default function IletisimClient() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Bir hata oluştu. Lütfen tekrar deneyin.");
+      trackContactSubmit();
       setSubmitted(true);
     } catch (err) {
       setSubmitError(
@@ -118,23 +127,23 @@ export default function IletisimClient() {
                   <form onSubmit={handleSubmit} className="space-y-5">
                     <div className="space-y-2">
                       <Label htmlFor="name">Ad Soyad <span className="text-red-500">*</span></Label>
-                      <Input id="name" name="name" placeholder="Adınız Soyadınız" required value={formData.name} onChange={handleChange} />
+                      <Input id="name" name="name" placeholder="Adınız Soyadınız" required autoComplete="name" className={FIELD_H} value={formData.name} onChange={handleChange} />
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="email">E-posta <span className="text-red-500">*</span></Label>
-                        <Input id="email" name="email" type="email" placeholder="ornek@firma.com" required value={formData.email} onChange={handleChange} />
+                        <Input id="email" name="email" type="email" placeholder="ornek@firma.com" required autoComplete="email" inputMode="email" className={FIELD_H} value={formData.email} onChange={handleChange} />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="phone">Telefon</Label>
-                        <Input id="phone" name="phone" type="tel" placeholder="+90 5XX XXX XX XX" value={formData.phone} onChange={handleChange} />
+                        <Input id="phone" name="phone" type="tel" placeholder="+90 5XX XXX XX XX" autoComplete="tel" inputMode="tel" className={FIELD_H} value={formData.phone} onChange={handleChange} />
                       </div>
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="subject">Konu <span className="text-red-500">*</span></Label>
-                      <Input id="subject" name="subject" placeholder="Teklif talebi, teknik destek, genel bilgi…" required value={formData.subject} onChange={handleChange} />
+                      <Input id="subject" name="subject" placeholder="Teklif talebi, teknik destek, genel bilgi…" required autoComplete="off" className={FIELD_H} value={formData.subject} onChange={handleChange} />
                     </div>
 
                     <div className="space-y-2">
@@ -157,7 +166,7 @@ export default function IletisimClient() {
 
                     <Button
                       type="submit" size="lg"
-                      className="w-full bg-nidah-yellow text-nidah-dark hover:bg-nidah-yellow-dark font-bold"
+                      className="w-full h-11 bg-nidah-yellow text-nidah-dark hover:bg-nidah-yellow-dark font-bold"
                       disabled={isSubmitting}
                     >
                       {isSubmitting
@@ -197,6 +206,7 @@ export default function IletisimClient() {
                           href={WHATSAPP_URL(person.phoneRaw, `Merhaba ${person.name}, NİDAH GROUP web sitesinden ulaşıyorum.`)}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={() => trackWhatsAppClick("iletisim_kisi")}
                         >
                           <MessageCircle className="size-4 mr-1.5" />
                           WhatsApp
@@ -247,6 +257,7 @@ export default function IletisimClient() {
                     href={WHATSAPP_URL(CONTACTS.mustafa.phoneRaw, "Acil destek talebi — NİDAH GROUP web sitesinden ulaşıyorum.")}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackWhatsAppClick("iletisim_destek_hatti")}
                   >
                     <MessageCircle className="size-4 mr-2" />
                     WhatsApp Destek Hattı

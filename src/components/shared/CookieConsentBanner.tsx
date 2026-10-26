@@ -46,16 +46,18 @@ export default function CookieConsentBanner() {
       role="dialog"
       aria-label="Çerez tercihleri"
       aria-modal="false"
-      className="fixed bottom-0 left-0 right-0 z-50 p-3 sm:p-4"
+      className="fixed bottom-0 left-0 right-0 z-50 p-2 sm:p-4"
     >
-      <div className="mx-auto max-w-4xl bg-nidah-dark border border-white/10 rounded-2xl shadow-2xl shadow-black/40 px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      {/* Mobilde bant bilinçli olarak alçak tutulur: tam ekran hero'da birincil
+          CTA'nın (“Ücretsiz Teklif Al”) üzerini kapatmaması gerekir.
+          Onay mantığı DEĞİŞMEZ — yalnızca yerleşim ve dokunma alanı. */}
+      <div className="mx-auto max-w-4xl bg-nidah-dark border border-white/10 rounded-2xl shadow-2xl shadow-black/40 px-4 py-3 sm:px-5 sm:py-4 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
 
         {/* Icon + Text */}
-        <div className="flex items-start gap-3 flex-1 min-w-0">
-          <Cookie className="size-5 text-nidah-yellow shrink-0 mt-0.5" aria-hidden="true" />
-          <p className="text-sm text-white/75 leading-relaxed">
-            Sitemizde kullanıcı deneyimini iyileştirmek amacıyla analitik çerezler kullanılmaktadır.
-            Kabul etmek zorunlu değilsiniz.{" "}
+        <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
+          <Cookie className="size-4 sm:size-5 text-nidah-yellow shrink-0 mt-0.5" aria-hidden="true" />
+          <p className="text-xs sm:text-sm text-white/75 leading-snug sm:leading-relaxed">
+            Deneyimi iyileştirmek için analitik çerez kullanıyoruz. Zorunlu değildir.{" "}
             <Link
               href="/kvkk"
               className="text-nidah-yellow underline underline-offset-2 hover:text-nidah-yellow/80 transition-colors whitespace-nowrap"
@@ -65,25 +67,24 @@ export default function CookieConsentBanner() {
           </p>
         </div>
 
-        {/* Buttons */}
-        <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+        {/* Buttons — mobilde tam genişlik, min 44px dokunma alanı */}
+        <div className="flex w-full sm:w-auto items-center gap-2 shrink-0">
           <button
             onClick={handleReject}
-            className="text-xs text-white/40 hover:text-white/70 transition-colors px-3 py-2 rounded-lg hover:bg-white/5"
+            className="flex-1 sm:flex-none min-h-11 text-xs text-white/60 hover:text-white/90 transition-colors px-4 rounded-lg hover:bg-white/5"
           >
             Reddet
           </button>
           <Button
             onClick={handleAccept}
-            size="sm"
-            className="bg-nidah-yellow hover:bg-nidah-yellow/90 text-nidah-dark font-bold text-xs px-5"
+            className="flex-1 sm:flex-none min-h-11 bg-nidah-yellow hover:bg-nidah-yellow/90 text-nidah-dark font-bold text-xs px-5"
           >
             Kabul Et
           </Button>
           <button
             onClick={handleReject}
             aria-label="Kapat"
-            className="text-white/30 hover:text-white/60 transition-colors p-1.5 rounded-lg hover:bg-white/5 ml-1"
+            className="shrink-0 size-11 flex items-center justify-center text-white/40 hover:text-white/70 transition-colors rounded-lg hover:bg-white/5"
           >
             <X className="size-4" />
           </button>

@@ -26,8 +26,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { BRANDS, CONTACTS, WHATSAPP_URL } from "@/lib/constants";
-import { trackRfqSubmit } from "@/lib/analytics";
+import { trackRfqSubmit, trackWhatsAppClick } from "@/lib/analytics";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
+
+/**
+ * Mobilde rahat dokunma için 44px alan yüksekliği.
+ * Paylaşılan `ui/input` varsayılanı 36px'tir ve admin panelinde de kullanıldığı
+ * için orası değiştirilmez; yalnızca public form alanları büyütülür.
+ */
+const FIELD_H = "h-11";
+
+/**
+ * SelectTrigger yüksekliğini `data-[size=default]:h-9` varsayılanı belirler.
+ * Düz `h-11` bu varyantla çakışmadığı için tailwind-merge onu ezmez —
+ * aynı varyant anahtarıyla yazmak gerekir.
+ */
+const SELECT_H = "data-[size=default]:h-11";
 
 type RequestType = "parts" | "service" | null;
 
@@ -62,7 +76,12 @@ function SidePanel({ whatsappMsg }: { whatsappMsg: string }) {
           Acil durumlarda WhatsApp üzerinden doğrudan ulaşabilirsiniz.
         </p>
         <Button asChild className="w-full bg-green-600 text-white hover:bg-green-700 font-bold">
-          <a href={WHATSAPP_URL(CONTACTS.mustafa.phoneRaw, whatsappMsg)} target="_blank" rel="noopener noreferrer">
+          <a
+            href={WHATSAPP_URL(CONTACTS.mustafa.phoneRaw, whatsappMsg)}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackWhatsAppClick("teklif_al_yan_panel")}
+          >
             <MessageCircle className="size-4 mr-2" />
             WhatsApp ile Teklif Al
           </a>
@@ -176,21 +195,21 @@ function PartsForm() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="fullName">Ad Soyad <span className="text-red-500">*</span></Label>
-                  <Input id="fullName" name="fullName" placeholder="Adınız ve soyadınız" required value={formData.fullName} onChange={handleChange} />
+                  <Input id="fullName" name="fullName" placeholder="Adınız ve soyadınız" required autoComplete="name" className={FIELD_H} value={formData.fullName} onChange={handleChange} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="company">Firma Adı <span className="text-red-500">*</span></Label>
-                  <Input id="company" name="company" placeholder="Şirketinizin adı" required value={formData.company} onChange={handleChange} />
+                  <Input id="company" name="company" placeholder="Şirketinizin adı" required autoComplete="organization" className={FIELD_H} value={formData.company} onChange={handleChange} />
                 </div>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="email">E-posta <span className="text-red-500">*</span></Label>
-                  <Input id="email" name="email" type="email" placeholder="ornek@firma.com" required value={formData.email} onChange={handleChange} />
+                  <Input id="email" name="email" type="email" placeholder="ornek@firma.com" required autoComplete="email" inputMode="email" className={FIELD_H} value={formData.email} onChange={handleChange} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Telefon <span className="text-gray-400 font-normal text-xs">(opsiyonel)</span></Label>
-                  <Input id="phone" name="phone" placeholder="+90 / +971 / +44…" value={formData.phone} onChange={handleChange} />
+                  <Input id="phone" name="phone" type="tel" placeholder="+90 / +971 / +44…" autoComplete="tel" inputMode="tel" className={FIELD_H} value={formData.phone} onChange={handleChange} />
                 </div>
               </div>
             </div>
@@ -201,13 +220,13 @@ function PartsForm() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="partNumber">Parça Numarası</Label>
-                  <Input id="partNumber" name="partNumber" placeholder="Örn: VOE 15172797" value={formData.partNumber} onChange={handleChange}
-                    className="font-mono" />
+                  <Input id="partNumber" name="partNumber" placeholder="Örn: VOE 15172797" autoComplete="off" value={formData.partNumber} onChange={handleChange}
+                    className={`${FIELD_H} font-mono`} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="brand">Marka</Label>
                   <Select value={formData.brand} onValueChange={(v) => setFormData((p) => ({ ...p, brand: v }))}>
-                    <SelectTrigger><SelectValue placeholder="Marka seçiniz" /></SelectTrigger>
+                    <SelectTrigger className={SELECT_H}><SelectValue placeholder="Marka seçiniz" /></SelectTrigger>
                     <SelectContent>
                       {BRANDS.map((b) => <SelectItem key={b.slug} value={b.name}>{b.name}</SelectItem>)}
                       <SelectItem value="Diğer">Diğer</SelectItem>
@@ -219,18 +238,18 @@ function PartsForm() {
               <div className="grid gap-4 sm:grid-cols-3">
                 <div className="space-y-2 sm:col-span-2">
                   <Label htmlFor="machineModel">Makina Modeli</Label>
-                  <Input id="machineModel" name="machineModel" placeholder="Örn: Volvo EC210B" value={formData.machineModel} onChange={handleChange} />
+                  <Input id="machineModel" name="machineModel" placeholder="Örn: Volvo EC210B" autoComplete="off" className={FIELD_H} value={formData.machineModel} onChange={handleChange} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="quantity">Adet</Label>
-                  <Input id="quantity" name="quantity" type="number" min={1} value={formData.quantity} onChange={handleChange} />
+                  <Input id="quantity" name="quantity" type="number" min={1} inputMode="numeric" className={FIELD_H} value={formData.quantity} onChange={handleChange} />
                 </div>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="country">Teslimat Ülkesi</Label>
-                  <Input id="country" name="country" value={formData.country} onChange={handleChange} />
+                  <Input id="country" name="country" autoComplete="country-name" className={FIELD_H} value={formData.country} onChange={handleChange} />
                 </div>
               </div>
 
@@ -258,7 +277,7 @@ function PartsForm() {
               </div>
             )}
 
-            <Button type="submit" size="lg" disabled={isSubmitting} className="w-full bg-nidah-yellow text-nidah-dark hover:bg-nidah-yellow-dark font-bold">
+            <Button type="submit" size="lg" disabled={isSubmitting} className="w-full h-11 bg-nidah-yellow text-nidah-dark hover:bg-nidah-yellow-dark font-bold">
               {isSubmitting ? <><Loader2 className="size-4 animate-spin mr-2" />Gönderiliyor…</> : <><Send className="size-4 mr-2" />Parça Teklifi İste</>}
             </Button>
           </form>
@@ -345,21 +364,21 @@ function ServiceForm() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="sFullName">Ad Soyad <span className="text-red-500">*</span></Label>
-                  <Input id="sFullName" name="fullName" placeholder="Adınız ve soyadınız" required value={formData.fullName} onChange={handleChange} />
+                  <Input id="sFullName" name="fullName" placeholder="Adınız ve soyadınız" required autoComplete="name" className={FIELD_H} value={formData.fullName} onChange={handleChange} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="sCompany">Firma Adı <span className="text-red-500">*</span></Label>
-                  <Input id="sCompany" name="company" placeholder="Şirketinizin adı" required value={formData.company} onChange={handleChange} />
+                  <Input id="sCompany" name="company" placeholder="Şirketinizin adı" required autoComplete="organization" className={FIELD_H} value={formData.company} onChange={handleChange} />
                 </div>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="sEmail">E-posta <span className="text-red-500">*</span></Label>
-                  <Input id="sEmail" name="email" type="email" placeholder="ornek@firma.com" required value={formData.email} onChange={handleChange} />
+                  <Input id="sEmail" name="email" type="email" placeholder="ornek@firma.com" required autoComplete="email" inputMode="email" className={FIELD_H} value={formData.email} onChange={handleChange} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="sPhone">Telefon <span className="text-gray-400 font-normal text-xs">(opsiyonel)</span></Label>
-                  <Input id="sPhone" name="phone" placeholder="+90 / +971 / +44…" value={formData.phone} onChange={handleChange} />
+                  <Input id="sPhone" name="phone" type="tel" placeholder="+90 / +971 / +44…" autoComplete="tel" inputMode="tel" className={FIELD_H} value={formData.phone} onChange={handleChange} />
                 </div>
               </div>
             </div>
@@ -372,7 +391,7 @@ function ServiceForm() {
               <div className="space-y-2">
                 <Label>Hizmet Türü <span className="text-red-500">*</span></Label>
                 <Select value={formData.serviceType} onValueChange={(v) => setFormData((p) => ({ ...p, serviceType: v }))}>
-                  <SelectTrigger><SelectValue placeholder="Hizmet türünü seçiniz" /></SelectTrigger>
+                  <SelectTrigger className={SELECT_H}><SelectValue placeholder="Hizmet türünü seçiniz" /></SelectTrigger>
                   <SelectContent>
                     {SERVICE_TYPES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                   </SelectContent>
@@ -384,7 +403,7 @@ function ServiceForm() {
                 <div className="space-y-2">
                   <Label>Araç Markası</Label>
                   <Select value={formData.machineBrand} onValueChange={(v) => setFormData((p) => ({ ...p, machineBrand: v }))}>
-                    <SelectTrigger><SelectValue placeholder="Marka seçiniz" /></SelectTrigger>
+                    <SelectTrigger className={SELECT_H}><SelectValue placeholder="Marka seçiniz" /></SelectTrigger>
                     <SelectContent>
                       {BRANDS.map((b) => <SelectItem key={b.slug} value={b.name}>{b.name}</SelectItem>)}
                       <SelectItem value="Diğer">Diğer</SelectItem>
@@ -393,7 +412,7 @@ function ServiceForm() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="sMachineModel">Araç Modeli</Label>
-                  <Input id="sMachineModel" name="machineModel" placeholder="Örn: Volvo EC210B" value={formData.machineModel} onChange={handleChange} />
+                  <Input id="sMachineModel" name="machineModel" placeholder="Örn: Volvo EC210B" autoComplete="off" className={FIELD_H} value={formData.machineModel} onChange={handleChange} />
                 </div>
               </div>
 
@@ -439,7 +458,7 @@ function ServiceForm() {
               {/* Country */}
               <div className="space-y-2">
                 <Label htmlFor="sCountry">Ülke</Label>
-                <Input id="sCountry" name="country" value={formData.country} onChange={handleChange} />
+                <Input id="sCountry" name="country" autoComplete="country-name" className={FIELD_H} value={formData.country} onChange={handleChange} />
               </div>
             </div>
 
@@ -462,7 +481,7 @@ function ServiceForm() {
               </div>
             )}
 
-            <Button type="submit" size="lg" disabled={isSubmitting} className="w-full bg-nidah-dark text-white hover:bg-nidah-navy font-bold">
+            <Button type="submit" size="lg" disabled={isSubmitting} className="w-full h-11 bg-nidah-dark text-white hover:bg-nidah-navy font-bold">
               {isSubmitting ? <><Loader2 className="size-4 animate-spin mr-2" />Gönderiliyor…</> : <><Send className="size-4 mr-2" />Servis Talebi Gönder</>}
             </Button>
           </form>
