@@ -19,9 +19,15 @@ export function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default function CatPage() {
+export default async function CatPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sayfa?: string | string[] }>;
+}) {
+  const { sayfa } = await searchParams;
   return (
     <BrandCatalogPage
+      page={sayfa}
       brandSlug="cat"
       brandDisplayName="CAT"
       brandDescription="Caterpillar (CAT) iş makinaları ve ağır ekipman"

@@ -44,7 +44,7 @@ const KEY_STATS = [
 
 export default function GlobalReachSection() {
   return (
-    <section className="py-24 bg-[#0F1B2D] relative overflow-hidden">
+    <section className="py-14 sm:py-24 bg-nidah-dark relative overflow-hidden">
 
       {/* ── Background image ── */}
       <Image
@@ -57,7 +57,7 @@ export default function GlobalReachSection() {
         className="object-cover object-center"
       />
       {/* ── Dark overlay ── */}
-      <div className="absolute inset-0 bg-[#0F1B2D]/80 pointer-events-none" />
+      <div className="absolute inset-0 bg-nidah-dark/80 pointer-events-none" />
 
       {/* Background texture */}
       <div className="absolute inset-0 opacity-[0.04]" style={{

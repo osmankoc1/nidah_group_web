@@ -14,6 +14,7 @@ import {
 import { eq, and } from "drizzle-orm";
 import { getAllPageSettings, type PageKey } from "@/lib/site-settings";
 import { isUsableSlug } from "@/lib/blog-locales";
+import { productUrl } from "@/lib/product-url";
 
 const BASE_URL = "https://www.nidahgroup.com.tr";
 
@@ -44,6 +45,12 @@ const URLS_BY_PAGE: Partial<Record<PageKey, MetadataRoute.Sitemap>> = {
     { url: `${BASE_URL}/parca-katalog/bomag`,    lastModified: new Date(), changeFrequency: "weekly", priority: 0.85 },
     { url: `${BASE_URL}/parca-katalog/ammann`,   lastModified: new Date(), changeFrequency: "weekly", priority: 0.85 },
     { url: `${BASE_URL}/parca-katalog/champion`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.85 },
+    // 2026-11-16 — Mitsubishi / Çukurova / Hitachi marka sayfaları development'ta
+    // hazırlandı. Bu grup `page_parca_katalog` toggle'ına bağlıdır: katalog KAPALI
+    // olduğu sürece bu üç URL de sitemap'e GİRMEZ (63 URL değişmez).
+    { url: `${BASE_URL}/parca-katalog/mitsubishi`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.85 },
+    { url: `${BASE_URL}/parca-katalog/cukurova`,   lastModified: new Date(), changeFrequency: "weekly", priority: 0.85 },
+    { url: `${BASE_URL}/parca-katalog/hitachi`,    lastModified: new Date(), changeFrequency: "weekly", priority: 0.85 },
   ],
   page_catalog: [
     { url: `${BASE_URL}/catalog`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
@@ -112,12 +119,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         .where(eq(blogPosts.status, "published"))
     : [];
 
-  // Active product pages — yalnızca katalog yayındayken
+  // ── Ürün sayfaları — İKİ KAPIDAN geçenler ─────────────────────────────────
+  // 1. Katalog toggle'ı açık olmalı (sayfa zaten 404 dönerse sitemap'e girmez).
+  // 2. `seo_ready = true` olmalı — insan onayı verilmiş ürünler.
+  //
+  // İkinci kapı denetim C11'in karşılığıdır: içeriği hazır olmayan bir ürün
+  // Google'a ince sayfa olarak bildirilmez. Aynı kural ürün sayfasının
+  // `robots` etiketinde de uygulanır (noindex), böylece sitemap ile sayfa
+  // sinyali birbiriyle çelişmez.
   const dbProducts = katalogEnabled
     ? await db
         .select({ id: products.id, partNumber: products.partNumber })
         .from(products)
-        .where(eq(products.isActive, true))
+        .where(and(eq(products.isActive, true), eq(products.seoReady, true)))
     : [];
 
   // ── Kategori ve etiketler — YALNIZCA yayımlanmış içeriği olanlar ───────────
@@ -182,7 +196,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         })
         .from(productImages)
         .innerJoin(products, eq(productImages.productId, products.id))
-        .where(eq(products.isActive, true))
+        // ÜÇ koşul birlikte: ürün sitemap'e girmiyorsa görselleri de girmez,
+        // ve DOĞRULANMAMIŞ görsel hiç girmez (karar K2). Temsilî görselin
+        // zaten bir URL'si yoktur — satır içi SVG'dir, bu sorguya düşmez.
+        .where(
+          and(
+            eq(products.isActive, true),
+            eq(products.seoReady, true),
+            eq(productImages.verified, true)
+          )
+        )
         .catch(() => [] as { productId: string; url: string; isPrimary: boolean; sortOrder: number }[])
     : [];
 
@@ -224,7 +247,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .map(p => {
       const imgs = imagesByProduct.get(p.id) ?? [];
       return {
-        url: `${BASE_URL}/parca-katalog/${encodeURIComponent(p.partNumber)}`,
+        // TEK KAYNAK: ürün sayfasının canonical'ı ve JSON-LD `url` alanı da
+        // aynı fonksiyondan gelir (denetim C2 — üç ayrı yazım sorunu).
+        url: productUrl(p.partNumber),
         lastModified: new Date(),
         changeFrequency: "weekly" as const,
         priority: 0.8,

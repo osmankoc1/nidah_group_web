@@ -19,9 +19,15 @@ export function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default function AmmannPage() {
+export default async function AmmannPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sayfa?: string | string[] }>;
+}) {
+  const { sayfa } = await searchParams;
   return (
     <BrandCatalogPage
+      page={sayfa}
       brandSlug="ammann"
       brandDisplayName="AMMANN"
       brandDescription="İsviçre AMMANN kompaksiyon ekipmanları"

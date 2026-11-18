@@ -16,7 +16,9 @@ export default function WhatsAppFab() {
       rel="noopener noreferrer"
       aria-label="WhatsApp ile iletişime geçin"
       onClick={() => trackWhatsAppClick("fab")}
-      className="fixed bottom-6 right-6 z-50 flex size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-110 hover:bg-[#1ebe5d] focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2"
+      /* Mobilde gizli: MobileActionBar zaten WhatsApp eylemi sunuyor; iki ayrı
+         yüzen WhatsApp affordance'ı üst üste binerdi. */
+      className="hidden lg:flex fixed bottom-6 right-6 z-50 size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-110 hover:bg-[#1ebe5d] focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2"
     >
       {/* Pulse ring */}
       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#25D366] opacity-40" />

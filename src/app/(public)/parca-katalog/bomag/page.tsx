@@ -19,9 +19,15 @@ export function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default function BomagPage() {
+export default async function BomagPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sayfa?: string | string[] }>;
+}) {
+  const { sayfa } = await searchParams;
   return (
     <BrandCatalogPage
+      page={sayfa}
       brandSlug="bomag"
       brandDisplayName="BOMAG"
       brandDescription="Alman BOMAG kompaksiyon ekipmanları"

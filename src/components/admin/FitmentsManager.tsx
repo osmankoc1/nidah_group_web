@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Plus, Trash2, Loader2, Link2 } from "lucide-react";
+import { Plus, Trash2, Loader2, Link2, Pencil, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +16,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
+import VerificationControl from "@/components/admin/VerificationControl";
+import { FIELD_LIMITS } from "@/lib/product-fields";
+
 interface Manufacturer  { id: string; name: string; }
 interface Machine       { id: string; model: string; type: string | null; manufacturerId: string; manufacturerName: string | null; }
 interface MachineVariant { id: string; variantName: string; }
@@ -28,6 +31,9 @@ interface FitmentRow {
   machineType: string | null;
   variantName: string | null;
   notes: string | null;
+  /** Faz 2 — uyumluluk dogrulama durumu (drizzle/0008). */
+  verified: boolean;
+  source: string | null;
 }
 
 /** VOLVO — G720 — GREYDER */
@@ -45,6 +51,11 @@ export default function FitmentsManager({ productId }: { productId: string }) {
   const [loading,       setLoading]       = useState(true);
   const [saving,        setSaving]        = useState(false);
   const [error,         setError]         = useState("");
+
+  // Satır içi not düzenleme (bulgu P12): yalnızca NOT düzenlenir.
+  const [notEditId, setNotEditId] = useState<string | null>(null);
+  const [notMetni,  setNotMetni]  = useState("");
+  const [notBusy,   setNotBusy]   = useState(false);
 
   const [mfrId,     setMfrId]     = useState("");
   const [machineId, setMachineId] = useState("");
@@ -123,6 +134,51 @@ export default function FitmentsManager({ productId }: { productId: string }) {
       setNotes("");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleVerify(
+    fitmentId: string,
+    next: { verified: boolean; source: string }
+  ): Promise<string | null> {
+    const res = await fetch(`/api/admin/products/${productId}/fitments/${fitmentId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(next),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) return json.error ?? "Güncellenemedi.";
+    await fetchFitments();
+    return null;
+  }
+
+  /**
+   * Notu kaydeder — bulgu P12.
+   *
+   * Eskiden tek düzenleme yolu KAYDI SİLİP YENİDEN EKLEMEKTİ; bu da
+   * doğrulama durumunu ve kaynağını birlikte siliyordu. Burada yalnızca
+   * `notes` gönderilir: `verified` ve `source` gövdeye KONMAZ, bu yüzden
+   * doğrulama durumu olduğu gibi kalır.
+   */
+  async function notuKaydet(fitmentId: string) {
+    setNotBusy(true);
+    setError("");
+    try {
+      const res = await fetch(`/api/admin/products/${productId}/fitments/${fitmentId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ notes: notMetni.trim() }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(json.error ?? "Not kaydedilemedi.");
+        return;
+      }
+      toast.success("Not güncellendi.");
+      setNotEditId(null);
+      await fetchFitments();
+    } finally {
+      setNotBusy(false);
     }
   }
 
@@ -249,9 +305,62 @@ export default function FitmentsManager({ productId }: { productId: string }) {
                         </Badge>
                       )}
                     </div>
-                    {f.notes && (
-                      <p className="text-xs text-muted-foreground mt-1">{f.notes}</p>
+                    {/* Not — satır içi düzenlenebilir (bulgu P12). Makine
+                        eşleşmesi burada DEĞİŞTİRİLEMEZ: yanlış eşleşme
+                        silinip yeniden eklenir, böylece doğrulama geçmişi
+                        yanıltıcı olmaz. */}
+                    {notEditId === f.id ? (
+                      <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                        <Input
+                          className="h-8 w-full sm:w-72 text-xs"
+                          aria-label="Uyumluluk notu"
+                          maxLength={FIELD_LIMITS.fitmentNotes}
+                          placeholder="Not (boş bırakılırsa silinir)…"
+                          value={notMetni}
+                          onChange={(e) => setNotMetni(e.target.value)}
+                        />
+                        <Button
+                          type="button"
+                          size="sm"
+                          className="h-8"
+                          disabled={notBusy}
+                          onClick={() => notuKaydet(f.id)}
+                        >
+                          {notBusy && <Loader2 className="size-3.5 animate-spin mr-1" />}
+                          Kaydet
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="ghost"
+                          className="h-8"
+                          onClick={() => setNotEditId(null)}
+                        >
+                          <X className="size-3.5" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        className="mt-1 flex items-center gap-1.5 text-left text-xs text-muted-foreground hover:text-foreground"
+                        onClick={() => {
+                          setNotEditId(f.id);
+                          setNotMetni(f.notes ?? "");
+                        }}
+                      >
+                        <Pencil className="size-3 shrink-0" aria-hidden="true" />
+                        <span>{f.notes ? f.notes : "Not ekle"}</span>
+                      </button>
                     )}
+                    {/* Dogrulama — teyitsiz uyumluluk public sayfada kesin
+                        bilgi olarak sunulmaz ve yapisal veriye yazilmaz. */}
+                    <div className="mt-2">
+                      <VerificationControl
+                        verified={f.verified}
+                        source={f.source}
+                        applyChange={(next) => handleVerify(f.id, next)}
+                      />
+                    </div>
                   </div>
                   <Button
                     size="sm"

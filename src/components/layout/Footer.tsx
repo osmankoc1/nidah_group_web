@@ -98,7 +98,7 @@ export default function Footer({ navItems, teklifAlEnabled, hizmetlerEnabled }: 
             <Link href="/" className="inline-block">
               <div>
                 <span className="text-xl font-black tracking-tight text-white">NİDAH GROUP</span>
-                <p className="text-[10px] text-nidah-yellow font-semibold tracking-widest uppercase mt-0.5">
+                <p className="text-xs text-nidah-yellow font-semibold tracking-widest uppercase mt-0.5">
                   Global Parts &amp; Supply
                 </p>
               </div>

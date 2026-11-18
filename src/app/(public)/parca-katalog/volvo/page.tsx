@@ -19,9 +19,15 @@ export function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default function VolvoPage() {
+export default async function VolvoPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sayfa?: string | string[] }>;
+}) {
+  const { sayfa } = await searchParams;
   return (
     <BrandCatalogPage
+      page={sayfa}
       brandSlug="volvo"
       brandDisplayName="VOLVO"
       brandDescription="İsveç menşeli VOLVO Construction Equipment iş makinaları"

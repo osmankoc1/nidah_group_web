@@ -4,7 +4,8 @@ import {
   products, productImages, categories,
   fitments, machines, manufacturers, machineVariants, oemNumbers,
 } from "@/lib/db/schema";
-import { eq, and, asc } from "drizzle-orm";
+import { eq, and, asc, isNull, or, sql } from "drizzle-orm";
+import { productLookupKey } from "@/lib/product-url";
 
 type Params = { params: Promise<{ partNumber: string }> };
 
@@ -12,7 +13,12 @@ export async function GET(_req: NextRequest, { params }: Params) {
   if (!db) return NextResponse.json({ error: "Database not configured" }, { status: 503 });
 
   const { partNumber } = await params;
-  const pn = decodeURIComponent(partNumber).toUpperCase();
+  // Kimlik araması normalize anahtar üzerinden (denetim C3): "ch-76281",
+  // "CH%2076281" ve "CH 76281" aynı ürüne çözülür.
+  const normalized = productLookupKey(partNumber);
+  if (!normalized) {
+    return NextResponse.json({ error: "Product not found" }, { status: 404 });
+  }
 
   try {
     const [product] = await db
@@ -30,7 +36,19 @@ export async function GET(_req: NextRequest, { params }: Params) {
       })
       .from(products)
       .leftJoin(categories, eq(products.categoryId, categories.id))
-      .where(and(eq(products.partNumber, pn), eq(products.isActive, true)))
+      .where(
+        and(
+          eq(products.isActive, true),
+          or(
+            eq(products.partNumberNormalized, normalized),
+            // 0006 öncesinden kalan NULL normalize satırlar için geri dönüş.
+            and(
+              isNull(products.partNumberNormalized),
+              sql`upper(regexp_replace(${products.partNumber}, '[^A-Za-z0-9]', '', 'g')) = ${normalized}`
+            )
+          )
+        )
+      )
       .limit(1);
 
     if (!product) {
@@ -45,9 +63,19 @@ export async function GET(_req: NextRequest, { params }: Params) {
           cloudinaryUrl: productImages.cloudinaryUrl,
           isPrimary:    productImages.isPrimary,
           sortOrder:    productImages.sortOrder,
+          altText:      productImages.altText,
         })
         .from(productImages)
-        .where(eq(productImages.productId, product.id))
+        // YALNIZCA DOGRULANMIS GORSELLER (karar K2). Yuklenmis ama bu parcayi
+        // gosterdigi teyit edilmemis bir dosya public yuzeye CIKMAZ: Google
+        // merchant listing kurali "Images must represent the marked up
+        // content." Dogrulanmamis fotograf yalnizca yonetim panelinde gorunur.
+        .where(
+          and(
+            eq(productImages.productId, product.id),
+            eq(productImages.verified, true)
+          )
+        )
         .orderBy(asc(productImages.sortOrder), asc(productImages.createdAt)),
       db
         .select({

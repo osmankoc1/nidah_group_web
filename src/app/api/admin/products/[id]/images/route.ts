@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { productImages, products } from "@/lib/db/schema";
 import { eq, count } from "drizzle-orm";
 import { uploadToCloudinary, isCloudinaryConfigured } from "@/lib/cloudinary";
+import { PRODUCT_IMAGE_COLUMNS_V2 } from "@/lib/db/columns";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -13,8 +14,10 @@ export async function GET(_req: NextRequest, { params }: Params) {
   if (!db) return NextResponse.json({ error: "Database not configured" }, { status: 503 });
 
   const { id } = await params;
+  // Acik kolon kumesi (0011 dogrulama alanlari dahil) — yildiz select,
+  // migration uygulanmamis bir veritabaninda 500 dondururdu.
   const images = await db
-    .select()
+    .select(PRODUCT_IMAGE_COLUMNS_V2)
     .from(productImages)
     .where(eq(productImages.productId, id))
     .orderBy(productImages.sortOrder, productImages.createdAt);
@@ -77,8 +80,11 @@ export async function POST(request: NextRequest, { params }: Params) {
         cloudinaryUrl: uploaded.secureUrl,
         sortOrder:   Number(total),
         isPrimary,
+        // `verified` BILINCLI OLARAK YAZILMAZ -> sema varsayilani false kalir.
+        // Yeni yuklenen hicbir fotograf dogrulanmis sayilmaz; dogrulama ayri
+        // ve acik bir insan kararidir (PATCH .../images/[imageId]).
       })
-      .returning();
+      .returning(PRODUCT_IMAGE_COLUMNS_V2);
 
     return NextResponse.json({ data: image }, { status: 201 });
   } catch (err) {

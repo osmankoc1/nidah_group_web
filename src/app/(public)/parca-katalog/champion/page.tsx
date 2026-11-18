@@ -19,9 +19,15 @@ export function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default function ChampionPage() {
+export default async function ChampionPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sayfa?: string | string[] }>;
+}) {
+  const { sayfa } = await searchParams;
   return (
     <BrandCatalogPage
+      page={sayfa}
       brandSlug="champion"
       brandDisplayName="CHAMPION"
       brandDescription="CHAMPION motorlu greyder ve yol yapım ekipmanları"

@@ -33,7 +33,7 @@ const CORE_SERVICES = [
 export default async function ServicesOverview() {
   const catalog = await getCatalogAccess();
   return (
-    <section className="py-24 bg-white">
+    <section className="py-14 sm:py-24 bg-white">
       <div className="max-w-6xl mx-auto px-6">
 
         {/* Header */}

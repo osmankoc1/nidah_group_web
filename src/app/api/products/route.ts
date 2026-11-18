@@ -59,6 +59,8 @@ export async function GET(request: NextRequest) {
           name:         products.name,
           description:  products.description,
           condition:    products.condition,
+          // Stok OTORITESI. `in_stock` geriye uyumluluk icin de dondurulur.
+          stockStatus:  products.stockStatus,
           inStock:      products.inStock,
           categoryName: categories.name,
         })
@@ -83,7 +85,17 @@ export async function GET(request: NextRequest) {
         db
           .select({ productId: productImages.productId, url: productImages.cloudinaryUrl })
           .from(productImages)
-          .where(and(eq(productImages.isPrimary, true), inArray(productImages.productId, ids))),
+        // YALNIZCA DOGRULANMIS GORSELLER (karar K2). Yuklenmis ama bu parcayi
+        // gosterdigi teyit edilmemis bir dosya public yuzeye CIKMAZ: Google
+        // merchant listing kurali "Images must represent the marked up
+        // content." Dogrulanmamis fotograf yalnizca yonetim panelinde gorunur.
+          .where(
+            and(
+              eq(productImages.isPrimary, true),
+              eq(productImages.verified, true),
+              inArray(productImages.productId, ids)
+            )
+          ),
         db
           .select({ productId: fitments.productId, brandName: manufacturers.name })
           .from(fitments)
@@ -108,6 +120,7 @@ export async function GET(request: NextRequest) {
       name:         r.name,
       description:  r.description,
       condition:    r.condition,
+      stockStatus:  r.stockStatus,
       inStock:      r.inStock,
       categoryName: r.categoryName ?? null,
       imageUrl:     imageMap[r.id] ?? null,

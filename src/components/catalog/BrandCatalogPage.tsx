@@ -3,9 +3,11 @@ import { ORGANIZATION_REF } from "@/lib/constants";
 import { JsonLd } from "@/lib/json-ld";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { PackageSearch, CheckCircle, Clock, ArrowRight } from "lucide-react";
+import { PackageSearch, ArrowRight } from "lucide-react";
+import ProductImagePlaceholder from "./ProductImagePlaceholder";
+import StockBadge from "./StockBadge";
+import ConditionBadge from "./ConditionBadge";
 import { isPageEnabled } from "@/lib/site-settings";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import { db } from "@/lib/db";
@@ -13,16 +15,20 @@ import {
   products, productImages, categories,
   fitments, machines, manufacturers,
 } from "@/lib/db/schema";
-import { eq, and, ilike, asc } from "drizzle-orm";
+import { eq, and, ilike, asc, sql, inArray, countDistinct } from "drizzle-orm";
+import { BRAND_PAGE_SIZE, paginate, type PageInfo } from "@/lib/pagination";
+import { productPath } from "@/lib/product-url";
+import { type StockStatus } from "@/lib/stock";
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// ── Types ────────────────────────────────────────────────────────
 
 interface BrandProductItem {
   id: string;
   partNumber: string;
   name: string;
   condition: "new" | "used" | "remanufactured";
-  inStock: boolean;
+  /** Stok OTORITESI (drizzle/0008). Legacy `in_stock` okunmaz. */
+  stockStatus: StockStatus;
   categoryName: string | null;
   imageUrl: string | null;
 }
@@ -32,93 +38,159 @@ interface BrandCatalogPageProps {
   brandDisplayName: string;
   brandDescription: string;
   brandMachineTypes: string[];
+  /** `?sayfa=` sorgu parametresi — doğrulama paginate() içinde. */
+  page?: string | string[];
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────
 
-const CONDITION: Record<string, { label: string; cls: string }> = {
-  new:            { label: "Sıfır",      cls: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  used:           { label: "İkinci El",  cls: "bg-sky-50 text-sky-700 border-sky-200" },
-  remanufactured: { label: "Yenilenmiş", cls: "bg-violet-50 text-violet-700 border-violet-200" },
-};
+const EMPTY_PAGE = { items: [] as BrandProductItem[], pageInfo: paginate(0, 1, BRAND_PAGE_SIZE) };
 
-// ── Server component ──────────────────────────────────────────────────────────
+/**
+ * Marka sayfasının ürünlerini getirir.
+ *
+ * Denetim C5 — ESKİ DAVRANIŞ BOZUKTU: marka filtresi SQL'de uygulanmıyordu.
+ * Sorgu `is_active = true` ile `ORDER BY part_number LIMIT 100` yapıp ilk 100
+ * ürünü çekiyor, marka eşleşmesi sonra JS'te `Set` ile yapılıyordu. Toplam
+ * ürün sayısı 100'ü geçtiği anda marka sayfaları sessizce boşalıyordu.
+ * Ayrıca her ürün için 1–2 ayrı görsel sorgusu atılıyordu (N+1; 48 üründe
+ * 96 sorguya kadar).
+ *
+ * YENİ: filtre ve sayfalama SQL'de, görseller TEK batch sorguda.
+ * Sorgu sayısı sayfa başına sabit 4'tür (üretici + toplam + sayfa + görseller).
+ */
+async function fetchBrandPage(
+  brandSlug: string,
+  brandDisplayName: string,
+  requestedPage: string | string[] | undefined
+): Promise<{ items: BrandProductItem[]; pageInfo: PageInfo }> {
+  if (!db) return EMPTY_PAGE;
+
+  const pageParam = Array.isArray(requestedPage) ? requestedPage[0] : requestedPage;
+
+  try {
+    // 1 ─ Üretici(ler). TAM eşleşme önce: slug veya ad. Eski `ilike('%CAT%')`
+    //     biçimi "CAT" ile "CATERPILLAR"ı ayırt edemiyordu.
+    const slugLower = brandSlug.toLowerCase();
+    const nameUpper = brandDisplayName.toUpperCase();
+
+    let mfrRows = await db
+      .select({ id: manufacturers.id })
+      .from(manufacturers)
+      .where(
+        sql`lower(${manufacturers.slug}) = ${slugLower} or upper(${manufacturers.name}) = ${nameUpper}`
+      );
+
+    // 2 ─ Geri dönüş: canlı veride üretici adı farklı yazılmış olabilir
+    //     (ör. "CAT" sayfası için "CATERPILLAR" kaydı). Mevcut davranışı
+    //     bozmamak için alt-dize eşleşmesi KORUNUR, ama yalnızca tam
+    //     eşleşme hiç sonuç vermediğinde denenir.
+    if (mfrRows.length === 0) {
+      mfrRows = await db
+        .select({ id: manufacturers.id })
+        .from(manufacturers)
+        .where(ilike(manufacturers.name, `%${brandDisplayName}%`));
+    }
+
+    if (mfrRows.length === 0) return EMPTY_PAGE;
+
+    const where = and(
+      eq(products.isActive, true),
+      inArray(
+        machines.manufacturerId,
+        mfrRows.map((m) => m.id)
+      )
+    );
+
+    const [totals] = await db
+      .select({ total: countDistinct(products.id) })
+      .from(products)
+      .innerJoin(fitments, eq(fitments.productId, products.id))
+      .innerJoin(machines, eq(fitments.machineId, machines.id))
+      .where(where);
+
+    const pageInfo = paginate(Number(totals?.total ?? 0), pageParam, BRAND_PAGE_SIZE);
+    if (pageInfo.total === 0) return { items: [], pageInfo };
+
+    const rows = await db
+      .selectDistinct({
+        id:           products.id,
+        partNumber:   products.partNumber,
+        name:         products.name,
+        condition:    products.condition,
+        stockStatus:  products.stockStatus,
+        categoryName: categories.name,
+      })
+      .from(products)
+      .innerJoin(fitments, eq(fitments.productId, products.id))
+      .innerJoin(machines, eq(fitments.machineId, machines.id))
+      .leftJoin(categories, eq(products.categoryId, categories.id))
+      .where(where)
+      .orderBy(asc(products.partNumber))
+      .limit(pageInfo.pageSize)
+      .offset(pageInfo.offset);
+
+    if (rows.length === 0) return { items: [], pageInfo };
+
+    // Görseller — TEK sorgu. Birincil görsel önce, sonra sıra numarası.
+    const imageRows = await db
+      .select({
+        productId: productImages.productId,
+        url:       productImages.cloudinaryUrl,
+        isPrimary: productImages.isPrimary,
+        sortOrder: productImages.sortOrder,
+      })
+      .from(productImages)
+      // YALNIZCA DOGRULANMIS GORSELLER (karar K2). Yuklenmis ama bu parcayi
+      // gosterdigi teyit edilmemis bir dosya public yuzeye CIKMAZ: Google
+      // merchant listing kurali "Images must represent the marked up
+      // content." Dogrulanmamis fotograf yalnizca yonetim panelinde gorunur.
+      .where(
+        and(
+          eq(productImages.verified, true),
+          inArray(productImages.productId, rows.map((r) => r.id))
+        )
+      );
+
+    const imageByProduct = new Map<string, string>();
+    for (const row of [...imageRows].sort(
+      (a, b) => Number(b.isPrimary) - Number(a.isPrimary) || a.sortOrder - b.sortOrder
+    )) {
+      if (!row.url) continue;
+      if (!imageByProduct.has(row.productId)) imageByProduct.set(row.productId, row.url);
+    }
+
+    return {
+      items: rows.map((r) => ({
+        ...r,
+        categoryName: r.categoryName ?? null,
+        imageUrl: imageByProduct.get(r.id) ?? null,
+      })),
+      pageInfo,
+    };
+  } catch {
+    return EMPTY_PAGE;
+  }
+}
+
+// ── Server component ──────────────────────────────────────────────
 
 export default async function BrandCatalogPage({
   brandSlug,
   brandDisplayName,
   brandDescription,
   brandMachineTypes,
+  page,
 }: BrandCatalogPageProps) {
   // Admin > Sayfalar > "Parça Kataloğu" toggle'ı tek otoritedir —
   // hub kapalıyken tüm marka sayfaları da kapanır, açılınca otomatik yayına girer.
   if (!await isPageEnabled("page_parca_katalog")) notFound();
 
-  // Fetch products for this brand via fitments → machines → manufacturers join
-  let brandProducts: BrandProductItem[] = [];
-
-  if (db) {
-    try {
-      // Get product IDs that fit machines from this manufacturer
-      const fitmentRows = await db
-        .selectDistinct({ productId: fitments.productId })
-        .from(fitments)
-        .innerJoin(machines, eq(fitments.machineId, machines.id))
-        .innerJoin(manufacturers, eq(machines.manufacturerId, manufacturers.id))
-        .where(ilike(manufacturers.name, `%${brandDisplayName}%`));
-
-      const productIds = fitmentRows.map((r) => r.productId);
-
-      if (productIds.length > 0) {
-        // Fetch products in batches (drizzle doesn't support IN with large arrays well, but this is fine)
-        const productRows = await db
-          .select({
-            id:           products.id,
-            partNumber:   products.partNumber,
-            name:         products.name,
-            condition:    products.condition,
-            inStock:      products.inStock,
-            categoryName: categories.name,
-          })
-          .from(products)
-          .leftJoin(categories, eq(products.categoryId, categories.id))
-          .where(eq(products.isActive, true))
-          .orderBy(asc(products.partNumber))
-          .limit(100);
-
-        // Filter to only products that match the brand
-        const brandProductSet = new Set(productIds);
-        const matchedProducts = productRows.filter((p) => brandProductSet.has(p.id));
-
-        // Fetch primary image for each matched product
-        if (matchedProducts.length > 0) {
-          const imagePromises = matchedProducts.slice(0, 48).map(async (p) => {
-            if (!db) return { ...p, imageUrl: null, categoryName: p.categoryName ?? null };
-            const imgs = await db
-              .select({ cloudinaryUrl: productImages.cloudinaryUrl })
-              .from(productImages)
-              .where(and(eq(productImages.productId, p.id), eq(productImages.isPrimary, true)))
-              .limit(1);
-            const imgUrl = imgs[0]?.cloudinaryUrl ?? null;
-            // fallback to first image if no primary
-            if (!imgUrl) {
-              const firstImg = await db
-                .select({ cloudinaryUrl: productImages.cloudinaryUrl })
-                .from(productImages)
-                .where(eq(productImages.productId, p.id))
-                .orderBy(asc(productImages.sortOrder))
-                .limit(1);
-              return { ...p, imageUrl: firstImg[0]?.cloudinaryUrl ?? null, categoryName: p.categoryName ?? null };
-            }
-            return { ...p, imageUrl: imgUrl, categoryName: p.categoryName ?? null };
-          });
-          brandProducts = await Promise.all(imagePromises);
-        }
-      }
-    } catch {
-      brandProducts = [];
-    }
-  }
+  const { items: brandProducts, pageInfo } = await fetchBrandPage(
+    brandSlug,
+    brandDisplayName,
+    page
+  );
 
   const collectionPageJsonLd = {
     "@context": "https://schema.org",
@@ -179,17 +251,20 @@ export default async function BrandCatalogPage({
               <>
                 <div className="mb-6">
                   <p className="text-sm text-gray-500">
-                    Bu marka için <span className="font-bold text-gray-700">{brandProducts.length}</span> ürün bulundu
-                    {brandProducts.length >= 48 && <span className="text-gray-400"> (ilk 48 gösteriliyor)</span>}
+                    Bu marka için <span className="font-bold text-gray-700">{pageInfo.total}</span> ürün bulundu
+                    {pageInfo.totalPages > 1 && (
+                      <span className="text-gray-400">
+                        {" "}— sayfa {pageInfo.page}/{pageInfo.totalPages}
+                      </span>
+                    )}
                   </p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                   {brandProducts.map((item) => {
-                    const cond = CONDITION[item.condition] ?? { label: item.condition, cls: "" };
                     return (
                       <Link
                         key={item.id}
-                        href={`/parca-katalog/${encodeURIComponent(item.partNumber)}`}
+                        href={productPath(item.partNumber)}
                         className="group flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-nidah-yellow/30 hover:-translate-y-1 transition-all duration-200 overflow-hidden"
                       >
                         {/* Image area */}
@@ -203,34 +278,27 @@ export default async function BrandCatalogPage({
                               className="object-cover group-hover:scale-105 transition-transform duration-500"
                             />
                           ) : (
-                            <div className="w-full h-full flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-nidah-dark to-nidah-steel">
-                              <PackageSearch className="w-9 h-9 text-nidah-yellow opacity-70" />
-                              <span className="text-[10px] text-white/40 font-mono tracking-widest uppercase">{item.partNumber}</span>
-                            </div>
+                            /* Doğrulanmış fotoğraf yok → onaylanmış TEMSİLÎ
+                               kart. `product_images`'ta satırı yoktur; JSON-LD,
+                               sitemap ve og:image'a girmez. Dosya
+                               `X-Robots-Tag: noindex` ile sunulur. */
+                            <ProductImagePlaceholder variant="card" />
                           )}
-                          <div className="absolute top-2.5 right-2.5">
-                            {item.inStock ? (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-green-500 text-white px-2.5 py-1 rounded-full shadow-sm">
-                                <CheckCircle className="w-2.5 h-2.5" /> Stokta
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-amber-500 text-white px-2.5 py-1 rounded-full shadow-sm">
-                                <Clock className="w-2.5 h-2.5" /> Sipariş
-                              </span>
-                            )}
-                          </div>
-                          <div className="absolute bottom-2.5 left-2.5">
-                            <Badge variant="outline" className={`text-[10px] px-2 py-0.5 font-semibold bg-white/90 backdrop-blur-sm ${cond.cls}`}>
-                              {cond.label}
-                            </Badge>
-                          </div>
                         </div>
 
                         {/* Body */}
                         <div className="flex flex-col flex-1 p-4">
-                          <div className="flex items-center gap-1.5 mb-2.5">
+                          {/* Durum ve stok rozetleri BİLGİ BÖLÜMÜNDE durur —
+                              onaylanan temsilî görselin üzerindeki kurumsal
+                              yazıyı ve iki dilli bandı örtmemeleri için
+                              (kullanıcı kararı 2026-11-17). */}
+                          <div className="flex items-center gap-1.5 mb-2.5 flex-wrap">
                             <span className="text-[10px] font-mono font-bold text-nidah-yellow-dark tracking-widest uppercase bg-nidah-yellow/8 px-2 py-0.5 rounded">
                               #{item.partNumber}
+                            </span>
+                            <span className="ml-auto flex items-center gap-1.5">
+                              <ConditionBadge condition={item.condition} />
+                              <StockBadge status={item.stockStatus} />
                             </span>
                           </div>
                           <h3 className="text-sm font-bold text-gray-900 leading-snug line-clamp-2 group-hover:text-nidah-yellow-dark transition-colors mb-2.5 flex-1">
@@ -253,6 +321,50 @@ export default async function BrandCatalogPage({
                     );
                   })}
                 </div>
+
+                {/* Sayfalama — taranabilir <a> bağlantıları.
+                    Binlerce ürün hedefi için zorunlu (denetim C5/C6): eski sert
+                    `LIMIT 100` derin ürünlere hiç tarama yolu bırakmıyordu. */}
+                {pageInfo.totalPages > 1 && (
+                  <nav
+                    aria-label="Sayfalama"
+                    className="mt-10 flex items-center justify-center gap-3"
+                  >
+                    {pageInfo.hasPrev ? (
+                      <Button asChild variant="outline" size="sm">
+                        <Link
+                          href={
+                            pageInfo.page - 1 === 1
+                              ? `/parca-katalog/${brandSlug}`
+                              : `/parca-katalog/${brandSlug}?sayfa=${pageInfo.page - 1}`
+                          }
+                          rel="prev"
+                        >
+                          Önceki
+                        </Link>
+                      </Button>
+                    ) : (
+                      <span className="text-xs text-gray-300 px-3">Önceki</span>
+                    )}
+
+                    <span className="text-xs font-semibold text-gray-500">
+                      {pageInfo.page} / {pageInfo.totalPages}
+                    </span>
+
+                    {pageInfo.hasNext ? (
+                      <Button asChild variant="outline" size="sm">
+                        <Link
+                          href={`/parca-katalog/${brandSlug}?sayfa=${pageInfo.page + 1}`}
+                          rel="next"
+                        >
+                          Sonraki
+                        </Link>
+                      </Button>
+                    ) : (
+                      <span className="text-xs text-gray-300 px-3">Sonraki</span>
+                    )}
+                  </nav>
+                )}
               </>
             ) : (
               <div className="text-center py-28">

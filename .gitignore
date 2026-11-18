@@ -59,3 +59,7 @@ services/**/*.log
 
 # Claude gorev notlari repoya girmesin
 nidahgroupclaudeokuyacak*.txt
+
+# playwright test artifacts
+/test-results/
+/playwright-report/

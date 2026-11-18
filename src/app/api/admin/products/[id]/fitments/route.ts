@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { fitments, machines, machineVariants, manufacturers } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { parseVerificationSource, parseVerifiedFlag } from "@/lib/verification";
+import { isUniqueViolation } from "@/lib/db/errors";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -18,6 +20,10 @@ export async function GET(_req: NextRequest, { params }: Params) {
       machineVariantId:  fitments.machineVariantId,
       notes:             fitments.notes,
       createdAt:         fitments.createdAt,
+      // Faz 2 — uyumluluk dogrulama durumu (drizzle/0008)
+      verified:          fitments.verified,
+      verifiedAt:        fitments.verifiedAt,
+      source:            fitments.source,
       manufacturerName:  manufacturers.name,
       machineModel:      machines.model,
       machineType:       machines.type,
@@ -43,6 +49,14 @@ export async function POST(request: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "machineId is required" }, { status: 400 });
   }
 
+  // Yeni uyumluluk VARSAYILAN OLARAK dogrulanmamis eklenir; "verified: true"
+  // gonderilirse kaynak zorunludur (src/lib/verification.ts).
+  const verified = parseVerifiedFlag(body.verified ?? false);
+  if (!verified.ok) return NextResponse.json({ error: verified.error }, { status: 400 });
+
+  const source = parseVerificationSource(body.source, verified.value);
+  if (!source.ok) return NextResponse.json({ error: source.error }, { status: 400 });
+
   try {
     const [row] = await db
       .insert(fitments)
@@ -51,12 +65,16 @@ export async function POST(request: NextRequest, { params }: Params) {
         machineId,
         machineVariantId: machineVariantId || null,
         notes:            notes?.trim() || null,
+        verified:         verified.value,
+        verifiedAt:       verified.value ? new Date() : null,
+        source:           source.value,
       })
       .returning();
 
     return NextResponse.json({ data: row }, { status: 201 });
   } catch (err: unknown) {
-    if (err instanceof Error && (err.message.includes("uq_fitment_no_variant") || err.message.includes("uq_fitment_with_variant"))) {
+    // Constraint adi `cause` zincirinde (src/lib/db/errors.ts).
+    if (isUniqueViolation(err, ["uq_fitment_no_variant", "uq_fitment_with_variant"])) {
       return NextResponse.json({ error: "Fitment already exists" }, { status: 409 });
     }
     console.error("[POST fitments]", err);

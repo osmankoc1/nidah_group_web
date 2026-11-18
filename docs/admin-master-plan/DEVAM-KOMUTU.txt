@@ -1,0 +1,5 @@
+nidah_group_web projesinde admin paneli master planına devam et.
+Önce docs/admin-master-plan/02-ILERLEME.md ve 01-BULGU-DURUM.md dosyalarını
+oku, 03-GUVENLIK-SINIRLARI.md'deki sınırlara uy, "SONRAKİ KESİN ADIM"
+satırından devam et. Tamamlanmış işleri tekrarlama. Production'a dokunma;
+commit, push, deploy yapma.

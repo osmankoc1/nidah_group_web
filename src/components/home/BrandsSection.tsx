@@ -89,7 +89,7 @@ export default async function BrandsSection() {
 
               {/* Rank badge */}
               <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-nidah-dark/5 flex items-center justify-center">
-                <span className="text-[10px] font-bold text-nidah-dark/40">{i + 1}</span>
+                <span className="text-xs font-bold text-nidah-dark/40">{i + 1}</span>
               </div>
               </>
             );

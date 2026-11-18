@@ -2,25 +2,36 @@
 
 import { useState, useEffect, memo } from "react";
 import Image from "next/image";
-import { Package, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { ProductImage } from "@/lib/queries/product";
+import { imageAltText } from "@/lib/product-image-state";
+import ProductImagePlaceholder from "./ProductImagePlaceholder";
 
 interface ProductGalleryProps {
+  /**
+   * YALNIZCA DOĞRULANMIŞ görseller. Süzme okuma yolunda yapılır
+   * (`queries/product.ts` → `verified = true`); bu bileşen kendisine verilen
+   * listeyi yayınlanabilir kabul eder.
+   */
   images: ProductImage[];
   partNumber: string;
+  /** ALT metni yedeği için — görselin kendi ALT metni yoksa kullanılır. */
+  productName: string;
 }
 
-const ProductGallery = memo(function ProductGallery({ images, partNumber }: ProductGalleryProps) {
+const ProductGallery = memo(function ProductGallery({ images, partNumber, productName }: ProductGalleryProps) {
   const sorted = [...images].sort((a, b) => (b.isPrimary ? 1 : 0) - (a.isPrimary ? 1 : 0));
   const [idx, setIdx] = useState(0);
 
   useEffect(() => { setIdx(0); }, [images]);
 
+  // Yayınlanabilir görsel yok → markalı TEMSİLÎ kart (durum: `placeholder`).
+  // Satır içi SVG'dir: dosyası, URL'si ve veritabanı kaydı YOKTUR, bu yüzden
+  // `og:image`, `Product.image` veya image sitemap'e sızamaz.
   if (images.length === 0) {
     return (
-      <div className="rounded-2xl bg-gradient-to-br from-[#1A1A2E] to-[#0F3460] aspect-square flex flex-col items-center justify-center gap-4">
-        <Package className="w-24 h-24 text-[#F59E0B] opacity-60" />
-        <span className="text-gray-400 text-sm tracking-wide">Görsel Yok</span>
+      <div className="rounded-2xl overflow-hidden aspect-square">
+        <ProductImagePlaceholder variant="detail" />
       </div>
     );
   }
@@ -34,7 +45,7 @@ const ProductGallery = memo(function ProductGallery({ images, partNumber }: Prod
         <Image
           key={active.cloudinaryUrl}
           src={active.cloudinaryUrl}
-          alt={`${partNumber} - görsel ${idx + 1}`}
+          alt={imageAltText({ altText: active.altText, partNumber, productName })}
           fill
           sizes="(max-width: 1024px) 100vw, 44vw"
           className="object-contain transition-opacity duration-200"
@@ -78,13 +89,13 @@ const ProductGallery = memo(function ProductGallery({ images, partNumber }: Prod
             <button
               key={img.id}
               onClick={() => setIdx(i)}
-              aria-label={`${partNumber} - görsel ${i + 1}`}
+              aria-label={`${imageAltText({ altText: img.altText, partNumber, productName })} (${i + 1}/${sorted.length})`}
               className={`relative w-16 h-16 rounded-xl overflow-hidden border-2 transition-all
                 ${i === idx ? "border-[#F59E0B] shadow-md" : "border-transparent hover:border-gray-300 opacity-70 hover:opacity-100"}`}
             >
               <Image
                 src={img.cloudinaryUrl}
-                alt={`${partNumber} - görsel ${i + 1}`}
+                alt=""
                 fill
                 className="object-cover"
                 sizes="64px"

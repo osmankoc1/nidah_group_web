@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, memo, useCallback, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, PackageSearch, Loader2, CheckCircle, Clock, ArrowRight, X, MessageCircle } from "lucide-react";
+import { Search, PackageSearch, Loader2, ArrowRight, X, MessageCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -13,10 +13,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import { CONTACTS, WHATSAPP_URL } from "@/lib/constants";
+import { productPath } from "@/lib/product-url";
+import { type StockStatus } from "@/lib/stock";
+import ProductImagePlaceholder from "./ProductImagePlaceholder";
+import StockBadge from "./StockBadge";
+import ConditionBadge from "./ConditionBadge";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -27,6 +31,7 @@ interface ProductItem {
   description:  string | null;
   condition:    "new" | "used" | "remanufactured";
   inStock:      boolean;
+  stockStatus:  StockStatus;
   categoryName: string | null;
   imageUrl:     string | null;
   brands:       string[];
@@ -35,12 +40,6 @@ interface ProductItem {
 interface Meta { page: number; limit: number; total: number; pages: number; }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-
-const CONDITION: Record<string, { label: string; cls: string }> = {
-  new:            { label: "Sıfır",      cls: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  used:           { label: "İkinci El",  cls: "bg-sky-50 text-sky-700 border-sky-200"    },
-  remanufactured: { label: "Yenilenmiş", cls: "bg-violet-50 text-violet-700 border-violet-200" },
-};
 
 const BRANDS = [
   { label: "VOLVO",    href: "/parca-katalog/volvo"    },
@@ -51,17 +50,21 @@ const BRANDS = [
   { label: "BOMAG",    href: "/parca-katalog/bomag"    },
   { label: "AMMANN",   href: "/parca-katalog/ammann"   },
   { label: "CHAMPION", href: "/parca-katalog/champion" },
+  // 2026-11-16 — development'ta hazırlanan marka sayfaları. Katalog toggle'ı
+  // kapalı olduğu sürece bu sayfa da 404 olduğundan canlıda görünmezler.
+  { label: "MITSUBISHI", href: "/parca-katalog/mitsubishi" },
+  { label: "ÇUKUROVA", href: "/parca-katalog/cukurova" },
+  { label: "HITACHI", href: "/parca-katalog/hitachi" },
 ] as const;
 
 // ── Card ──────────────────────────────────────────────────────────────────────
 
 const ProductCard = memo(function ProductCard({ item }: { item: ProductItem }) {
-  const cond = CONDITION[item.condition] ?? { label: item.condition, cls: "" };
   const waMsg = `Merhaba, ${item.partNumber} numaralı parça için teklif almak istiyorum.`;
 
   return (
     <div className="group flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-nidah-yellow/30 hover:-translate-y-1 transition-all duration-200 overflow-hidden">
-      <Link href={`/parca-katalog/${encodeURIComponent(item.partNumber)}`} className="flex flex-col flex-1">
+      <Link href={productPath(item.partNumber)} className="flex flex-col flex-1">
         {/* Image area */}
         <div className="relative w-full aspect-[4/3] bg-gray-50 overflow-hidden">
           {item.imageUrl ? (
@@ -73,38 +76,29 @@ const ProductCard = memo(function ProductCard({ item }: { item: ProductItem }) {
               className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-nidah-dark to-nidah-steel">
-              <PackageSearch className="w-9 h-9 text-nidah-yellow opacity-70" />
-              <span className="text-[10px] text-white/40 font-mono tracking-widest uppercase">{item.partNumber}</span>
-            </div>
+            /* Doğrulanmış fotoğraf yok → onaylanmış TEMSİLÎ kart.
+               Marka sayfası kartlarıyla AYNI bileşen kullanılır; iki yüzeyin
+               farklı yer tutucu göstermesi tutarsızlık olurdu.
+               `product_images`'ta satırı yoktur; JSON-LD, sitemap ve
+               og:image'a girmez, `X-Robots-Tag: noindex` ile sunulur. */
+            <ProductImagePlaceholder variant="card" />
           )}
 
-          {/* Stock badge */}
-          <div className="absolute top-2.5 right-2.5">
-            {item.inStock ? (
-              <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-green-500 text-white px-2.5 py-1 rounded-full shadow-sm">
-                <CheckCircle className="w-2.5 h-2.5" /> Stokta
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-amber-500 text-white px-2.5 py-1 rounded-full shadow-sm">
-                <Clock className="w-2.5 h-2.5" /> Sipariş
-              </span>
-            )}
-          </div>
-
-          {/* Condition badge */}
-          <div className="absolute bottom-2.5 left-2.5">
-            <Badge variant="outline" className={`text-[10px] px-2 py-0.5 font-semibold bg-white/90 backdrop-blur-sm ${cond.cls}`}>
-              {cond.label}
-            </Badge>
-          </div>
         </div>
 
         {/* Body */}
         <div className="flex flex-col flex-1 p-4">
-          <div className="flex items-center gap-1.5 mb-2.5">
+          {/* Durum ve stok rozetleri BİLGİ BÖLÜMÜNDE durur — onaylanan
+              temsilî görselin üzerindeki kurumsal yazıyı ve iki dilli bandı
+              örtmemeleri için (kullanıcı kararı 2026-11-17).
+              Teyit edilmemiş stok "Stokta" olarak sunulmaz (denetim C10). */}
+          <div className="flex items-center gap-1.5 mb-2.5 flex-wrap">
             <span className="text-[10px] font-mono font-bold text-nidah-yellow-dark tracking-widest uppercase bg-nidah-yellow/8 px-2 py-0.5 rounded">
               #{item.partNumber}
+            </span>
+            <span className="ml-auto flex items-center gap-1.5">
+              <ConditionBadge condition={item.condition} />
+              <StockBadge status={item.stockStatus} />
             </span>
           </div>
 
@@ -136,7 +130,7 @@ const ProductCard = memo(function ProductCard({ item }: { item: ProductItem }) {
       {/* CTA row — two actions */}
       <div className="px-4 pb-4 grid grid-cols-2 gap-2">
         <Link
-          href={`/parca-katalog/${encodeURIComponent(item.partNumber)}`}
+          href={productPath(item.partNumber)}
           className="flex items-center justify-center gap-1.5 text-xs font-bold text-nidah-yellow-dark border border-nidah-yellow/40 rounded-xl py-2.5 hover:bg-nidah-yellow hover:text-nidah-dark hover:border-nidah-yellow transition-all duration-200"
         >
           Teklif Al <ArrowRight className="size-3.5" />

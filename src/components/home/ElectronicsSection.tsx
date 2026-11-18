@@ -12,7 +12,7 @@ const SERVICES = [
 
 export default function ElectronicsSection() {
   return (
-    <section className="py-24 bg-[#0A0F1E] relative overflow-hidden">
+    <section className="py-14 sm:py-24 bg-nidah-dark relative overflow-hidden">
       {/* ── Background image ── */}
       <Image
         src="/images/home/ecu-bg.webp"
@@ -24,7 +24,7 @@ export default function ElectronicsSection() {
         className="object-cover object-right"
       />
       {/* ── Dark overlay — left dark for text, right reveals ECU visual ── */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0A0F1E]/92 via-[#0A0F1E]/75 to-[#0A0F1E]/45 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-nidah-dark/92 via-nidah-dark/75 to-nidah-dark/45 pointer-events-none" />
 
       <div className="absolute inset-0 opacity-[0.04]" style={{
         backgroundImage: "linear-gradient(rgba(255,255,255,.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.15) 1px, transparent 1px)",

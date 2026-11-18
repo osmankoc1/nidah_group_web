@@ -3,12 +3,11 @@ import { JsonLd } from "@/lib/json-ld";
 import { isPageEnabled } from "@/lib/site-settings";
 import { OG_IMAGE, TWITTER_IMAGE } from "@/lib/constants";
 import HeroSection               from "@/components/home/HeroSection";
-import BrandsSection              from "@/components/home/BrandsSection";
-import ServicesOverview           from "@/components/home/ServicesOverview";
-import TechnicalServicesSection   from "@/components/home/TechnicalServicesSection";
+import ServicesSection            from "@/components/home/ServicesSection";
 import ElectronicsSection         from "@/components/home/ElectronicsSection";
-import FeaturedParts              from "@/components/home/FeaturedParts";
 import WhyUsSection               from "@/components/home/WhyUsSection";
+import FeaturedParts              from "@/components/home/FeaturedParts";
+import BrandsSection              from "@/components/home/BrandsSection";
 import GlobalReachSection         from "@/components/home/GlobalReachSection";
 import TestimonialsSection        from "@/components/home/TestimonialsSection";
 import CtaSection                 from "@/components/home/CtaSection";
@@ -68,34 +67,41 @@ export default async function HomePage() {
     <>
       <JsonLd data={websiteJsonLd} />
       <main>
-      {/* 1. Hero — güçlü giriş, global mesajlar */}
+      {/* Bölüm sırası — Aşama 2.
+          Önceki sıra 10 bölümdü ve birincil CTA 10. sıradaydı; mobilde sayfa
+          ~20 ekran uzunluğunda olduğu için ziyaretçilerin çoğu dönüşüm
+          noktasını hiç görmüyordu. Yeni sırada "ne yapıyoruz" ve "neden biz"
+          öne alındı, marka duvarı aşağı indi. Nerede olursa olsun tek
+          dokunuşla dönüşüm için ayrıca MobileActionBar eklendi. */}
+
+      {/* 1. Hero — ne yaptığımız + parça arama + birincil CTA */}
       <HeroSection />
 
-      {/* 2. Markalar — global tedarik gücü */}
-      <BrandsSection />
+      {/* 2. Hizmetler — eski "Temel" + "Teknik" bölümleri birleştirildi.
+             İkisi 10 kart gösteriyor ama yalnızca 5 benzersiz sayfaya
+             gidiyordu (periyodik-bakım 3, şanzıman 2, hidrolik pompa 2 kez). */}
+      <ServicesSection />
 
-      {/* 3. Temel Hizmetler — 4 kart özet */}
-      <ServicesOverview />
-
-      {/* 4. Teknik Hizmetler — revizyon, bakım, onarım */}
-      <TechnicalServicesSection />
-
-      {/* 5. Elektronik Sistemler — ECU, savunma, kamyon */}
+      {/* 3. Elektronik & ECU — ayrı tutuldu: farklı bir uzmanlık ve ayırt edici */}
       <ElectronicsSection />
 
-      {/* 6. Öne Çıkan Parçalar */}
-      <FeaturedParts />
-
-      {/* 7. Neden Nidah — güven unsurları */}
+      {/* 4. Neden NİDAH — güven unsurları, 7. sıradan yukarı alındı */}
       <WhyUsSection />
 
-      {/* 8. Global Erişim — ülkeler */}
+      {/* 5. Öne Çıkan Parçalar */}
+      <FeaturedParts />
+
+      {/* 6. Markalar — en yüksek bloktu (1213px), tedarik gücü kanıtı olarak
+             global erişimin hemen yanına taşındı */}
+      <BrandsSection />
+
+      {/* 7. Global Erişim — ülkeler */}
       <GlobalReachSection />
 
-      {/* 9. Referanslar */}
+      {/* 8. Referanslar */}
       <TestimonialsSection />
 
-      {/* 10. CTA */}
+      {/* 9. CTA — kapanış */}
       <CtaSection />
     </main>
     </>

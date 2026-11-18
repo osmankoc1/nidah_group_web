@@ -19,9 +19,15 @@ export function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default function KomatsuPage() {
+export default async function KomatsuPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sayfa?: string | string[] }>;
+}) {
+  const { sayfa } = await searchParams;
   return (
     <BrandCatalogPage
+      page={sayfa}
       brandSlug="komatsu"
       brandDisplayName="KOMATSU"
       brandDescription="Japon KOMATSU iş makinaları"

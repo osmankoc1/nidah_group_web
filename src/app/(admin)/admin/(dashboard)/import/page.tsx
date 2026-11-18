@@ -437,6 +437,12 @@ export default function ImportPage() {
       </Card>
 
       <Tabs defaultValue="products">
+        {/*
+          Üç sekme 375px'te 431px genişliğe ulaşıp belgeyi taşırıyordu.
+          Sarmal yatay kaydırma sağlar; masaüstünde zaten sığdığı için
+          görünüm değişmez.
+        */}
+        <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
         <TabsList className="bg-gray-100 p-1 gap-1">
           <TabsTrigger value="products" className="gap-2 data-[state=active]:bg-white data-[state=active]:shadow">
             <Package className="size-4" /> Ürün Import
@@ -448,6 +454,7 @@ export default function ImportPage() {
             <Link2 className="size-4" /> Uyumluluk Import
           </TabsTrigger>
         </TabsList>
+        </div>
 
         {/* ── Ürün Import ── */}
         <TabsContent value="products" className="mt-5">
@@ -466,8 +473,14 @@ export default function ImportPage() {
                 description={
                   <div className="space-y-2">
                     <p className="font-semibold">Zorunlu kolonlar: <code className="bg-blue-100 px-1 rounded">partNumber</code>, <code className="bg-blue-100 px-1 rounded">name</code></p>
-                    <p>Opsiyonel: <code className="bg-blue-100 px-1 rounded">description</code> · <code className="bg-blue-100 px-1 rounded">condition</code> (new/used/remanufactured) · <code className="bg-blue-100 px-1 rounded">inStock</code> (true/false) · <code className="bg-blue-100 px-1 rounded">weight</code> (kg) · <code className="bg-blue-100 px-1 rounded">category</code> · <code className="bg-blue-100 px-1 rounded">notes</code></p>
-                    <p className="text-blue-600">✦ Mevcut partNumber varsa: name, description, condition, weight, inStock, notes güncellenir.</p>
+                    <p>Opsiyonel (temel): <code className="bg-blue-100 px-1 rounded">description</code> · <code className="bg-blue-100 px-1 rounded">condition</code> (new/used/remanufactured) · <code className="bg-blue-100 px-1 rounded">weight</code> (kg) · <code className="bg-blue-100 px-1 rounded">category</code> · <code className="bg-blue-100 px-1 rounded">notes</code> · <code className="bg-blue-100 px-1 rounded">inStock</code> (eski alan)</p>
+                    <p>Opsiyonel (katalog): <code className="bg-blue-100 px-1 rounded">stockStatus</code> (unknown / in_stock / on_order — <code className="bg-blue-100 px-1 rounded">on_request</code> de kabul edilir) · <code className="bg-blue-100 px-1 rounded">partManufacturer</code> · <code className="bg-blue-100 px-1 rounded">sourcingType</code> (unknown / oem / oem_equivalent / aftermarket)</p>
+                    <p>Opsiyonel (SEO): <code className="bg-blue-100 px-1 rounded">shortDescription</code> (max 500) · <code className="bg-blue-100 px-1 rounded">longDescription</code> · <code className="bg-blue-100 px-1 rounded">metaTitle</code> (max 255) · <code className="bg-blue-100 px-1 rounded">metaDescription</code></p>
+                    <p>Opsiyonel (iç kayıt): <code className="bg-blue-100 px-1 rounded">internalStockCode</code> (max 100) — Logo İşbaşı’ndaki orijinal stok kodu. <strong>Public ürün sayfasında, SEO verisinde veya OEM numarası olarak gösterilmez.</strong> Baştaki sıfırlar, tireler ve boşluklar aynen korunur; normalleştirme yalnızca arama ve eşleştirme için yapılır.</p>
+                    <p className="text-blue-600">✦ Mevcut parça numarası varsa kayıt güncellenir. <strong>Yalnızca dosyada bulunan kolonlar yazılır</strong> — dosyada olmayan alanlara dokunulmaz, boşa çekilmez.</p>
+                    <p className="text-amber-700">⚠ <code className="bg-blue-100 px-1 rounded">seoReady</code> ve <code className="bg-blue-100 px-1 rounded">verified</code> <strong>toplu import ile yazılamaz</strong>. Yayın onayı ve doğrulama tek tek, insan kararıyla verilir; dosyada bulunsalar bile yok sayılır.</p>
+                    <p className="text-amber-700">⚠ Parça numaralarında baştaki sıfırların korunması için <strong>CSV (UTF-8)</strong> tercih edin. Excel’de sayı olarak saklanan numaralar reddedilir.</p>
+                    <p className="text-amber-700">⚠ Aynı <code className="bg-blue-100 px-1 rounded">internalStockCode</code> birden fazla üründe bulunabilir. Bu durumda kayıtlar <strong>birleştirilmez ve üzerine yazılmaz</strong>; sonuç raporunda uyarı olarak listelenir ve kararı siz verirsiniz. Eşleştirme her zaman <code className="bg-blue-100 px-1 rounded">partNumber</code> üzerinden yapılır.</p>
                   </div>
                 }
               />
@@ -519,7 +532,8 @@ export default function ImportPage() {
                 description={
                   <div className="space-y-2">
                     <p className="font-semibold">Zorunlu: <code className="bg-blue-100 px-1 rounded">partNumber</code>, <code className="bg-blue-100 px-1 rounded">manufacturer</code>, <code className="bg-blue-100 px-1 rounded">model</code></p>
-                    <p>Opsiyonel: <code className="bg-blue-100 px-1 rounded">type</code> · <code className="bg-blue-100 px-1 rounded">variantName</code> · <code className="bg-blue-100 px-1 rounded">notes</code></p>
+                    <p>Opsiyonel: <code className="bg-blue-100 px-1 rounded">type</code> · <code className="bg-blue-100 px-1 rounded">variantName</code> · <code className="bg-blue-100 px-1 rounded">notes</code> · <code className="bg-blue-100 px-1 rounded">verified</code> (true/false) · <code className="bg-blue-100 px-1 rounded">source</code></p>
+                    <p className="text-amber-700">⚠ <code className="bg-blue-100 px-1 rounded">verified</code> = true yazılırsa <code className="bg-blue-100 px-1 rounded">source</code> <strong>zorunludur</strong> — dayanağı belirtilmeyen uyumluluk kesin bilgi olarak yayınlanmaz.</p>
                     <p className="text-blue-600">✦ Ürün ve makine önceden yüklenmiş olmalı. Aynı uyumluluk zaten varsa atlanır (duplicate oluşmaz).</p>
                     <p className="text-amber-700">⚠ Önce Makine Import → sonra Ürün Import → en son Uyumluluk Import yapın.</p>
                   </div>

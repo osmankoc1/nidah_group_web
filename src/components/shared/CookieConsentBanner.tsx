@@ -46,7 +46,10 @@ export default function CookieConsentBanner() {
       role="dialog"
       aria-label="Çerez tercihleri"
       aria-modal="false"
-      className="fixed bottom-0 left-0 right-0 z-50 p-2 sm:p-4"
+      /* Mobilde MobileActionBar (≈57px) ekranın altında sabit duruyor; bant
+         onun ÜZERİNDE konumlanır, üstünü örtmez. lg'de çubuk gizli olduğu
+         için bant tabana oturur. */
+      className="fixed bottom-16 lg:bottom-0 left-0 right-0 z-50 p-2 sm:p-4"
     >
       {/* Mobilde bant bilinçli olarak alçak tutulur: tam ekran hero'da birincil
           CTA'nın (“Ücretsiz Teklif Al”) üzerini kapatmaması gerekir.

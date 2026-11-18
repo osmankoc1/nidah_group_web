@@ -19,9 +19,15 @@ export function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default function HidromekPage() {
+export default async function HidromekPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sayfa?: string | string[] }>;
+}) {
+  const { sayfa } = await searchParams;
   return (
     <BrandCatalogPage
+      page={sayfa}
       brandSlug="hidromek"
       brandDisplayName="HİDROMEK"
       brandDescription="Türk HİDROMEK iş makinaları"

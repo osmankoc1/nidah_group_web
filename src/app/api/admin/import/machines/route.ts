@@ -3,12 +3,21 @@ import { db } from "@/lib/db";
 import { manufacturers, machines, machineVariants } from "@/lib/db/schema";
 import { sql, eq, and } from "drizzle-orm";
 import { parseUploadedFile } from "@/lib/import-xlsx";
+import { runImportBatch } from "@/lib/import-apply";
+import { slugifyName } from "@/lib/slugify";
+import { randomUUID } from "node:crypto";
+import type { BatchItem } from "drizzle-orm/batch";
 
 export const maxDuration = 60;
 
-function slugify(name: string): string {
-  return name.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-}
+/**
+ * Üretici slug'ı — TEK KAYNAK `@/lib/slugify`.
+ *
+ * Yerel kopya 2026-11-16'da kaldırıldı: Türkçe harfleri ÇEVİRMİYOR, SİLİYORDU
+ * ("ÇUKUROVA" -> "ukurova"). Yeni kural ASCII adlarda birebir aynı sonucu
+ * verir, yalnızca Türkçe harf içeren adlar düzelir.
+ */
+const slugify = slugifyName;
 
 interface RowResult {
   row:    number;
@@ -116,6 +125,13 @@ export async function POST(request: NextRequest) {
     // Build manufacturer map
     const allMfrs = await db.select({ id: manufacturers.id, name: manufacturers.name, slug: manufacturers.slug }).from(manufacturers);
     const mfrByName = new Map(allMfrs.map((m) => [m.name.toUpperCase(), m.id]));
+    /*
+     * Slug haritası AYRICA tutulur. Ad haritası "VOLVO CE" ile "Volvo-CE"yi
+     * FARKLI görür ama `slugify` ikisini de "volvo-ce" yapar; slug benzersiz
+     * olduğu için ikinci kayıt çakışır. Slug'ı da arayarak mevcut üreticinin
+     * kimliğini buluruz ve gereksiz INSERT üretmeyiz.
+     */
+    const mfrBySlug = new Map(allMfrs.map((m) => [m.slug, m.id]));
 
     const allMachs = await db.select({ id: machines.id, manufacturerId: machines.manufacturerId, model: machines.model, type: machines.type }).from(machines);
     const machKey  = (mId: string, mod: string, tp: string | null) => `${mId}|${mod.toUpperCase()}|${(tp ?? "").toUpperCase()}`;
@@ -125,65 +141,123 @@ export async function POST(request: NextRequest) {
     const varKey  = (mId: string, vn: string) => `${mId}|${vn.toUpperCase()}`;
     const varByKey = new Map(allVars.map((v) => [varKey(v.machineId, v.variantName), v.id]));
 
-    await db.transaction(async (tx) => {
-      for (const v of valid) {
-        const idx  = results.findIndex((r) => r.row === v.rowNum);
+    /*
+     * ── NEDEN `db.batch`, `db.transaction` DEĞİL ────────────────────────────
+     *
+     * `src/lib/db/index.ts` `neon-http` sürücüsünü kullanıyor. Bu sürücü
+     * durumsuz HTTP üzerinden çalışır ve `db.transaction()` çağrısında
+     * "No transactions support in neon-http driver" hatası fırlatır — apply
+     * yolu bu yüzden HİÇ çalışmıyordu (dry-run etkilenmiyordu).
+     *
+     * ── TASARIM: kimlikler ÖNCEDEN üretilir ────────────────────────────────
+     *
+     * Asıl zorluk, bu bloğun SIRALI OKUMA gerektirmesiydi: üretici
+     * INSERT'inin `.returning()` sonucu makine INSERT'ini besliyordu.
+     * `db.batch` ise tüm ifadelerin ÖNCEDEN kurulmasını ister.
+     *
+     * Çözüm: `.returning()` beklemek yerine birincil anahtarları uygulama
+     * tarafında `randomUUID()` ile ÜRETİYORUZ. Böylece ilişkiler ifadeler
+     * kurulurken bilinir ve tek bir batch yeterli olur.
+     *
+     * Bu tasarımın dayandığı üç davranış ÖLÇÜLDÜ, varsayılmadı
+     * (`scripts/batch-atomiklik-kaniti.mjs`):
+     *   1. `db.batch` ATOMİKTİR — bir ifade başarısız olursa hiçbiri yazılmaz.
+     *   2. İfadeler VERİLEN SIRADA çalışır.
+     *   3. Sonraki ifade, önceki ifadenin aynı transaction içinde yazdığı
+     *      satırı GÖRÜR (üretici INSERT → ona FK veren makine INSERT çalışır).
+     *
+     * YARIŞ DURUMU: üreticiler haritaya okunduktan sonra, biz yazmadan önce
+     * başka bir istek aynı slug'ı eklerse INSERT çakışır. `onConflictDoUpdate`
+     * mevcut satırın kimliğini DEĞİŞTİRMEZ, dolayısıyla ürettiğimiz kimliğe
+     * FK veren makine INSERT'i başarısız olur ve TÜM BATCH geri alınır.
+     * Yani sonuç yine "hepsi ya da hiçbiri"dir: kısmi veri OLUŞMAZ, operatör
+     * hatayı görür ve dosyayı yeniden yükler.
+     */
+    const statements: BatchItem<"pg">[] = [];
 
-        // 1. Manufacturer — UPSERT by slug
-        let mfrId = mfrByName.get(v.manufacturer);
-        if (!mfrId) {
-          const slug = slugify(v.manufacturer);
-          const [mfr] = await tx
+    for (const v of valid) {
+      const idx = results.findIndex((r) => r.row === v.rowNum);
+
+      // 1. Üretici — haritada yoksa kimliği ÜRET ve INSERT kuyruğa al.
+      const slug = slugify(v.manufacturer);
+      let mfrId = mfrByName.get(v.manufacturer) ?? mfrBySlug.get(slug);
+      if (!mfrId) {
+        mfrId = randomUUID();
+        statements.push(
+          db
             .insert(manufacturers)
-            .values({ name: v.manufacturer, slug })
+            .values({ id: mfrId, name: v.manufacturer, slug })
             .onConflictDoUpdate({
               target: manufacturers.slug,
               set: { name: sql`excluded.name` },
             })
-            .returning({ id: manufacturers.id });
-          mfrId = mfr.id;
-          mfrByName.set(v.manufacturer, mfrId);
-        }
+        );
+        mfrByName.set(v.manufacturer, mfrId);
+        mfrBySlug.set(slug, mfrId);
+      }
 
-        // 2. Machine — find or insert/update
-        const mk  = machKey(mfrId, v.model, v.type);
-        let machId = machByKey.get(mk);
-        if (!machId) {
-          const [mach] = await tx
-            .insert(machines)
-            .values({ manufacturerId: mfrId, model: v.model, type: v.type, yearFrom: v.yearFrom, yearTo: v.yearTo })
-            .returning({ id: machines.id });
-          machId = mach.id;
-          machByKey.set(mk, machId);
-          results[idx].action = "insert";
-        } else {
-          // Update year range if provided
-          if (v.yearFrom !== null || v.yearTo !== null) {
-            await tx.update(machines)
+      // 2. Makine — bul ya da ekle. (Tabloda benzersiz kısıt yok; eşleştirme
+      //    önceden okunan harita üzerinden yapılır — mevcut davranış.)
+      const mk = machKey(mfrId, v.model, v.type);
+      let machId = machByKey.get(mk);
+      if (!machId) {
+        machId = randomUUID();
+        statements.push(
+          db.insert(machines).values({
+            id: machId,
+            manufacturerId: mfrId,
+            model: v.model,
+            type: v.type,
+            yearFrom: v.yearFrom,
+            yearTo: v.yearTo,
+          })
+        );
+        machByKey.set(mk, machId);
+        results[idx].action = "insert";
+      } else {
+        if (v.yearFrom !== null || v.yearTo !== null) {
+          statements.push(
+            db
+              .update(machines)
               .set({ yearFrom: v.yearFrom, yearTo: v.yearTo })
-              .where(eq(machines.id, machId));
-          }
-          results[idx].action = "update";
-          results[idx].reason = "Mevcut makine güncellendi";
+              .where(eq(machines.id, machId))
+          );
         }
+        results[idx].action = "update";
+        results[idx].reason = "Mevcut makine güncellendi";
+      }
 
-        // 3. Variant (only if variantName supplied)
-        if (v.variantName) {
-          const vk     = varKey(machId, v.variantName);
-          const varId  = varByKey.get(vk);
-          if (!varId) {
-            const [variant] = await tx
-              .insert(machineVariants)
-              .values({ machineId: machId, variantName: v.variantName, engineModel: v.engineModel, serialFrom: v.serialFrom, serialTo: v.serialTo })
-              .returning({ id: machineVariants.id });
-            varByKey.set(vk, variant.id);
-            results[idx].detail = `Yeni varyant: ${v.variantName}`;
-          } else {
-            results[idx].detail = `Varyant mevcut: ${v.variantName}`;
-          }
+      // 3. Varyant — yalnızca variantName verilmişse.
+      if (v.variantName) {
+        const vk = varKey(machId, v.variantName);
+        if (!varByKey.get(vk)) {
+          const variantId = randomUUID();
+          statements.push(
+            db.insert(machineVariants).values({
+              id: variantId,
+              machineId: machId,
+              variantName: v.variantName,
+              engineModel: v.engineModel,
+              serialFrom: v.serialFrom,
+              serialTo: v.serialTo,
+            })
+          );
+          varByKey.set(vk, variantId);
+          results[idx].detail = `Yeni varyant: ${v.variantName}`;
+        } else {
+          results[idx].detail = `Varyant mevcut: ${v.variantName}`;
         }
       }
-    });
+    }
+
+    if (statements.length > 0) {
+      // Tek istek, tek transaction. Hata olursa HİÇBİRİ yazılmaz.
+      const yazma = await runImportBatch(statements);
+      if (!yazma.ok) {
+        console.error("[import/machines]", yazma.detail);
+        return NextResponse.json({ error: yazma.message }, { status: 500 });
+      }
+    }
   }
 
   const summary = {

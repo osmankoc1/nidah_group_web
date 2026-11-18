@@ -128,7 +128,7 @@ export default async function HeroSection() {
         className="object-cover object-center"
       />
       {/* ── Dark overlay — left stays dark for readability, right reveals machinery ── */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#1A1A2E]/95 via-[#1A1A2E]/75 to-[#1A1A2E]/40 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-nidah-dark/95 via-nidah-dark/75 to-nidah-dark/40 pointer-events-none" />
 
       {/* ── Machinery skyline — full width, bottom ── */}
       <div className="absolute bottom-0 left-0 w-full text-white opacity-[0.042] pointer-events-none select-none">
@@ -177,19 +177,26 @@ export default async function HeroSection() {
           <span>Türkiye Merkezli · Global Tedarik Ağı · 13+ Ülkeye İhracat</span>
         </div>
 
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-[4.5rem] font-black leading-[1.08] tracking-tight text-balance mb-7">
+        {/* Mobilde başlık 4 satıra yayılıp CTA'yı ilk ekranın dışına itiyordu;
+            daha küçük taban boyut ve sıkı satır aralığı ile 3 satıra indi.
+            Metin DEĞİŞMEDİ — yalnızca tipografik ölçek. */}
+        <h1 className="text-[1.9rem] sm:text-5xl lg:text-6xl xl:text-[4.5rem] font-black leading-[1.12] sm:leading-[1.08] tracking-tight text-balance mb-4 sm:mb-7">
           Global İş Makinası{" "}
           <span className="text-nidah-yellow">Yedek Parça &amp; Teknik</span>{" "}
           Servis Çözümleri
         </h1>
 
-        <p className="text-lg sm:text-xl text-white/70 max-w-2xl mx-auto mb-12 leading-relaxed">
+        {/* Mobilde uzun paragraf CTA'yı aşağı itiyor. Tam metin sm ve üzerinde
+            görünür; mobilde yalnızca ilk cümle gösterilir. */}
+        <p className="text-base sm:text-xl text-white/70 max-w-2xl mx-auto mb-7 sm:mb-12 leading-relaxed">
           Hidrolik sistem, şanzıman ve elektronik serviste 20+ yıl. OEM ve muadil seçenekler.
-          Amerika&apos;dan Orta Doğu&apos;ya, Orta Asya&apos;dan Afrika&apos;ya — güvenilir global tedarik.
+          <span className="hidden sm:inline">
+            {" "}Amerika&apos;dan Orta Doğu&apos;ya, Orta Asya&apos;dan Afrika&apos;ya — güvenilir global tedarik.
+          </span>
         </p>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-10 sm:mb-14">
           <Button
             asChild
             size="lg"

@@ -8,10 +8,23 @@ const TEMPLATES: Record<string, { filename: string; spec: Parameters<typeof buil
     filename: "urun_sablon.xlsx",
     spec: {
       sheetName: "Ürünler",
-      headers:   ["partNumber", "name", "description", "condition", "inStock", "weight", "category", "notes"],
+      // NOT: `seoReady` ve `verified` BILINCLI OLARAK sablonda YOK — yayin
+      // onayi ve dogrulama toplu import ile verilemez (import-validation.ts).
+      headers:   ["partNumber", "name", "description", "condition", "stockStatus",
+                  "partManufacturer", "sourcingType", "shortDescription", "longDescription",
+                  "metaTitle", "metaDescription", "inStock", "weight", "category", "notes",
+                  // Faz 3 — orijinal Logo stok kodu. IC KULLANIM, public yuzeye cikmaz.
+                  "internalStockCode"],
       examples: [
         {
           partNumber:  "VOE11709035",
+          stockStatus:      "in_stock",
+          partManufacturer: "ORNEK URETICI",
+          sourcingType:     "oem_equivalent",
+          shortDescription: "Kisa, benzersiz tanitim metni (en fazla 500 karakter).",
+          longDescription:  "Uzun, benzersiz govde metni. Yayin onayi icin en az 300 karakter onerilir.",
+          metaTitle:        "",
+          metaDescription:  "",
           name:        "Hidrolik Pompa",
           description: "Volvo EC380 için hidrolik pompa",
           condition:   "new",
@@ -19,9 +32,18 @@ const TEMPLATES: Record<string, { filename: string; spec: Parameters<typeof buil
           weight:      "12.5",
           category:    "",
           notes:       "",
+          internalStockCode: "NDG15189",
         },
         {
           partNumber:  "KOM708-1W",
+          // `on_request` de kabul edilir; veritabanindaki deger `on_order`.
+          stockStatus:      "on_request",
+          partManufacturer: "",
+          sourcingType:     "",
+          shortDescription: "",
+          longDescription:  "",
+          metaTitle:        "",
+          metaDescription:  "",
           name:        "Silindir Contası",
           description: "PC360 için silindir contası",
           condition:   "new",
@@ -29,9 +51,19 @@ const TEMPLATES: Record<string, { filename: string; spec: Parameters<typeof buil
           weight:      "0.8",
           category:    "",
           notes:       "Sipariş üzerine temin",
+          // Bastaki sifirlar ve ic bosluklar AYNEN korunur.
+          internalStockCode: "002 236 11 10",
         },
         {
           partNumber:  "CAT1R-0749",
+          // Bos birakilirsa "unknown" olur — teyitsiz stok iddia edilmez.
+          stockStatus:      "",
+          partManufacturer: "",
+          sourcingType:     "",
+          shortDescription: "",
+          longDescription:  "",
+          metaTitle:        "",
+          metaDescription:  "",
           name:        "Yağ Filtresi",
           description: "",
           condition:   "new",
@@ -39,6 +71,8 @@ const TEMPLATES: Record<string, { filename: string; spec: Parameters<typeof buil
           weight:      "0.5",
           category:    "",
           notes:       "",
+          // Bos birakilabilir — stok kodu zorunlu degildir.
+          internalStockCode: "",
         },
       ],
     },
@@ -102,7 +136,7 @@ const TEMPLATES: Record<string, { filename: string; spec: Parameters<typeof buil
     filename: "uyumluluk_sablon.xlsx",
     spec: {
       sheetName: "Uyumluluk",
-      headers:   ["partNumber", "manufacturer", "model", "type", "variantName", "notes"],
+      headers:   ["partNumber", "manufacturer", "model", "type", "variantName", "verified", "source", "notes"],
       examples: [
         {
           partNumber:   "VOE11709035",
@@ -110,6 +144,9 @@ const TEMPLATES: Record<string, { filename: string; spec: Parameters<typeof buil
           model:        "G720",
           type:         "GREYDER",
           variantName:  "",
+          // "true" yazilirsa KAYNAK ZORUNLUDUR.
+          verified:     "true",
+          source:       "Uretici katalogu 2024",
           notes:        "",
         },
         {
@@ -118,6 +155,8 @@ const TEMPLATES: Record<string, { filename: string; spec: Parameters<typeof buil
           model:        "G720",
           type:         "GREYDER",
           variantName:  "G720B",
+          verified:     "false",
+          source:       "Tedarikci listesi (teyit bekliyor)",
           notes:        "Seri: 10000-20000",
         },
         {
@@ -126,6 +165,8 @@ const TEMPLATES: Record<string, { filename: string; spec: Parameters<typeof buil
           model:        "PC360",
           type:         "EKSKAVATÖR",
           variantName:  "",
+          verified:     "",
+          source:       "",
           notes:        "",
         },
       ],

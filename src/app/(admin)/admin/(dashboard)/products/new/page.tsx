@@ -16,6 +16,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  SOURCING_TYPE_LABELS,
+  STOCK_STATUS_LABELS,
+  type SourcingTypeValue,
+  type StockStatusValue,
+} from "@/lib/product-fields";
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -29,6 +35,13 @@ export default function NewProductPage() {
     condition:   "new" as "new" | "used" | "remanufactured",
     weight:      "",
     notes:       "",
+    // Faz 2 — stok ve parca kimligi. `seoReady` BURADA YOK: yayin onayi
+    // yalnizca duzenleme ekranindaki Yayin sekmesinden verilir.
+    stockStatus:      "unknown" as StockStatusValue,
+    partManufacturer: "",
+    sourcingType:     "unknown" as SourcingTypeValue,
+    // Faz 3 — Logo İşbaşı'ndaki orijinal stok kodu. İÇ KULLANIM.
+    internalStockCode: "",
   });
 
   function set(key: keyof typeof form, value: string) {
@@ -79,7 +92,7 @@ export default function NewProductPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label htmlFor="partNumber">Parça Numarası *</Label>
                 <Input
@@ -89,6 +102,9 @@ export default function NewProductPage() {
                   value={form.partNumber}
                   onChange={(e) => set("partNumber", e.target.value)}
                 />
+                <p className="text-xs text-muted-foreground">
+                  Doğrulanmış katalog numarası. Sayfada görünen kanonik değer budur.
+                </p>
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="condition">Koşul</Label>
@@ -130,7 +146,70 @@ export default function NewProductPage() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label htmlFor="stockStatus">Stok Durumu</Label>
+                <Select
+                  value={form.stockStatus}
+                  onValueChange={(v) => set("stockStatus", v)}
+                >
+                  <SelectTrigger id="stockStatus"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {(Object.keys(STOCK_STATUS_LABELS) as StockStatusValue[]).map((v) => (
+                      <SelectItem key={v} value={v}>{STOCK_STATUS_LABELS[v]}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="sourcingType">Temin Niteliği</Label>
+                <Select
+                  value={form.sourcingType}
+                  onValueChange={(v) => set("sourcingType", v)}
+                >
+                  <SelectTrigger id="sourcingType"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {(Object.keys(SOURCING_TYPE_LABELS) as SourcingTypeValue[]).map((v) => (
+                      <SelectItem key={v} value={v}>{SOURCING_TYPE_LABELS[v]}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="partManufacturer">Parçanın Üreticisi</Label>
+              <Input
+                id="partManufacturer"
+                maxLength={255}
+                placeholder="parçayı ÜRETEN firma (uyumlu makine markası DEĞİL)"
+                value={form.partManufacturer}
+                onChange={(e) => set("partManufacturer", e.target.value)}
+              />
+              <p className="text-[11px] text-muted-foreground">
+                Uyumlu makine markaları ayrı bir alandır ve kayıttan sonra
+                Uyumluluk sekmesinden yönetilir.
+              </p>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="internalStockCode">Logo Stok Kodu</Label>
+              <Input
+                id="internalStockCode"
+                maxLength={100}
+                placeholder="Logo İşbaşı'ndaki kod — örn. 002 236 11 10"
+                value={form.internalStockCode}
+                onChange={(e) => set("internalStockCode", e.target.value)}
+              />
+              <p className="text-[11px] text-muted-foreground">
+                İÇ KULLANIM. Depo eşleşmesi ve yönetim panelinde arama içindir.
+                Public ürün sayfasında, SEO verisinde veya OEM numarası olarak{" "}
+                <strong>gösterilmez</strong>. Baştaki sıfırlar, tireler ve
+                boşluklar aynen korunur.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label htmlFor="weight">Ağırlık (kg)</Label>
                 <Input

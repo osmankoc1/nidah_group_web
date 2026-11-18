@@ -25,8 +25,35 @@ function Tabs({
   )
 }
 
+/**
+ * ── DAR EKRANDA TAŞMA (bulgu P1, 2026-11-17) ────────────────────────────────
+ *
+ * Temel sınıf `inline-flex w-fit` idi: şerit içeriği kadar genişliyor ve
+ * taşmayı YÖNETMİYORDU. Ürün düzenleme ekranındaki altı sekme 468px yer
+ * kaplıyor; 375px telefonda şerit BELGEYİ 484px'e zorluyor, "Çeviriler" ve
+ * "Yayın" sekmeleri ekran dışında kalıyordu. Yayın sekmesi yayın kararının
+ * verildiği tek yer olduğu için panel telefondan kullanılamıyordu.
+ *
+ * Çözüm iki parça:
+ *   · `max-w-full overflow-x-auto` → şerit kendi içinde yatay kaydırılır,
+ *     belge artık taşmaz.
+ *   · `justify-center` → `justify-start`: taşan bir flex kabında ortalama,
+ *     içeriğin BAŞINI erişilemez hâle getirir (bilinen flexbox davranışı).
+ *     İçerik sığdığında `w-fit` zaten kabı içerik boyutuna indirdiği için
+ *     bu değişiklik masaüstünde GÖRÜNÜR BİR FARK YARATMAZ.
+ *
+ * `overscroll-x-contain`: şerit sonuna gelindiğinde kaydırmanın sayfaya
+ * taşmasını engeller (telefonda yanlışlıkla geri gitmeyi önler).
+ *
+ * `overflow-y-hidden`: CSS'te `overflow-x: auto` tek başına `overflow-y`yi
+ * de `auto`ya çeviriyor ve şeridin sağında gereksiz bir DİKEY kaydırma oku
+ * beliriyordu. Yatay kaydırma korunur, dikey kapatılır.
+ *
+ * Bu düzeltme `TabsList` kullanan ÜÇ ekranı birden kapsar: ürün düzenleme,
+ * içe aktarma ve çeviri yöneticisi.
+ */
 const tabsListVariants = cva(
-  "group/tabs-list inline-flex w-fit items-center justify-center rounded-lg p-[3px] text-muted-foreground group-data-[orientation=horizontal]/tabs:h-9 group-data-[orientation=vertical]/tabs:h-fit group-data-[orientation=vertical]/tabs:flex-col data-[variant=line]:rounded-none",
+  "group/tabs-list inline-flex w-fit max-w-full items-center justify-start overflow-x-auto overflow-y-hidden overscroll-x-contain rounded-lg p-[3px] text-muted-foreground group-data-[orientation=horizontal]/tabs:h-9 group-data-[orientation=vertical]/tabs:h-fit group-data-[orientation=vertical]/tabs:flex-col data-[variant=line]:rounded-none",
   {
     variants: {
       variant: {

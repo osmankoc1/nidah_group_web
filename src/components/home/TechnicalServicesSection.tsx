@@ -15,7 +15,7 @@ const SERVICES = [
 
 export default function TechnicalServicesSection() {
   return (
-    <section className="py-24 bg-white">
+    <section className="py-14 sm:py-24 bg-white">
       <div className="max-w-6xl mx-auto px-6">
 
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14">

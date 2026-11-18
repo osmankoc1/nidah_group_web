@@ -11,6 +11,39 @@ const nextConfig: NextConfig = {
     // Allow Cloudinary-delivered images
     remotePatterns: [{ protocol: "https", hostname: "res.cloudinary.com" }],
   },
+  // ── Temsilî ürün görseli: indekslenmesi ENGELLENİR ────────────────────────
+  //
+  // `/placeholder/*` altındaki dosya GERÇEK BİR ÜRÜN FOTOĞRAFI DEĞİLDİR;
+  // fotoğrafı henüz çekilmemiş ürünlerde gösterilen KURUMSAL karttır. Tek bir
+  // jenerik görselin 154 ürün sayfasının önizlemesi olarak indekslenmesi,
+  // Google Images belgesinin "avoid generic images like logos" uyarısının
+  // tam karşılığıdır.
+  //
+  // ── NEDEN robots.txt DEĞİL ────────────────────────────────────────────────
+  // `Disallow` TARAMAYI engeller; Google o zaman `noindex` başlığını HİÇ
+  // GÖREMEZ ve URL yine de sonuçlarda çıkabilir. Doğru mekanizma, dosyanın
+  // taranmasına izin verip yanıt başlığında `noindex` göndermektir — HTML
+  // olmayan kaynaklar için Google'ın belgelediği yöntem budur.
+  //
+  // ── NEDEN `unoptimized` ───────────────────────────────────────────────────
+  // Bileşen `next/image`'ı `unoptimized` ile çağırır; böylece tarayıcıya
+  // giden adres TAM OLARAK aşağıdaki kuralın eşleştiği yoldur. Optimize
+  // edilseydi adres `/_next/image?url=…` olurdu ve bu başlığı TAŞIMAZDI;
+  // o yola başlık eklemek ise ileride yüklenecek GERÇEK ürün fotoğraflarını
+  // da noindex yapardı.
+  async headers() {
+    return [
+      {
+        source: "/placeholder/:path*",
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, noimageindex" },
+          // İçerik dosya adıyla sabit; uzun süreli önbellek güvenli.
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+    ];
+  },
+
   // ── Legacy URL yönlendirmeleri ─────────────────────────────────────────────
   // Sayfa içi redirect() streaming nedeniyle gerçek HTTP redirect üretmiyordu
   // (/blog/tr → 200, /en/blog → 307). next.config redirects() filesystem

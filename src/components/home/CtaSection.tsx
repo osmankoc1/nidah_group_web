@@ -17,7 +17,7 @@ export default function CtaSection() {
   );
 
   return (
-    <section className="py-24 bg-nidah-dark relative overflow-hidden">
+    <section className="py-14 sm:py-24 bg-nidah-dark relative overflow-hidden">
 
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

@@ -2,6 +2,7 @@ import "server-only";
 import { db } from "@/lib/db";
 import { products, productImages, categories, fitments, machines, manufacturers, machineVariants } from "@/lib/db/schema";
 import { eq, and, ilike, or, asc, desc, count } from "drizzle-orm";
+import { PRODUCT_COLUMNS_V1 } from "@/lib/db/columns";
 
 export interface CatalogListItem {
   id:             string;
@@ -128,7 +129,8 @@ export async function getProduct(idOrPartNumber: string): Promise<CatalogDetail 
       : eq(products.partNumber, idOrPartNumber.toUpperCase())
   );
 
-  const [product] = await db.select().from(products).where(where).limit(1);
+  // Acik kolon listesi — bkz. src/lib/db/columns.ts
+  const [product] = await db.select(PRODUCT_COLUMNS_V1).from(products).where(where).limit(1);
   if (!product) return null;
 
   const [images, fitmentsRows] = await Promise.all([

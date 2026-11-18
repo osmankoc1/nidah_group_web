@@ -34,7 +34,7 @@ const CASE_STUDIES = [
 
 export default function TestimonialsSection() {
   return (
-    <section className="py-24 bg-nidah-light">
+    <section className="py-14 sm:py-24 bg-nidah-light">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-14">
           <h2 className="text-3xl sm:text-4xl font-bold text-nidah-dark mb-4">
