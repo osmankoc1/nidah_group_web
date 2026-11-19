@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { siteSettings } from "@/lib/db/schema";
-import { MANAGED_PAGES, type PageKey } from "@/lib/site-settings";
+import { MANAGED_PAGES, SITE_SETTINGS_CACHE_TAG, type PageKey } from "@/lib/site-settings";
 import { eq } from "drizzle-orm";
 
 // GET /api/admin/settings — tüm sayfa görünürlük ayarlarını döner
@@ -41,7 +41,23 @@ export async function PATCH(req: NextRequest) {
       set: { value: String(body.enabled), updatedAt: new Date() },
     });
 
-  // Tüm public sayfaların önbelleğini temizle
+  // ── Önbellek geçersiz kılma — İKİSİ DE GEREKLİ ────────────────────────────
+  //
+  // 1) `revalidateTag`: `site-settings.ts`'teki `unstable_cache` VERİ kaydını
+  //    düşürür. Bu kayıt artık süreyle eskimediği (`revalidate: false`) için
+  //    tazelenmesinin TEK yolu budur; atlanırsa sayfalar yeniden üretilse
+  //    bile eski toggle değerini okur.
+  // 2) `revalidatePath("/", "layout")`: public layout altındaki ÜRETİLMİŞ
+  //    sayfa çıktılarını düşürür; ziyaretçi değişikliği ilk istekte görür.
+  //
+  // Zaman tabanlı yenileme bilinçli olarak kaldırıldı; gerekçe
+  // `src/lib/site-settings.ts` başındaki not.
+  // `{ expire: 0 }` = ANINDA geçersiz kılma. Next 16'da ikinci argüman
+  // zorunludur; "max" gibi bir profil verilirse Next bunu
+  // stale-while-revalidate sayar ve değişiklik ilk istekte görünmez.
+  // `expire: 0` ise kaydı hemen düşürür (`revalidate.js` → expire === 0
+  // dalı), tek argümanlı eski biçimin deprecation uyarısını da üretmez.
+  revalidateTag(SITE_SETTINGS_CACHE_TAG, { expire: 0 });
   revalidatePath("/", "layout");
 
   return NextResponse.json({ ok: true });

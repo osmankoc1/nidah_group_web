@@ -29,12 +29,61 @@ npm run lint     # eslint
 | Alan | Kural |
 |---|---|
 | **Parça kataloğu toggle'ı** | Katalog **bilinçli olarak KAPALI**. Admin → Sayfalar → "Parça Kataloğu". Kod ile açılmaz, DB'den değiştirilmez |
-| `src/lib/site-settings.ts` | Toggle otoritesi. Mekanizma değiştirilmez |
+| `src/lib/site-settings.ts` | Toggle otoritesi. Mekanizma değiştirilmez. Önbellek **etiket tabanlıdır** — aşağıdaki "Önbellek mimarisi"ne bak |
 | `src/lib/catalog-access.ts` | CTA fallback zinciri. Değiştirilmez |
 | `.env*`, `~/.osko/*.env` | İçerik hiçbir çıktıya yazdırılmaz. Yalnızca anahtar adı |
 | `src/app/api/admin/**` | Auth arkasında (`src/proxy.ts`). Değişiklik ayrı onay |
 | Canlı DB | Migration ve şema değişikliği **her zaman ayrı onay** |
 | `drizzle/*.sql` | Yazılabilir; **çalıştırmak** ayrı onay |
+
+### Önbellek mimarisi — `site_settings` etiket tabanlıdır (2026-11-18, doğrulandı)
+
+**Kural: `site-settings.ts`'teki `unstable_cache`'e SAYISAL `revalidate` verilmez.**
+
+`unstable_cache`'e sayısal bir `revalidate` verildiğinde Next 16 bu değeri yalnızca veri önbelleğine uygulamaz; onu render eden rotanın revalidate süresine de taşır (`next/dist/server/web/spec-extension/unstable-cache.js` → `workUnitStore.revalidate` minimuma çekilir). Bu fonksiyon `(public)/layout.tsx` içinden çağrıldığı için değer **tüm public sayfalara ve `/sitemap.xml`'e** yayılır: site zaman tabanlı ISR'ye döner ve her TTL dolumundan sonraki ilk istek bir yeniden üretim (= 1 Vercel "ISR write") tetikler.
+
+Ölçülen fark (yerel `next build` + `next start`, aynı kod, tek satır):
+
+| | `{ revalidate: 60 }` (eski) | `{ tags: [...], revalidate: false }` (şimdiki) |
+|---|---|---|
+| `prerender-manifest.json` | 31 rotanın **28'i** `initialRevalidateSeconds: 60` | **31/31** `false` |
+| Sayfa `Cache-Control` | `s-maxage=60, stale-while-revalidate=31535940` | `s-maxage=31536000` |
+| Yeniden üretim | zamanla, dakikada bir | yalnızca deploy + toggle değişimi |
+
+Geçersiz kılma **olay tabanlıdır**. `site_settings`'in tek yazma yolu `/api/admin/settings` PATCH'idir ve orada **iki çağrı birlikte** bulunur:
+
+- `revalidateTag(SITE_SETTINGS_CACHE_TAG, { expire: 0 })` → veri önbelleği kaydını düşürür. Next 16'da ikinci argüman zorunludur; `"max"` gibi bir profil verilirse Next bunu stale-while-revalidate sayar ve değişiklik ilk istekte **görünmez**. `{ expire: 0 }` anında düşürür.
+- `revalidatePath("/", "layout")` → üretilmiş sayfa çıktılarını düşürür.
+
+İkisinden biri kaldırılırsa admin toggle'ı canlıya yansımaz. Doğrulandı: statik sayfa `HIT` → geçersiz kılma → `MISS` (yeniden üretim) → `HIT`.
+
+**Uyarı:** `site_settings` admin API'si dışında (elle SQL, script) değiştirilirse önbellek kendiliğinden tazelenmez; deploy ya da `revalidateTag` gerekir.
+
+### Fail-closed varsayılanlar — `defaultEnabled` ≠ `fallbackEnabled`
+
+`MANAGED_PAGES`'te **iki ayrı varsayılan** vardır ve karıştırılmamalıdır:
+
+| Alan | Hangi durumda | Katalog değeri |
+|---|---|---|
+| `defaultEnabled` | Ayarlar okundu, bu anahtar için **satır yok** | `true` — yerel geliştirmede katalog açık görünür (§4). **Değiştirilmez.** |
+| `fallbackEnabled` | Ayarlar **hiç okunamadı** (`DATABASE_URL` yok / sorgu hata verdi) | `false` — bilgi kaybı kapalı bir sayfayı asla açmaz |
+
+Canlıda açık olan içerik sayfalarında `fallbackEnabled: true`'dur; geçici bir DB arızası tüm siteyi karartmasın diye. Yani kural şudur: **`fallbackEnabled`, sayfanın canlıdaki amaçlanan durumudur.** Bir sayfanın amaçlanan durumu kalıcı olarak değişirse (örn. katalog açılırsa) bu sabit de güncellenmelidir; yoksa bir DB arızası sırasında yapılan deploy sayfayı yanlış tarafta dondurur.
+
+Hata durumu **önbelleğe alınmaz**: `unstable_cache` yalnızca başarılı sonucu yazar, bu yüzden `!db` ve sorgu hatası bilinçli olarak cache callback'i içinde `throw` edilir ve `readSettings()` içinde yakalanır. Aksi halde geçici bir arıza `revalidate: false` ile bir yıl donardı.
+
+Loglama: eksik `DATABASE_URL` **süreç başına bir kez** loglanır (sabit yapılandırma hatası; her render'da yazmak bir build'de 179 satır üretiyordu). Sorgu hatası **her seferinde** loglanır (geçicidir, sıklığı önemlidir). Hiçbir durumda hata mesajı/bağlantı adresi loglanmaz — yalnızca hata **adı**.
+
+Ölçülen davranış (`db = null`, aynı build, yalnızca `site-settings.ts` farkı):
+
+| | Fail-closed ÖNCESİ | Şimdiki |
+|---|---|---|
+| `/parca-katalog`, `/parca-katalog/<marka>` | **200 — katalog açılıyordu** | **404** |
+| `sitemap.xml` katalog URL | **12** | **0** |
+| Ana sayfada katalog bağlantısı | **18** | **0** |
+| `/hakkimizda`, `/sss`, `/iletisim`, `/teklif-al`, `/blog` | 200 | 200 (değişmedi) |
+
+**Build zamanı sorgu hatası ise build'i düşürür** (`sitemap.ts` ürün sorgusu `if (!db)` ile korunmuyor, hata fırlatır) — ölçüldü: `Export encountered an error on /sitemap.xml/route`. Bu güvenli yöndür: bozuk bir deploy yayına çıkmaz.
 
 ---
 
