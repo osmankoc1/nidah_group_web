@@ -5,8 +5,10 @@
   "scripts": {
     "dev": "next dev --webpack",
     "dev:turbo": "next dev",
-    "build": "next build",
+    "build": "next build && node scripts/isr-yazma-korumasi.mjs",
+    "build:only": "next build",
     "start": "next start",
+    "isr:kontrol": "node scripts/isr-yazma-korumasi.mjs",
     "lint": "eslint",
     "test": "playwright test",
     "db:generate": "drizzle-kit generate",
