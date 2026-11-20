@@ -175,7 +175,7 @@ test.describe("P6 — kategori YAYIN ÖLÇÜTÜ değildir", () => {
       "part_number_missing",
       "name_missing",
       "no_verified_image",
-      "long_description_too_short",
+      "long_description_missing",
       "no_verified_fitment",
     ];
     // Tip denetimi: listeye kategori eklenirse bu dizi derlenmez.

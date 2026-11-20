@@ -148,8 +148,9 @@ export interface BulkItemResult {
    * Aynı ölçütlerin TÜRKÇE karşılığı (`seo-gate.ts` → `REASON`).
    *
    * Kodlar tek başına operatöre gösterilmez: canlı doğrulamada ekranda
-   * "no_verified_image, long_description_too_short" yazıyordu ve bu, paneli
-   * kullanan kişiye ne yapması gerektiğini SÖYLEMİYOR. Kod listesi
+   * "no_verified_image, long_description_too_short" (eski ölçüt adı; bugünkü
+   * karşılığı `long_description_missing`) yazıyordu ve bu, paneli kullanan
+   * kişiye ne yapması gerektiğini SÖYLEMİYOR. Kod listesi
    * (`unmet`) geliştirici/log tarafı için duruyor.
    */
   reasons?: string[];

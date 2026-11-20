@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import {
-  MIN_LONG_DESCRIPTION_CHARS,
+  ONERILEN_ACIKLAMA_KARAKTERI,
   MIN_VERIFIED_IMAGES,
   evaluateSeoReadiness,
   isProductIndexable,
@@ -12,7 +14,7 @@ import {
  * "varsayılan durumda hiçbir ürün yayına girmez" güvencesini kilitler.
  */
 
-const goodLongDescription = "x".repeat(MIN_LONG_DESCRIPTION_CHARS);
+const goodLongDescription = "x".repeat(ONERILEN_ACIKLAMA_KARAKTERI);
 
 const eligible: SeoReadinessInput = {
   isActive: true,
@@ -45,7 +47,7 @@ test.describe("evaluateSeoReadiness", () => {
     expect(r.eligible).toBe(false);
     expect(r.unmet).toEqual([
       "no_verified_image",
-      "long_description_too_short",
+      "long_description_missing",
       "no_verified_fitment",
     ]);
     expect(r.reasons).toHaveLength(3);
@@ -63,20 +65,45 @@ test.describe("evaluateSeoReadiness", () => {
     );
   });
 
-  test("kısa açıklama eşiğin ALTINDA kalırsa uygun değil", () => {
-    const short = "x".repeat(MIN_LONG_DESCRIPTION_CHARS - 1);
-    expect(evaluateSeoReadiness({ ...eligible, longDescription: short }).unmet).toContain(
-      "long_description_too_short"
-    );
-    // Esik DEGERI tam olarak yeterlidir.
+  test("KISA açıklama yayını ENGELLEMEZ (2026-11-20 kararı)", () => {
+    // Eskiden 300 karakter altı yayın engeliydi. Artık değil: doğru ve
+    // özgün bir açıklama 150 karakterde de yazılabilir.
+    const kisa = "Kısa ama doğru bir açıklama.";
+    const r = evaluateSeoReadiness({ ...eligible, longDescription: kisa });
+    expect(r.eligible).toBe(true);
+    expect(r.unmet).toEqual([]);
+
+    // Tek karakterlik açıklama bile geçer — uzunluk sınırı YOKTUR.
+    expect(evaluateSeoReadiness({ ...eligible, longDescription: "x" }).eligible).toBe(true);
+
+    // Önerilen hedefin üstü de elbette geçer.
     expect(evaluateSeoReadiness({ ...eligible, longDescription: goodLongDescription }).eligible).toBe(true);
   });
 
-  test("whitespace açıklama sayılmaz", () => {
-    const padded = "   " + "x".repeat(MIN_LONG_DESCRIPTION_CHARS - 1) + "   ";
-    expect(evaluateSeoReadiness({ ...eligible, longDescription: padded }).unmet).toContain(
-      "long_description_too_short"
-    );
+  test("BOŞ açıklama yayını ENGELLER", () => {
+    for (const bos of [null, undefined, ""]) {
+      const r = evaluateSeoReadiness({ ...eligible, longDescription: bos });
+      expect(r.eligible).toBe(false);
+      expect(r.unmet).toContain("long_description_missing");
+    }
+  });
+
+  test("yalnızca BOŞLUKtan oluşan açıklama boş sayılır", () => {
+    for (const bosluk of ["   ", "\n\n", "  \t  \n "]) {
+      expect(
+        evaluateSeoReadiness({ ...eligible, longDescription: bosluk }).unmet
+      ).toContain("long_description_missing");
+    }
+  });
+
+  test("ölçüt listesinde uzunluk eşiği ARTIK YOK", () => {
+    const kaynak = readFileSync(join(process.cwd(), "src/lib/seo-gate.ts"), "utf-8");
+    const kod = kaynak.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+    expect(kod).not.toContain("long_description_too_short");
+    // Sabit duruyor ama kapı kararında KULLANILMIYOR.
+    expect(kod).toContain("ONERILEN_ACIKLAMA_KARAKTERI");
+    const kapi = kod.slice(kod.indexOf("export function evaluateSeoReadiness"));
+    expect(kapi).not.toContain("ONERILEN_ACIKLAMA_KARAKTERI");
   });
 
   test("DOĞRULANMAMIŞ uyumluluk sayılmaz", () => {

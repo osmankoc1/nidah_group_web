@@ -5,7 +5,7 @@ import {
   MIN_TRANSLATION_BODY_CHARS,
   evaluateTranslationReadiness,
 } from "@/lib/translation-gate";
-import { MIN_LONG_DESCRIPTION_CHARS } from "@/lib/seo-gate";
+import { ONERILEN_ACIKLAMA_KARAKTERI } from "@/lib/seo-gate";
 import { IMAGE_ALT_TEXT_MIN } from "@/lib/product-fields";
 
 /**
@@ -96,10 +96,20 @@ test.describe("P11 — çeviri yayın kapısı", () => {
     expect(r.unmet).toContain("body_missing");
   });
 
-  test("eşik ÜRÜN kapısından ayrı ve daha hafif", () => {
-    // İkisi karışırsa çeviri için ürün eşiği uygulanır ve hiçbir çeviri
-    // yayınlanamaz hâle gelir.
-    expect(MIN_TRANSLATION_BODY_CHARS).toBeLessThan(MIN_LONG_DESCRIPTION_CHARS);
+  test("çeviri eşiği ÜRÜN kapısından BAĞIMSIZ ve değişmedi", () => {
+    // 2026-11-20'de ürün açıklamasının 300 karakter şartı kaldırıldı.
+    // Çeviri kapısının 120 karakterlik gövde şartı BUNDAN ETKİLENMEZ:
+    // yarı çevrilmiş sayfa yayınlanmamalı.
+    expect(MIN_TRANSLATION_BODY_CHARS).toBe(120);
+    expect(MIN_TRANSLATION_BODY_CHARS).toBeLessThan(ONERILEN_ACIKLAMA_KARAKTERI);
+
+    // Ürün kapısı kısa açıklamayı artık geçiriyor; çeviri kapısı GEÇİRMİYOR.
+    const kisa = evaluateTranslationReadiness({
+      name: "Pump",
+      shortDescription: "x".repeat(MIN_TRANSLATION_BODY_CHARS - 1),
+      longDescription: null,
+    });
+    expect(kisa.eligible).toBe(false);
   });
 
   test("her eksik ölçüt Türkçe gerekçe taşır", () => {

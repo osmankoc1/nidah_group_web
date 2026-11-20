@@ -5,7 +5,7 @@ import { eq, asc, desc, ilike, or, and, inArray, count, sql } from "drizzle-orm"
 import { normalizePartNumber } from "@/lib/part-number";
 import { PRODUCT_COLUMNS_V3 } from "@/lib/db/columns";
 import { isUniqueViolation } from "@/lib/db/errors";
-import { evaluateSeoReadiness, MIN_LONG_DESCRIPTION_CHARS } from "@/lib/seo-gate";
+import { evaluateSeoReadiness, ONERILEN_ACIKLAMA_KARAKTERI } from "@/lib/seo-gate";
 import { parseProductFilters } from "@/lib/product-filters";
 import { parseProductCategoryId } from "@/lib/category-tree";
 import {
@@ -149,17 +149,20 @@ export async function GET(request: NextRequest) {
     if (filtre.synthetic === "only") conditions.push(eq(products.isSynthetic, true));
 
     /*
-     * Açıklama uzunluğu filtresi — eşik `MIN_LONG_DESCRIPTION_CHARS`'tan
+     * Açıklama uzunluğu filtresi — eşik `ONERILEN_ACIKLAMA_KARAKTERI`'den
      * gelir, SQL'e sabit sayı gömülmez.
+     *
+     * DİKKAT: bu filtre bir KALİTE görünümüdür, yayın uygunluğu DEĞİL.
+     * 300 karakterin altında kalmak yayını engellemez (2026-11-20).
      */
     if (filtre.shortDescription === "yes") {
       conditions.push(
-        sql`length(coalesce(${products.longDescription}, '')) < ${MIN_LONG_DESCRIPTION_CHARS}`
+        sql`length(coalesce(${products.longDescription}, '')) < ${ONERILEN_ACIKLAMA_KARAKTERI}`
       );
     }
     if (filtre.shortDescription === "no") {
       conditions.push(
-        sql`length(coalesce(${products.longDescription}, '')) >= ${MIN_LONG_DESCRIPTION_CHARS}`
+        sql`length(coalesce(${products.longDescription}, '')) >= ${ONERILEN_ACIKLAMA_KARAKTERI}`
       );
     }
 
@@ -201,7 +204,8 @@ export async function GET(request: NextRequest) {
     /*
      * `publishReadiness` = 0-3 arasi bir HAZIRLIK PUANI:
      *   +1 dogrulanmis fotograf varsa
-     *   +1 uzun aciklama esigi gecerse
+     *   +1 uzun aciklama BOS DEGILSE (2026-11-20: 300 karakter esigi
+     *      kaldirildi; puan artik yayin kapisiyla AYNI olcutu kullanir)
      *   +1 dogrulanmis uyumluluk varsa
      * Azalan siralama "yayina en yakin" urunleri basa getirir; artan
      * siralama ise "en cok is gereken" urunleri. Fotograf turu
@@ -210,7 +214,7 @@ export async function GET(request: NextRequest) {
     const hazirlikPuani = sql`(
       (case when exists (select 1 from ${productImages}
          where ${productImages.productId} = ${products.id} and ${productImages.verified}) then 1 else 0 end)
-    + (case when length(coalesce(${products.longDescription}, '')) >= ${MIN_LONG_DESCRIPTION_CHARS} then 1 else 0 end)
+    + (case when length(btrim(coalesce(${products.longDescription}, ''))) > 0 then 1 else 0 end)
     + (case when exists (select 1 from ${fitments}
          where ${fitments.productId} = ${products.id} and ${fitments.verified}) then 1 else 0 end)
     )`;

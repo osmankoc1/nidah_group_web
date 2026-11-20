@@ -286,7 +286,8 @@ test.describe("P5 — arayüz güvenliği", () => {
 
   test("gerekçe TÜRKÇE gösterilir — ham ölçüt kodu değil", () => {
     // Canlı doğrulamada ekranda "no_verified_image,
-    // long_description_too_short" yazıyordu; operatöre ne yapacağını
+    // long_description_too_short" (eski ölçüt adı; bugünkü karşılığı
+    // `long_description_missing`) yazıyordu; operatöre ne yapacağını
     // söylemiyordu. Sunucu artık Türkçe gerekçeyi de dönüyor.
     expect(UC).toContain("reasons: readiness.reasons");
     const kod = yorumsuz(SAYFA);

@@ -37,7 +37,7 @@ import {
   type SourcingTypeValue,
   type StockStatusValue,
 } from "@/lib/product-fields";
-import { evaluateSeoReadiness, MIN_LONG_DESCRIPTION_CHARS } from "@/lib/seo-gate";
+import { evaluateSeoReadiness, ONERILEN_ACIKLAMA_KARAKTERI } from "@/lib/seo-gate";
 import { buildCategoryTree } from "@/lib/category-tree";
 
 /**
@@ -597,20 +597,25 @@ export default function EditProductPage({
                       value={form.longDescription}
                       onChange={(e) => set("longDescription", e.target.value)}
                     />
-                    {/* Eşik `MIN_LONG_DESCRIPTION_CHARS`'tan okunur, elle
-                        yazılmaz. Metin "önerilir" diyordu; oysa kural K3 ile
-                        SUNUCU TARAFINDA ZORUNLU — Yayın sekmesi "zorunludur"
-                        derken burası "önerilir" diyordu (bulgu P8). */}
-                    <p
-                      className={`text-[11px] ${
-                        form.longDescription.trim().length < MIN_LONG_DESCRIPTION_CHARS
-                          ? "text-amber-700"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {form.longDescription.trim().length} karakter — yayın için en az{" "}
-                      {MIN_LONG_DESCRIPTION_CHARS} karakter <strong>zorunlu</strong>
-                    </p>
+                    {/* 2026-11-20: 300 karakter artık YAYIN ŞARTI DEĞİL,
+                        önerilen kalite hedefidir. Yayını engelleyen tek
+                        içerik şartı açıklamanın BOŞ olmamasıdır — ekran da
+                        bu iki durumu ayrı gösterir, yoksa operatör hangisinin
+                        engel olduğunu anlayamaz. */}
+                    {form.longDescription.trim().length === 0 ? (
+                      <p className="text-[11px] text-amber-700">
+                        0 karakter — yayın için açıklama <strong>boş olamaz</strong>.
+                        Uzunluk sınırı yoktur.
+                      </p>
+                    ) : (
+                      <p className="text-[11px] text-muted-foreground">
+                        {form.longDescription.trim().length} karakter
+                        {form.longDescription.trim().length < ONERILEN_ACIKLAMA_KARAKTERI && (
+                          <> — önerilen hedef {ONERILEN_ACIKLAMA_KARAKTERI} karakter
+                          (zorunlu değil)</>
+                        )}
+                      </p>
+                    )}
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">

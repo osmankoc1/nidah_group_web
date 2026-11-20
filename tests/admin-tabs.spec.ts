@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { tabsListVariants } from "@/components/ui/tabs";
-import { MIN_LONG_DESCRIPTION_CHARS, evaluateSeoReadiness } from "@/lib/seo-gate";
+import { ONERILEN_ACIKLAMA_KARAKTERI, evaluateSeoReadiness } from "@/lib/seo-gate";
 
 /**
  * Faz 1 — yönetim paneli kullanılabilirlik düzeltmeleri.
@@ -93,7 +93,7 @@ test.describe("P3 — yayın düğmesi ölçütler karşılanmadan etkin değil"
       isActive: true,
       partNumber: "CH 76281",
       name: "Hidrolik Ana Pompa",
-      longDescription: "x".repeat(MIN_LONG_DESCRIPTION_CHARS),
+      longDescription: "x".repeat(ONERILEN_ACIKLAMA_KARAKTERI),
       verifiedImageCount: 1,
       verifiedFitmentCount: 1,
     });
@@ -103,7 +103,7 @@ test.describe("P3 — yayın düğmesi ölçütler karşılanmadan etkin değil"
       isActive: true,
       partNumber: "CH 76281",
       name: "Hidrolik Ana Pompa",
-      longDescription: "x".repeat(MIN_LONG_DESCRIPTION_CHARS),
+      longDescription: "x".repeat(ONERILEN_ACIKLAMA_KARAKTERI),
       verifiedImageCount: 0,
       verifiedFitmentCount: 1,
     });
@@ -112,9 +112,14 @@ test.describe("P3 — yayın düğmesi ölçütler karşılanmadan etkin değil"
   });
 });
 
-// ── P8: eşik metni sabitten gelir ve "zorunlu" der ──────────────────────────
+// ── P8: eşik metni sabitten gelir ve TAVSİYE olarak sunulur ────────────────
+//
+// 2026-11-20: 300 karakter yayın şartı olmaktan ÇIKARILDI. P8'in asıl
+// bulgusu "ekranlar çelişmesin" idi; o kural duruyor — ama artık iki ekran
+// da ZORUNLU değil TAVSİYE dili kullanmalı. Yayını engelleyen tek içerik
+// şartı açıklamanın boş olmamasıdır.
 
-test.describe("P8 — uzun açıklama eşiği 'zorunlu' olarak sunulur", () => {
+test.describe("P8 — uzun açıklama hedefi TAVSİYE olarak sunulur", () => {
   const kaynak = oku(DUZENLEME_SAYFASI);
   /** Yorumlar çıkarılmış kod — "önerilir" sözcüğü açıklama blokunda geçebilir. */
   const kod = kaynak
@@ -122,14 +127,25 @@ test.describe("P8 — uzun açıklama eşiği 'zorunlu' olarak sunulur", () => {
     .replace(/\/\*[\s\S]*?\*\//g, "")
     .replace(/\/\/.*$/gm, "");
 
-  test("operatöre gösterilen metin 'önerilir' DEMİYOR", () => {
-    expect(kod).not.toContain("önerilir");
+  test("metin ZORUNLU demiyor, ÖNERİLEN hedef diyor", () => {
+    expect(kod).toContain("önerilen hedef");
+    expect(kod).toContain("zorunlu değil");
+    // Eski "en az N karakter zorunlu" dili kalmamalı.
+    expect(kod).not.toContain("karakter <strong>zorunlu</strong>");
+  });
+
+  test("BOŞ açıklama ayrı ve net uyarı alır", () => {
+    // Boş olmak hâlâ yayın engeli; ekran bunu uzunluk uyarısından
+    // AYIRMALI, yoksa operatör hangisinin engel olduğunu anlayamaz.
+    expect(kod).toContain("boş olamaz");
+    expect(kod).toContain("text-amber-700");
   });
 
   test("eşik sabitten okunur, elle yazılmaz", () => {
-    expect(kod).toContain("MIN_LONG_DESCRIPTION_CHARS");
+    expect(kod).toContain("ONERILEN_ACIKLAMA_KARAKTERI");
     // Eşik sayısı metne GÖMÜLMEMELİ.
     expect(kod).not.toContain("en az 300");
+    expect(kod).not.toContain("hedef 300");
   });
 
   test("eşiğin altında uyarı rengi kullanılır", () => {
@@ -137,9 +153,11 @@ test.describe("P8 — uzun açıklama eşiği 'zorunlu' olarak sunulur", () => {
   });
 
   test("Yayın sekmesi ile aynı dili kullanır", () => {
-    // Kapının gerekçe metni de "zorunlu" diyor; iki ekran çelişmemeli.
+    // İki ekran da aynı şeyi söylemeli: uzunluk zorunlu DEĞİL, boş olmak
+    // engel. Kapının gerekçe metni de bunu yazıyor.
     const gate = oku("src/lib/seo-gate.ts");
-    expect(gate).toContain("olmalı");
-    expect(kaynak).toContain("zorunlu");
+    expect(gate).toContain("Uzunluk sınırı yoktur");
+    expect(gate).toContain("yalnızca önerilen hedeftir");
+    expect(kaynak).toContain("boş olamaz");
   });
 });

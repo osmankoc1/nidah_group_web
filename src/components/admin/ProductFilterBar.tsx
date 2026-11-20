@@ -38,7 +38,7 @@ import {
 /** Üç durumlu filtre tanımı — hepsi aynı bileşenle çizilir. */
 const UCLU_FILTRELER = [
   { alan: "verifiedPhoto", etiket: "Doğrulanmış fotoğraf", evet: "Var", hayir: "Yok" },
-  { alan: "shortDescription", etiket: "Açıklama", evet: "Eksik (<300)", hayir: "Yeterli" },
+  { alan: "shortDescription", etiket: "Açıklama", evet: "300\u2019ün altında", hayir: "300 ve üzeri" },
   { alan: "seoReady", etiket: "Yayın onayı", evet: "Verildi", hayir: "Verilmedi" },
   { alan: "active", etiket: "Durum", evet: "Aktif", hayir: "Pasif" },
 ] as const satisfies ReadonlyArray<{

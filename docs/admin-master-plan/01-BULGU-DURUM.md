@@ -14,7 +14,7 @@
 | P5 | 🟠 Yüksek | Toplu işlem yok | 4 | ✅ **tamam** | 2026-11-18 | 5 eylem + `confirm: true` zorunlu + kayıt başına kapı + `admin_audit_log` (`drizzle/0013`) + fotoğraf föyü CSV. Toplu silme/doğrulama YOK |
 | P6 | 🟠 Yüksek | Kategori alanı düzenleme ekranında yok | 4 | ✅ **tamam** | 2026-11-18 | Seçici + `/admin/categories` ekranı + 2 yeni uç. Döngü ve silme koruması. Ağaç BOŞ kalır (Y1 ertelendi) |
 | P7 | 🟡 Orta | Aktif/Pasif anahtarı düzenleme ekranında yok | 4 | ✅ **tamam** | 2026-11-18 | `ActiveStatusControl` + AYRI rozet. Pasifleştirme yayın onayını GERİ ALMAZ |
-| P8 | 🟡 Orta | "en az 300 önerilir" metni yanıltıcı | 1 | ✅ **tamam** | 2026-11-17 | "zorunlu" + eşik sabitten okunuyor + eşik altı kehribar |
+| P8 | 🟡 Orta | açıklama eşiği metni ile kapı çelişiyordu | 1 | ✅ **tamam** | 2026-11-20 | **Politika tersine döndü:** 300 karakter artık yayın şartı değil, önerilen hedef. Yayını engelleyen tek içerik şartı açıklamanın BOŞ olmaması (`long_description_missing`). Her iki ekran da tavsiye dili kullanıyor. Ayrıntı: `19-ESIK-KALDIRMA-UYGULAMA-RAPORU.md` |
 | P9 | 🟡 Orta | Meta sayaç + SERP önizleme yok | 3 | ✅ **tamam** | 2026-11-17 | `SerpPreview.tsx`; DB sınırı (255) ile Google eşiği (~60/~155) ayrı gösteriliyor; boş metada sayfanın yedeği |
 | P10 | 🟠 Yüksek | Fotoğraf şartları yüklemeden önce görünmüyor | 3 | ✅ **tamam** | 2026-11-17 | Boş duruma kalıcı bilgi kutusu; eşik `IMAGE_ALT_TEXT_MIN`'den. **Depo turu öncesi hazır** |
 | P11 | 🟡 Orta | Çeviri yayınında ölçüt kontrolü yok | 3 | ✅ **tamam** | 2026-11-17 | `translation-gate.ts` — ad + gövde (≥120). Taslak her zaman serbest; `seo_ready`'ye dokunmaz |

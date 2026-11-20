@@ -17,8 +17,24 @@
  * KAPSAM: saf. DB, ağ, React yok.
  */
 
-/** Uzun açıklama için en az karakter sayısı (karar D6 önerisi). */
-export const MIN_LONG_DESCRIPTION_CHARS = 300;
+/**
+ * Uzun açıklama için ÖNERİLEN karakter hedefi.
+ *
+ * ── BU BİR YAYIN ŞARTI DEĞİLDİR (2026-11-20 kullanıcı kararı) ─────────────
+ * Önceden 300 karakter zorunluydu ve altındaki her ürün yayın kapısından
+ * geri çevriliyordu. Kural kaldırıldı: uzunluk artık yalnızca arayüzde
+ * gösterilen bir KALİTE HEDEFİDİR. Yayını engelleyen tek içerik şartı,
+ * açıklamanın tamamen boş olmamasıdır (`long_description_missing`).
+ *
+ * Neden: parçaya göre doğru ve özgün bir açıklama 150 karakterde de
+ * yazılabilir; eşiği tutturmak için metin uzatmak içeriği iyileştirmez,
+ * kötüleştirir.
+ */
+export const ONERILEN_ACIKLAMA_KARAKTERI = 300;
+
+// Eski ad `MIN_LONG_DESCRIPTION_CHARS` idi ve BİLEREK geri bırakılmadı:
+// "MIN_" öneki artık bir alt sınır olmadığı için yanıltıcıdır ve geriye
+// dönük bir çağıran yoktur (tüm kullanımlar bu commit'te güncellendi).
 
 /**
  * En az DOĞRULANMIŞ gerçek görsel sayısı (karar K2).
@@ -50,7 +66,7 @@ export type SeoCriterion =
   | "part_number_missing"
   | "name_missing"
   | "no_verified_image"
-  | "long_description_too_short"
+  | "long_description_missing"
   | "no_verified_fitment";
 
 export interface SeoReadinessInput {
@@ -85,9 +101,10 @@ const REASON: Record<SeoCriterion, string> = {
     `En az ${MIN_VERIFIED_IMAGES} DOĞRULANMIŞ gerçek ürün fotoğrafı gerekiyor ` +
     `(product_images.verified = true). Yüklenmiş ama doğrulanmamış fotoğraf ` +
     `sayılmaz; temsilî görsel de sayılmaz.`,
-  long_description_too_short:
-    `Uzun açıklama en az ${MIN_LONG_DESCRIPTION_CHARS} karakter olmalı ` +
-    `(benzersiz, Türkçe, parça numarasını tekrar etmeyen metin).`,
+  long_description_missing:
+    "Uzun açıklama boş. Sayfanın gövdesi için en az birkaç cümlelik " +
+    "benzersiz, Türkçe bir metin gerekir. Uzunluk sınırı yoktur; " +
+    `${ONERILEN_ACIKLAMA_KARAKTERI} karakter yalnızca önerilen hedeftir.`,
   no_verified_fitment:
     `En az ${MIN_VERIFIED_FITMENTS} DOĞRULANMIŞ makine uyumu gerekiyor ` +
     `(fitments.verified = true).`,
@@ -111,8 +128,10 @@ export function evaluateSeoReadiness(
   ) {
     unmet.push("no_verified_image");
   }
-  if ((input.longDescription?.trim().length ?? 0) < MIN_LONG_DESCRIPTION_CHARS) {
-    unmet.push("long_description_too_short");
+  // İÇERİK ŞARTI: yalnızca BOŞLUK kontrolü. Uzunluk eşiği 2026-11-20'de
+  // kaldırıldı; kısa ama doğru bir açıklama yayına engel değildir.
+  if ((input.longDescription?.trim().length ?? 0) === 0) {
+    unmet.push("long_description_missing");
   }
   if (
     !Number.isFinite(input.verifiedFitmentCount) ||
