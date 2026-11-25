@@ -117,7 +117,15 @@ Admin toggle kapalıyken:
 
 **Neden önemli:** `site_settings` boş olduğu için `isPageEnabled()` `MANAGED_PAGES`'teki `defaultEnabled` değerine düşer ve `page_parca_katalog` varsayılanı `true`'dur. Yani **yerel önizlemede katalog açık görünür** — bu bir regresyon değil, veri yokluğunun sonucudur. Yerelde gördüğün katalog sayfaları canlıda 404'tür.
 
-**Sonuç:** Yerelden gönderilen bir form **production kaydı oluşturmaz**; canlı teklif akışını yerelden doğrulayamazsın. Ancak `RESEND_API_KEY` yerelde tanımlı olduğu için **gerçek e-posta gönderilir**.
+**Sonuç:** Yerelden gönderilen bir form **production kaydı oluşturmaz**; canlı teklif akışını yerelden doğrulayamazsın.
+
+**E-posta (2026-11-25, düzeltildi):** `.env.local` içinde `RESEND_API_KEY` ve `ADMIN_EMAIL` **BOŞ**. Yani yerelden **gerçek e-posta GİTMEZ** — `sendAdminNotification()` anahtar yoksa gönderimi atlar. (Bu satır daha önce tersini söylüyordu; ölçülerek düzeltildi: anahtar adları var, değerleri boş.)
+
+Yerelde e-posta akışını sınamanın iki yolu vardır ve ikisi de dışarıya posta göndermez:
+- `RESEND_BASE_URL` ile yerel bir saplama uca yönlendirmek (Resend SDK bu değişkeni okur),
+- yalnızca `sent/reason` dönüşünü gözlemlemek.
+
+Gerçek teslimat yalnızca production'da doğrulanabilir; test talebi **açıkça TEST olarak işaretlenir** ve alıcı şirketin kendi adresidir.
 
 Bu ayrım `~/.claude/CLAUDE.md` §7'deki A1–A3 güvenlik çalışmasıyla kuruldu. 2026-09 tarihli oturumlarda `.env.local` production'ı görüyordu; **artık görmüyor.** Eski oturum notlarına güvenme, her seferinde doğrula:
 

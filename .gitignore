@@ -63,3 +63,6 @@ nidahgroupclaudeokuyacak*.txt
 # playwright test artifacts
 /test-results/
 /playwright-report/
+
+# Onbellek isitma durum/rapor dosyalari
+/.onbellek-isitma/
