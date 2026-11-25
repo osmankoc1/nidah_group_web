@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateBlog } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { blogPosts, blogPostTags, blogTags, blogPostTranslations } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
@@ -113,6 +114,9 @@ export async function PUT(req: NextRequest, { params }: Params) {
   // Auto-create/link tags from TR keywords (comma-separated); idempotent via onConflictDoNothing
   await upsertKeywordTags(id, tr.keywords ?? "");
 
+  // Public blog onbellegini dusur (2026-11-24, bulgu B1):
+  // atlanirsa panelde gorunen veri ile sitede gorunen veri ayrisir.
+  revalidateBlog();
   return NextResponse.json({ data: updated });
 }
 
@@ -176,5 +180,8 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
   if (!db) return NextResponse.json({ error: "Database not configured" }, { status: 503 });
   const { id } = await params;
   await db.delete(blogPosts).where(eq(blogPosts.id, id));
+  // Public blog onbellegini dusur (2026-11-24, bulgu B1):
+  // atlanirsa panelde gorunen veri ile sitede gorunen veri ayrisir.
+  revalidateBlog();
   return NextResponse.json({ ok: true });
 }

@@ -13,7 +13,9 @@ import {
   blogListHref,
   blogPostHref,
 } from "@/lib/blog-locales";
-import { resolveTag, type ResolvedTag } from "@/lib/blog-taxonomy";
+import { type ResolvedTag } from "@/lib/blog-taxonomy";
+import { resolveTagCached } from "@/lib/blog-taxonomy-cache";
+import { blogCache, isoOrNull } from "@/lib/blog-cache";
 
 const PAGE_SIZE = 12;
 
@@ -39,19 +41,15 @@ export async function getLocaleTagData(
   locale: TranslationLocale,
   tagSlug: string,
 ): Promise<ResolvedTag | null> {
-  return resolveTag(locale, tagSlug);
+  return resolveTagCached(locale, tagSlug);
 }
 
-export async function LocaleTagHub({ locale, tagSlug, page = 1 }: Props) {
-  if (!db) notFound();
-
-  const resolved = await resolveTag(locale, tagSlug);
-  if (!resolved) notFound();
-
-  const cfg = LOCALE_CONFIG[locale];
-  const s   = STRINGS[locale];
-
-  const rows = await db
+// Veri okumaları etiket tabanlı önbellekte (2026-11-24, bulgu B1).
+const getLocaleTagPosts = blogCache(
+  ["blog-locale-tag-posts"],
+  async (locale: TranslationLocale, tagId: string, page: number) => {
+  const rows = db
+    ? await db
     .select({
       postId:             blogPosts.id,
       title:              blogPostTranslations.title,
@@ -73,16 +71,32 @@ export async function LocaleTagHub({ locale, tagSlug, page = 1 }: Props) {
       blogPostTags,
       and(
         eq(blogPostTags.postId, blogPosts.id),
-        eq(blogPostTags.tagId, resolved.id),
+        eq(blogPostTags.tagId, tagId),
       ),
     )
     .where(eq(blogPosts.status, "published"))
     .orderBy(desc(blogPosts.publishedAt))
     .limit(PAGE_SIZE + 1)
-    .offset((page - 1) * PAGE_SIZE);
+    .offset((page - 1) * PAGE_SIZE)
+    : [];
 
-  const hasMore = rows.length > PAGE_SIZE;
-  const posts   = rows.slice(0, PAGE_SIZE);
+    return {
+      posts: rows.slice(0, PAGE_SIZE).map((r) => ({ ...r, publishedAt: isoOrNull(r.publishedAt) })),
+      hasMore: rows.length > PAGE_SIZE,
+    };
+  }
+);
+
+export async function LocaleTagHub({ locale, tagSlug, page = 1 }: Props) {
+  if (!db) notFound();
+
+  const resolved = await resolveTagCached(locale, tagSlug);
+  if (!resolved) notFound();
+
+  const cfg = LOCALE_CONFIG[locale];
+  const s   = STRINGS[locale];
+
+  const { posts, hasMore } = await getLocaleTagPosts(locale, resolved.id, page);
 
   return (
     <main dir={cfg.dir} lang={cfg.lang}>

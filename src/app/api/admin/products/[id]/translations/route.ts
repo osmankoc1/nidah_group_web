@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateProducts } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { productTranslations, products } from "@/lib/db/schema";
 import { asc, eq } from "drizzle-orm";
@@ -138,5 +139,8 @@ export async function PUT(request: NextRequest, { params }: Params) {
     })
     .returning(TRANSLATION_COLUMNS);
 
+  // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+  // panelde gorunen veri ile sitede gorunen veri ayrisir.
+  revalidateProducts();
   return NextResponse.json({ data: row });
 }

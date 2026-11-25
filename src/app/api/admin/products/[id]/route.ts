@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateProducts } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import {
   products, productImages, fitments, oemNumbers, productConditionEnum, categories,
@@ -288,6 +289,9 @@ export async function PATCH(request: NextRequest, { params }: Params) {
       .returning(PRODUCT_COLUMNS_V3);
     if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
+    // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+    // panelde gorunen veri ile sitede gorunen veri ayrisir.
+    revalidateProducts([updated.partNumber]);
     return NextResponse.json({ data: updated });
   } catch (err: unknown) {
     if (isPartNumberConflict(err)) {
@@ -305,7 +309,12 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
 
   try {
     // 1. Verify product exists
-    const [product] = await db.select({ id: products.id }).from(products).where(eq(products.id, id));
+    // Parça numarası SİLMEDEN ÖNCE okunur: silindikten sonra okunamaz ve o
+    // ürünün detay sayfası yolu ayrıca düşürülemez (2026-11-25).
+    const [product] = await db
+      .select({ id: products.id, partNumber: products.partNumber })
+      .from(products)
+      .where(eq(products.id, id));
     if (!product) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
     // 2. Fetch cloudinaryIds before cascade-delete wipes them
@@ -324,6 +333,9 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
       );
     }
 
+    // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+    // panelde gorunen veri ile sitede gorunen veri ayrisir.
+    revalidateProducts([product.partNumber]);
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("[DELETE /api/admin/products/[id]]", err);

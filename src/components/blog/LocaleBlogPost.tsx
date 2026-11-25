@@ -20,6 +20,7 @@ import {
   localeCategoryHref,
   localeTagHref,
 } from "@/lib/blog-locales";
+import { blogCache, isoOrNull, isoOrUndefined } from "@/lib/blog-cache";
 
 const FALLBACK_IMAGE = "https://www.nidahgroup.com.tr/opengraph-image";
 
@@ -28,8 +29,17 @@ interface Props {
   slug: string;
 }
 
-/** Fetches full post data for a given non-TR locale + slug. Returns null if not found. */
-export async function getLocaleBlogPostData(locale: TranslationLocale, slug: string) {
+/**
+ * Fetches full post data for a given non-TR locale + slug. Returns null if not found.
+ *
+ * Etiket tabanlı önbellekte (2026-11-24, bulgu B1). Çağıran rotalardan
+ * `revalidate = 60` kaldırıldı; tazeleme `revalidateBlog()` ile olay
+ * tabanlıdır. Bu fonksiyon hem `generateMetadata` hem sayfa gövdesinden
+ * çağrılır — önbellek aynı render içindeki ikinci çağrıyı da karşılar.
+ */
+export const getLocaleBlogPostData = blogCache(
+  ["blog-locale-post"],
+  async (locale: TranslationLocale, slug: string) => {
   if (!db) return null;
 
   const [post] = await db
@@ -75,27 +85,29 @@ export async function getLocaleBlogPostData(locale: TranslationLocale, slug: str
     slugsByLocale[t.locale as Locale] = t.slug;
   }
 
-  return { ...post, slugsByLocale };
-}
+  // Tarihler önbellek sınırını ISO string olarak geçer (bkz. `blog-cache.ts`).
+  return {
+    ...post,
+    publishedAt: isoOrNull(post.publishedAt),
+    updatedAt: isoOrNull(post.updatedAt),
+    slugsByLocale,
+  };
+});
 
-export async function LocaleBlogPost({ locale, slug }: Props) {
-  if (!db) notFound();
-
-  const post = await getLocaleBlogPostData(locale, slug);
-  if (!post) notFound();
-
-  const cfg = LOCALE_CONFIG[locale];
-  const isRTL = cfg.dir === "rtl";
-
-  const postTags = await db!
+/** Yazı sayfasının ikincil verisi — etiketler ve ilgili yazılar. */
+const getLocalePostExtras = blogCache(
+  ["blog-locale-post-extras"],
+  async (locale: TranslationLocale, postId: string, catId: string | null) => {
+  const postTags = db
+    ? await db
     .select({ name: blogTags.name, slug: blogTags.slug })
     .from(blogPostTags)
     .innerJoin(blogTags, eq(blogPostTags.tagId, blogTags.id))
-    .where(eq(blogPostTags.postId, post.id));
+    .where(eq(blogPostTags.postId, postId))
+    : [];
 
-  const catId = post.categoryId;
-  const relatedPosts = catId
-    ? await db!
+  const relatedPosts = db && catId
+    ? await db
         .select({
           postId:             blogPosts.id,
           title:              blogPostTranslations.title,
@@ -108,11 +120,30 @@ export async function LocaleBlogPost({ locale, slug }: Props) {
         .where(and(
           eq(blogPostTranslations.locale, locale),
           eq(blogPosts.categoryId, catId),
-          ne(blogPosts.id, post.id),
+          ne(blogPosts.id, postId),
           eq(blogPosts.status, "published"),
         ))
         .limit(3)
     : [];
+
+    return { postTags, relatedPosts };
+  }
+);
+
+export async function LocaleBlogPost({ locale, slug }: Props) {
+  if (!db) notFound();
+
+  const post = await getLocaleBlogPostData(locale, slug);
+  if (!post) notFound();
+
+  const cfg = LOCALE_CONFIG[locale];
+  const isRTL = cfg.dir === "rtl";
+
+  const { postTags, relatedPosts } = await getLocalePostExtras(
+    locale,
+    post.id,
+    post.categoryId
+  );
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -125,8 +156,8 @@ export async function LocaleBlogPost({ locale, slug }: Props) {
       name: "NİDAH GROUP",
       url: "https://www.nidahgroup.com.tr",
     },
-    datePublished: post.publishedAt?.toISOString(),
-    dateModified:  post.updatedAt?.toISOString(),
+    datePublished: isoOrUndefined(post.publishedAt),
+    dateModified:  isoOrUndefined(post.updatedAt),
     image: post.coverImageUrl ?? FALLBACK_IMAGE,
     url: `https://www.nidahgroup.com.tr${blogPostHref(locale, post.slug)}`,
     inLanguage: cfg.lang,

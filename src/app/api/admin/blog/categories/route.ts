@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateBlog } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { blogCategories, blogCategoryTranslations, blogPosts } from "@/lib/db/schema";
 import { eq, asc, sql } from "drizzle-orm";
@@ -78,5 +79,8 @@ export async function POST(req: NextRequest) {
 
   if (!cat) return NextResponse.json({ error: "Kategori oluşturulamadı" }, { status: 500 });
 
+  // Public blog onbellegini dusur (2026-11-24, bulgu B1):
+  // atlanirsa panelde gorunen veri ile sitede gorunen veri ayrisir.
+  revalidateBlog();
   return NextResponse.json({ data: { ...cat, translations: [] } }, { status: 201 });
 }

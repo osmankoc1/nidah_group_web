@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateProducts } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { categories, products } from "@/lib/db/schema";
 import { count, eq } from "drizzle-orm";
@@ -102,6 +103,9 @@ export async function PATCH(request: NextRequest, { params }: Params) {
         createdAt: categories.createdAt,
       });
 
+    // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+    // panelde gorunen veri ile sitede gorunen veri ayrisir.
+    revalidateProducts();
     return NextResponse.json({ data: row });
   } catch (err) {
     if (isUniqueViolation(err)) {
@@ -147,6 +151,9 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
     }
 
     await db.delete(categories).where(eq(categories.id, id));
+    // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+    // panelde gorunen veri ile sitede gorunen veri ayrisir.
+    revalidateProducts();
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("[DELETE /api/admin/categories/[id]]", err);

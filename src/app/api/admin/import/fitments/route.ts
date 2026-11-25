@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateProducts } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { fitments, products, machines, manufacturers, machineVariants } from "@/lib/db/schema";
 import { parseUploadedFile } from "@/lib/import-xlsx";
@@ -231,5 +232,8 @@ export async function POST(request: NextRequest) {
     dryRun: isDryRun,
   };
 
+  // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+  // panelde gorunen veri ile sitede gorunen veri ayrisir.
+  revalidateProducts();
   return NextResponse.json({ summary, results });
 }

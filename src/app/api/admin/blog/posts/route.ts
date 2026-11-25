@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateBlog } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { blogPosts, blogCategories, blogPostTags, blogPostTranslations, blogTags } from "@/lib/db/schema";
 import { eq, ne, desc, ilike, and, or } from "drizzle-orm";
@@ -136,5 +137,8 @@ export async function POST(req: NextRequest) {
   // Auto-create tags from TR keywords (comma-separated)
   await upsertKeywordTags(post.id, tr.keywords ?? "");
 
+  // Public blog onbellegini dusur (2026-11-24, bulgu B1):
+  // atlanirsa panelde gorunen veri ile sitede gorunen veri ayrisir.
+  revalidateBlog();
   return NextResponse.json({ data: post }, { status: 201 });
 }

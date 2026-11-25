@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateProducts } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { oemNumbers, partNumberTypeEnum, products } from "@/lib/db/schema";
 import { asc, eq } from "drizzle-orm";
@@ -114,6 +115,9 @@ export async function POST(request: NextRequest, { params }: Params) {
       })
       .returning(OEM_NUMBER_COLUMNS_V2);
 
+    // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+    // panelde gorunen veri ile sitede gorunen veri ayrisir.
+    revalidateProducts();
     return NextResponse.json({ data: row }, { status: 201 });
   } catch (err: unknown) {
     // Constraint adi `cause` zincirinde durur, mesajda DEGIL (src/lib/db/errors.ts).

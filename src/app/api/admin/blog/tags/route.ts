@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateBlog } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { blogTags, blogTagTranslations, blogPostTags } from "@/lib/db/schema";
 import { eq, asc, sql } from "drizzle-orm";
@@ -70,5 +71,8 @@ export async function POST(req: NextRequest) {
 
   if (!tag) return NextResponse.json({ error: "Etiket oluşturulamadı" }, { status: 500 });
 
+  // Public blog onbellegini dusur (2026-11-24, bulgu B1):
+  // atlanirsa panelde gorunen veri ile sitede gorunen veri ayrisir.
+  revalidateBlog();
   return NextResponse.json({ data: { ...tag, translations: [] } }, { status: 201 });
 }

@@ -13,7 +13,9 @@ import {
   blogListHref,
   blogPostHref,
 } from "@/lib/blog-locales";
-import { resolveCategory, type ResolvedCategory } from "@/lib/blog-taxonomy";
+import { type ResolvedCategory } from "@/lib/blog-taxonomy";
+import { resolveCategoryCached } from "@/lib/blog-taxonomy-cache";
+import { blogCache, isoOrNull } from "@/lib/blog-cache";
 
 const PAGE_SIZE = 12;
 
@@ -39,19 +41,15 @@ export async function getLocaleCategoryData(
   locale: TranslationLocale,
   categorySlug: string,
 ): Promise<ResolvedCategory | null> {
-  return resolveCategory(locale, categorySlug);
+  return resolveCategoryCached(locale, categorySlug);
 }
 
-export async function LocaleCategoryHub({ locale, categorySlug, page = 1 }: Props) {
-  if (!db) notFound();
-
-  const resolved = await resolveCategory(locale, categorySlug);
-  if (!resolved) notFound();
-
-  const cfg = LOCALE_CONFIG[locale];
-  const s   = STRINGS[locale];
-
-  const rows = await db
+// Veri okumaları etiket tabanlı önbellekte (2026-11-24, bulgu B1).
+const getLocaleCategoryPosts = blogCache(
+  ["blog-locale-category-posts"],
+  async (locale: TranslationLocale, categoryId: string, page: number) => {
+  const rows = db
+    ? await db
     .select({
       postId:             blogPosts.id,
       title:              blogPostTranslations.title,
@@ -71,14 +69,30 @@ export async function LocaleCategoryHub({ locale, categorySlug, page = 1 }: Prop
     )
     .where(and(
       eq(blogPosts.status, "published"),
-      eq(blogPosts.categoryId, resolved.id),
+      eq(blogPosts.categoryId, categoryId),
     ))
     .orderBy(desc(blogPosts.publishedAt))
     .limit(PAGE_SIZE + 1)
-    .offset((page - 1) * PAGE_SIZE);
+    .offset((page - 1) * PAGE_SIZE)
+    : [];
 
-  const hasMore = rows.length > PAGE_SIZE;
-  const posts   = rows.slice(0, PAGE_SIZE);
+    return {
+      posts: rows.slice(0, PAGE_SIZE).map((r) => ({ ...r, publishedAt: isoOrNull(r.publishedAt) })),
+      hasMore: rows.length > PAGE_SIZE,
+    };
+  }
+);
+
+export async function LocaleCategoryHub({ locale, categorySlug, page = 1 }: Props) {
+  if (!db) notFound();
+
+  const resolved = await resolveCategoryCached(locale, categorySlug);
+  if (!resolved) notFound();
+
+  const cfg = LOCALE_CONFIG[locale];
+  const s   = STRINGS[locale];
+
+  const { posts, hasMore } = await getLocaleCategoryPosts(locale, resolved.id, page);
 
   return (
     <main dir={cfg.dir} lang={cfg.lang}>

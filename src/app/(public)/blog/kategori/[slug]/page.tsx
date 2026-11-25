@@ -9,7 +9,8 @@ import { eq, and, desc } from "drizzle-orm";
 import { Clock, Tag, ArrowRight } from "lucide-react";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import { buildCategoryHreflangs } from "@/lib/blog-locales";
-import { resolveCategory } from "@/lib/blog-taxonomy";
+import { resolveCategoryCached } from "@/lib/blog-taxonomy-cache";
+import { blogCache, isoOrNull } from "@/lib/blog-cache";
 
 const BASE_URL = "https://www.nidahgroup.com.tr";
 const PAGE_SIZE = 12;
@@ -24,7 +25,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const { slug } = await params;
   const { page } = await searchParams;
   const pageNum = Math.max(1, Number(page) || 1);
-  const resolved = await resolveCategory("tr", slug);
+  const resolved = await resolveCategoryCached("tr", slug);
   if (!resolved) return { title: "Blog" };
   return {
     title: `${resolved.localeName} | Blog`,
@@ -38,35 +39,46 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   };
 }
 
-export const dynamic = "force-dynamic";
+// `force-dynamic` KALDIRILDI (2026-11-24, bulgu B1): her istek Neon'u
+// uyandırıyordu. Veri artık etiket tabanlı önbellekten gelir.
+const getCategoryPosts = blogCache(
+  ["blog-tr-category-posts"],
+  async (categoryId: string, page: number) => {
+    const rows = db
+      ? await db
+          .select({
+            id:                 blogPosts.id,
+            title:              blogPosts.title,
+            slug:               blogPosts.slug,
+            excerpt:            blogPosts.excerpt,
+            coverImageUrl:      blogPosts.coverImageUrl,
+            publishedAt:        blogPosts.publishedAt,
+            readingTimeMinutes: blogPosts.readingTimeMinutes,
+          })
+          .from(blogPosts)
+          .where(and(eq(blogPosts.status, "published"), eq(blogPosts.categoryId, categoryId)))
+          .orderBy(desc(blogPosts.publishedAt))
+          .limit(PAGE_SIZE + 1)
+          .offset((page - 1) * PAGE_SIZE)
+      : [];
+
+    return {
+      posts: rows.slice(0, PAGE_SIZE).map((r) => ({ ...r, publishedAt: isoOrNull(r.publishedAt) })),
+      hasMore: rows.length > PAGE_SIZE,
+    };
+  }
+);
 
 export default async function CategoryPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
   const { page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
 
-  const resolved = await resolveCategory("tr", slug);
+  const resolved = await resolveCategoryCached("tr", slug);
   if (!resolved) notFound();
   if (!db) notFound();
 
-  const rows = await db
-    .select({
-      id:                 blogPosts.id,
-      title:              blogPosts.title,
-      slug:               blogPosts.slug,
-      excerpt:            blogPosts.excerpt,
-      coverImageUrl:      blogPosts.coverImageUrl,
-      publishedAt:        blogPosts.publishedAt,
-      readingTimeMinutes: blogPosts.readingTimeMinutes,
-    })
-    .from(blogPosts)
-    .where(and(eq(blogPosts.status, "published"), eq(blogPosts.categoryId, resolved.id)))
-    .orderBy(desc(blogPosts.publishedAt))
-    .limit(PAGE_SIZE + 1)
-    .offset((page - 1) * PAGE_SIZE);
-
-  const hasMore = rows.length > PAGE_SIZE;
-  const posts   = rows.slice(0, PAGE_SIZE);
+  const { posts, hasMore } = await getCategoryPosts(resolved.id, page);
 
   return (
     <main>

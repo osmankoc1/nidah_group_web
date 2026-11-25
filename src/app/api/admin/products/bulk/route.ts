@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateProductsById } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { products } from "@/lib/db/schema";
 import { and, eq, inArray } from "drizzle-orm";
@@ -215,6 +216,9 @@ export async function POST(request: NextRequest) {
     // İşlem kaydı yazılamazsa işlem DÜŞMEZ (K9 notu: `audit-log.ts`).
     const kaydedildi = await recordAdminAudit(kayitlar);
 
+    // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+    // panelde gorunen veri ile sitede gorunen veri ayrisir.
+    await revalidateProductsById(ids);
     return NextResponse.json({
       data: {
         action,

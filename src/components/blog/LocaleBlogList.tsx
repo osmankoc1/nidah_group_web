@@ -16,14 +16,18 @@ import {
   LOCALES,
 } from "@/lib/blog-locales";
 import { FlagIcon } from "@/components/blog/FlagIcon";
+import { blogCache, isoOrNull } from "@/lib/blog-cache";
 
 const PAGE_SIZE = 12;
 
 interface Props { locale: TranslationLocale; page?: number }
 
-export async function LocaleBlogList({ locale, page = 1 }: Props) {
-  const cfg = LOCALE_CONFIG[locale];
-
+// Veri okumaları etiket tabanlı önbellekte (2026-11-24, bulgu B1): EN/RU/AR
+// liste sayfaları her istekte Neon'u uyandırıyordu. Çağıran rotalardan
+// `force-dynamic` kaldırıldı; tazeleme `revalidateBlog()` ile olay tabanlıdır.
+const getLocaleListData = blogCache(
+  ["blog-locale-list"],
+  async (locale: TranslationLocale, page: number) => {
   const rows = db
     ? await db
         .select({
@@ -60,7 +64,10 @@ export async function LocaleBlogList({ locale, page = 1 }: Props) {
     : [];
 
   const hasMore = rows.length > PAGE_SIZE;
-  const posts   = rows.slice(0, PAGE_SIZE);
+  // Tarih önbellek sınırını ISO string olarak geçer (bkz. `blog-cache.ts`).
+  const posts   = rows
+    .slice(0, PAGE_SIZE)
+    .map((r) => ({ ...r, publishedAt: isoOrNull(r.publishedAt) }));
 
   // Category chips — include locale-specific name/slug with TR fallback
   const rawCategories = db
@@ -91,6 +98,14 @@ export async function LocaleBlogList({ locale, page = 1 }: Props) {
         .where(eq(blogPosts.status, "published"))
         .orderBy(blogCategories.name)
     : [];
+
+    return { posts, hasMore, rawCategories };
+  }
+);
+
+export async function LocaleBlogList({ locale, page = 1 }: Props) {
+  const cfg = LOCALE_CONFIG[locale];
+  const { posts, hasMore, rawCategories } = await getLocaleListData(locale, page);
 
   // Deduplicate by category id (selectDistinct with nullable columns can produce dupes)
   const seen = new Set<string>();

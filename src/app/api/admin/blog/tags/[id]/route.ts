@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateBlog } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { blogTags, blogTagTranslations, blogPostTags } from "@/lib/db/schema";
 import { eq, and, ne, sql } from "drizzle-orm";
@@ -109,6 +110,9 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       });
   }
 
+  // Public blog onbellegini dusur (2026-11-24, bulgu B1):
+  // atlanirsa panelde gorunen veri ile sitede gorunen veri ayrisir.
+  revalidateBlog();
   return NextResponse.json({ data: updated });
 }
 
@@ -133,5 +137,8 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
 
   // Tag translations cascade-deleted via FK ON DELETE CASCADE
   await db.delete(blogTags).where(eq(blogTags.id, id));
+  // Public blog onbellegini dusur (2026-11-24, bulgu B1):
+  // atlanirsa panelde gorunen veri ile sitede gorunen veri ayrisir.
+  revalidateBlog();
   return NextResponse.json({ deletedId: id, removedFromPosts });
 }

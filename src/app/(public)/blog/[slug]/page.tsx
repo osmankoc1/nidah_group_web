@@ -3,6 +3,7 @@ import RelatedServiceLinks from "@/components/shared/RelatedServiceLinks";
 import { getServicesForBlogCategory } from "@/lib/services";
 import { JsonLd } from "@/lib/json-ld";
 import { isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
+import { blogCache, isoOrNull, isoOrUndefined } from "@/lib/blog-cache";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -20,9 +21,11 @@ const FALLBACK_IMAGE = "https://www.nidahgroup.com.tr/opengraph-image";
 
 interface PageProps { params: Promise<{ slug: string }> }
 
-export const revalidate = 60;
-
-async function getTrPost(slug: string) {
+// `revalidate = 60` KALDIRILDI (2026-11-24, bulgu B1). Bu sayfa `searchParams`
+// okumadığı için artık TAM ROTA önbelleğine girer: bir kez üretilir, Google ve
+// ziyaretçiler CDN'den okur, Neon'a hiç inilmez. Tazeleme olay tabanlıdır —
+// `/api/admin/blog/**` yazma yolları `revalidateBlog()` çağırır.
+const getTrPost = blogCache(["blog-tr-post"], async (slug: string) => {
   if (!db) return null;
 
   const [post] = await db
@@ -58,8 +61,48 @@ async function getTrPost(slug: string) {
   const slugsByLocale: Partial<Record<Locale, string>> = { tr: post.slug };
   for (const t of translations) slugsByLocale[t.locale as Locale] = t.slug;
 
-  return { ...post, slugsByLocale };
-}
+  // Tarihler önbellek sınırını ISO string olarak geçer (bkz. `blog-cache.ts`).
+  return {
+    ...post,
+    publishedAt: isoOrNull(post.publishedAt),
+    updatedAt: isoOrNull(post.updatedAt),
+    slugsByLocale,
+  };
+});
+
+/** Yazı sayfasının ikincil verisi — etiketler ve ilgili yazılar. */
+const getTrPostExtras = blogCache(
+  ["blog-tr-post-extras"],
+  async (postId: string, categoryId: string | null) => {
+    const postTags = db
+      ? await db
+          .select({ name: blogTags.name, slug: blogTags.slug })
+          .from(blogPostTags)
+          .innerJoin(blogTags, eq(blogPostTags.tagId, blogTags.id))
+          .where(eq(blogPostTags.postId, postId))
+      : [];
+
+    const relatedPosts = db && categoryId
+      ? await db
+          .select({
+            id:                 blogPosts.id,
+            title:              blogPosts.title,
+            slug:               blogPosts.slug,
+            coverImageUrl:      blogPosts.coverImageUrl,
+            readingTimeMinutes: blogPosts.readingTimeMinutes,
+          })
+          .from(blogPosts)
+          .where(and(
+            eq(blogPosts.status, "published"),
+            eq(blogPosts.categoryId, categoryId),
+            ne(blogPosts.id, postId),
+          ))
+          .limit(3)
+      : [];
+
+    return { postTags, relatedPosts };
+  }
+);
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   if (!(await isPageEnabled("page_blog"))) return DISABLED_PAGE_METADATA;
@@ -95,30 +138,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   const post = await getTrPost(slug);
   if (!post) notFound();
 
-  const postTags = await db!
-    .select({ name: blogTags.name, slug: blogTags.slug })
-    .from(blogPostTags)
-    .innerJoin(blogTags, eq(blogPostTags.tagId, blogTags.id))
-    .where(eq(blogPostTags.postId, post.id));
-
-  const catId = post.categoryId;
-  const relatedPosts = catId
-    ? await db!
-        .select({
-          id:                 blogPosts.id,
-          title:              blogPosts.title,
-          slug:               blogPosts.slug,
-          coverImageUrl:      blogPosts.coverImageUrl,
-          readingTimeMinutes: blogPosts.readingTimeMinutes,
-        })
-        .from(blogPosts)
-        .where(and(
-          eq(blogPosts.status, "published"),
-          eq(blogPosts.categoryId, catId),
-          ne(blogPosts.id, post.id),
-        ))
-        .limit(3)
-    : [];
+  const { postTags, relatedPosts } = await getTrPostExtras(post.id, post.categoryId);
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -131,8 +151,8 @@ export default async function BlogPostPage({ params }: PageProps) {
       name: "NİDAH GROUP",
       url: "https://www.nidahgroup.com.tr",
     },
-    datePublished: post.publishedAt?.toISOString(),
-    dateModified:  post.updatedAt?.toISOString(),
+    datePublished: isoOrUndefined(post.publishedAt),
+    dateModified:  isoOrUndefined(post.updatedAt),
     image: post.coverImageUrl ?? FALLBACK_IMAGE,
     url: `https://www.nidahgroup.com.tr/blog/${post.slug}`,
     inLanguage: "tr",

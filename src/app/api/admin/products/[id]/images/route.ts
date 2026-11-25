@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateProducts } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { productImages, products } from "@/lib/db/schema";
 import { eq, count } from "drizzle-orm";
@@ -86,6 +87,9 @@ export async function POST(request: NextRequest, { params }: Params) {
       })
       .returning(PRODUCT_IMAGE_COLUMNS_V2);
 
+    // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+    // panelde gorunen veri ile sitede gorunen veri ayrisir.
+    revalidateProducts();
     return NextResponse.json({ data: image }, { status: 201 });
   } catch (err) {
     console.error("[POST /api/admin/products/[id]/images]", err);

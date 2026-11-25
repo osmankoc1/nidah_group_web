@@ -1,56 +1,88 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { products, productImages, categories, fitments, machines, manufacturers } from "@/lib/db/schema";
-import { eq, and, ilike, or, desc, count, inArray, sql } from "drizzle-orm";
+import { eq, and, ilike, like, isNull, or, desc, count, inArray, sql } from "drizzle-orm";
+import { productCache } from "@/lib/product-cache";
+import { normalizePartNumber } from "@/lib/part-number";
 
-export async function GET(request: NextRequest) {
-  if (!db) {
-    return NextResponse.json({ error: "Database not configured" }, { status: 503 });
-  }
+/**
+ * Public ürün listesi.
+ *
+ * ── ÖNBELLEK (2026-11-24, bulgu B9) ──────────────────────────────────────────
+ * İki katman:
+ *  1. CDN — aşağıdaki `Cache-Control`. 60 sn → 600 sn'ye çıkarıldı: ürün
+ *     verisi dakikalar içinde değişmiyor ve değiştiğinde admin yazma yolu
+ *     `revalidateProducts()` çağırarak ikinci katmanı düşürüyor.
+ *  2. Veri önbelleği — `productCache`. CDN'de olmayan bir filtre/arama/sayfa
+ *     kombinasyonu sunucuya gelse bile Neon'a İNMEZ. Kayıt süreyle eskimez
+ *     (`revalidate: false`); tek tazeleme yolu `PRODUCTS_CACHE_TAG`'dir.
+ *
+ * Bu ikinci katman 5.000–50.000 ürünlük katalogda belirleyicidir: arama
+ * trafiği aksi hâlde compute'u iş saatleri boyunca uyanık tutar.
+ */
 
-  const { searchParams } = request.nextUrl;
-  const search    = searchParams.get("search")?.trim();
-  const condition = searchParams.get("condition");
-  const brand     = searchParams.get("brand")?.trim().toUpperCase();
-  const page      = Math.max(1, Number(searchParams.get("page"))  || 1);
-  const limit     = Math.min(48, Math.max(1, Number(searchParams.get("limit")) || 24));
-  const offset    = (page - 1) * limit;
+const CDN_CACHE = "public, s-maxage=600, stale-while-revalidate=1200";
 
-  const conditions = [eq(products.isActive, true)];
+/** Tek round-trip grubu: liste + toplam + görseller + markalar. */
+const getProductList = productCache(
+  ["public-product-list"],
+  async (
+    search: string | null,
+    condition: string | null,
+    brand: string | null,
+    page: number,
+    limit: number
+  ) => {
+    if (!db) return null;
 
-  if (search) {
-    conditions.push(
-      or(
-        ilike(products.partNumber, `%${search}%`),
-        ilike(products.name, `%${search}%`)
-      )!
-    );
-  }
-  if (condition && ["new", "used", "remanufactured"].includes(condition)) {
-    conditions.push(eq(products.condition, condition as "new" | "used" | "remanufactured"));
-  }
+    const offset = (page - 1) * limit;
+    const conditions = [eq(products.isActive, true)];
 
-  // Brand filter: products that have fitments linked to a manufacturer matching the brand name
-  if (brand) {
-    const brandProductIds = await db!
-      .selectDistinct({ productId: fitments.productId })
-      .from(fitments)
-      .innerJoin(machines,      eq(fitments.machineId,      machines.id))
-      .innerJoin(manufacturers, eq(machines.manufacturerId, manufacturers.id))
-      .where(sql`UPPER(${manufacturers.name}) = ${brand}`);
-    const ids = brandProductIds.map((r) => r.productId);
-    if (ids.length === 0) {
-      return NextResponse.json(
-        { data: [], meta: { page: 1, limit, total: 0, pages: 0 } },
-        { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" } }
+    if (search) {
+      // ── ARAMA (2026-11-24, bulgu B7) ────────────────────────────────────
+      // Parça numarası artık NORMALİZE kolon üzerinden aranır:
+      //  • "76281", "ch 76281", "CH-76281" → hepsi "CH76281" ile eşleşir
+      //    (eskiden ham kolonda arandığı için "ch76281" eşleşmiyordu).
+      //  • `drizzle/0014` trigram indeksi bu deseni indeksle karşılar;
+      //    o migration uygulanmadan da sonuç DOĞRUdur, yalnızca yavaştır.
+      // Normalize değeri NULL olan 0006 öncesi satırlar için ham kolona
+      // düşülür (kısmi trigram indeksi aynı migration'da).
+      const normalizedSearch = normalizePartNumber(search);
+      const partNumberMatches = normalizedSearch
+        ? [
+            like(products.partNumberNormalized, `%${normalizedSearch}%`),
+            and(
+              isNull(products.partNumberNormalized),
+              ilike(products.partNumber, `%${search}%`)
+            )!,
+          ]
+        : [ilike(products.partNumber, `%${search}%`)];
+
+      conditions.push(
+        or(...partNumberMatches, ilike(products.name, `%${search}%`))!
       );
     }
-    conditions.push(inArray(products.id, ids));
-  }
+    if (condition && ["new", "used", "remanufactured"].includes(condition)) {
+      conditions.push(eq(products.condition, condition as "new" | "used" | "remanufactured"));
+    }
 
-  const where = and(...conditions);
+    // Brand filter: products that have fitments linked to a manufacturer matching the brand name
+    if (brand) {
+      const brandProductIds = await db
+        .selectDistinct({ productId: fitments.productId })
+        .from(fitments)
+        .innerJoin(machines,      eq(fitments.machineId,      machines.id))
+        .innerJoin(manufacturers, eq(machines.manufacturerId, manufacturers.id))
+        .where(sql`UPPER(${manufacturers.name}) = ${brand}`);
+      const brandIds = brandProductIds.map((r) => r.productId);
+      if (brandIds.length === 0) {
+        return { data: [], meta: { page: 1, limit, total: 0, pages: 0 } };
+      }
+      conditions.push(inArray(products.id, brandIds));
+    }
 
-  try {
+    const where = and(...conditions);
+
     const [rows, [{ total }]] = await Promise.all([
       db
         .select({
@@ -128,10 +160,31 @@ export async function GET(request: NextRequest) {
     }));
 
     const totalNum = Number(total);
-    return NextResponse.json(
-      { data, meta: { page, limit, total: totalNum, pages: Math.ceil(totalNum / limit) } },
-      { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" } }
-    );
+    return {
+      data,
+      meta: { page, limit, total: totalNum, pages: Math.ceil(totalNum / limit) },
+    };
+  }
+);
+
+export async function GET(request: NextRequest) {
+  if (!db) {
+    return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+  }
+
+  const { searchParams } = request.nextUrl;
+  const search    = searchParams.get("search")?.trim() || null;
+  const condition = searchParams.get("condition");
+  const brand     = searchParams.get("brand")?.trim().toUpperCase() || null;
+  const page      = Math.max(1, Number(searchParams.get("page"))  || 1);
+  const limit     = Math.min(48, Math.max(1, Number(searchParams.get("limit")) || 24));
+
+  try {
+    const result = await getProductList(search, condition, brand, page, limit);
+    if (!result) {
+      return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+    }
+    return NextResponse.json(result, { headers: { "Cache-Control": CDN_CACHE } });
   } catch (err) {
     console.error("[GET /api/products]", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

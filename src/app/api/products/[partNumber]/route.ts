@@ -6,21 +6,23 @@ import {
 } from "@/lib/db/schema";
 import { eq, and, asc, isNull, or, sql } from "drizzle-orm";
 import { productLookupKey } from "@/lib/product-url";
+import { productCache } from "@/lib/product-cache";
 
 type Params = { params: Promise<{ partNumber: string }> };
 
-export async function GET(_req: NextRequest, { params }: Params) {
-  if (!db) return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+/**
+ * CDN (`s-maxage`) 60 → 600 sn ve altına ETİKET TABANLI veri önbelleği
+ * eklendi (2026-11-24, bulgu B9): CDN'de olmayan bir parça numarası sunucuya
+ * gelse bile Neon'a inilmez. Admin yazma yolları `revalidateProducts()` ile
+ * düşürür.
+ */
+const CDN_CACHE = "public, s-maxage=600, stale-while-revalidate=1200";
 
-  const { partNumber } = await params;
-  // Kimlik araması normalize anahtar üzerinden (denetim C3): "ch-76281",
-  // "CH%2076281" ve "CH 76281" aynı ürüne çözülür.
-  const normalized = productLookupKey(partNumber);
-  if (!normalized) {
-    return NextResponse.json({ error: "Product not found" }, { status: 404 });
-  }
+const getProductDetail = productCache(
+  ["public-product-detail"],
+  async (normalized: string) => {
+    if (!db) return null;
 
-  try {
     const [product] = await db
       .select({
         id:           products.id,
@@ -51,9 +53,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
       )
       .limit(1);
 
-    if (!product) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
-    }
+    if (!product) return null;
 
     // Fetch related data in parallel
     const [images, fitmentsRows, oems] = await Promise.all([
@@ -100,10 +100,37 @@ export async function GET(_req: NextRequest, { params }: Params) {
         .where(eq(oemNumbers.productId, product.id)),
     ]);
 
-    return NextResponse.json(
-      { data: { ...product, images, fitments: fitmentsRows, oemNumbers: oems } },
-      { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" } }
-    );
+    return {
+      data: {
+        ...product,
+        // Tarih önbellek sınırını ISO string olarak geçer; JSON yanıtında
+        // zaten ISO string görünüyordu, dolayısıyla sözleşme değişmez.
+        createdAt: product.createdAt ? product.createdAt.toISOString() : null,
+        images,
+        fitments: fitmentsRows,
+        oemNumbers: oems,
+      },
+    };
+  }
+);
+
+export async function GET(_req: NextRequest, { params }: Params) {
+  if (!db) return NextResponse.json({ error: "Database not configured" }, { status: 503 });
+
+  const { partNumber } = await params;
+  // Kimlik araması normalize anahtar üzerinden (denetim C3): "ch-76281",
+  // "CH%2076281" ve "CH 76281" aynı ürüne çözülür.
+  const normalized = productLookupKey(partNumber);
+  if (!normalized) {
+    return NextResponse.json({ error: "Product not found" }, { status: 404 });
+  }
+
+  try {
+    const result = await getProductDetail(normalized);
+    if (!result) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+    return NextResponse.json(result, { headers: { "Cache-Control": CDN_CACHE } });
   } catch (err) {
     console.error("[GET /api/products/[partNumber]]", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

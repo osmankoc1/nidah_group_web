@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateProducts } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { productImages } from "@/lib/db/schema";
 import { eq, and, ne, asc } from "drizzle-orm";
@@ -81,6 +82,9 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
     yayindanAlindi = geri.length > 0;
   }
 
+  // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+  // panelde gorunen veri ile sitede gorunen veri ayrisir.
+  revalidateProducts();
   return NextResponse.json({ success: true, seoReadyRevoked: yayindanAlindi });
 }
 
@@ -142,6 +146,9 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
   if (!dogrulamaIstendi && !metinIstendi) {
     // Yalnızca isPrimary gönderildi — eski sözleşme.
+    // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+    // panelde gorunen veri ile sitede gorunen veri ayrisir.
+    revalidateProducts();
     return NextResponse.json({ success: true });
   }
 
@@ -206,6 +213,9 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
     if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
+    // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+    // panelde gorunen veri ile sitede gorunen veri ayrisir.
+    revalidateProducts();
     return NextResponse.json({
       success: true,
       data: updated,

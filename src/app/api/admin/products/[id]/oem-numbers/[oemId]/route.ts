@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateProducts } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { oemNumbers } from "@/lib/db/schema";
 import { and, eq } from "drizzle-orm";
@@ -82,6 +83,9 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
   if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
+  // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+  // panelde gorunen veri ile sitede gorunen veri ayrisir.
+  revalidateProducts();
   return NextResponse.json({ data: updated });
 }
 
@@ -97,5 +101,8 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
 
   if (!deleted) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
+  // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+  // panelde gorunen veri ile sitede gorunen veri ayrisir.
+  revalidateProducts();
   return NextResponse.json({ success: true });
 }

@@ -22,7 +22,8 @@ export async function generateMetadata(
   };
 }
 
-export const dynamic = "force-dynamic";
+// 2026-11-24 (bulgu B1): `force-dynamic` KALDIRILDI — veri artik etiket
+// tabanli onbellekten gelir, Neon her istekte uyandirilmaz.
 
 export default async function EnBlogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const { page } = await searchParams;

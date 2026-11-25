@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateProducts } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { productImages } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
@@ -26,5 +27,8 @@ export async function POST(request: NextRequest, { params }: Params) {
     )
   );
 
+  // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+  // panelde gorunen veri ile sitede gorunen veri ayrisir.
+  revalidateProducts();
   return NextResponse.json({ success: true });
 }

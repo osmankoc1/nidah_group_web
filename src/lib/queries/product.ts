@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { productCache } from "@/lib/product-cache";
 import { db } from "@/lib/db";
 import {
   products, productImages, categories,
@@ -243,9 +244,27 @@ async function loadDetail(normalized: string): Promise<ProductDetail | null> {
  * Segment yalnızca noktalama içeriyorsa (`normalizePartNumber` boş döner)
  * sorgu HİÇ çalıştırılmaz ve `null` döner → çağıran taraf 404 verir.
  */
+/**
+ * 2026-11-24 (bulgu B1): `loadDetail` artık ETİKET TABANLI veri önbelleğinden
+ * geçer. Ölçüm: ürün detay sayfası istek başına 5 sorgu çalıştırıyordu ve
+ * sayfa dinamik olduğu için bu HER istekte yeniden oluyordu (5.000 ürünlük
+ * katalogda Google taraması compute'u sürekli uyanık tutar). Önbellekle ikinci
+ * istek 0 sorguya iner.
+ *
+ * İki katman üst üste:
+ *  • `productCache` (unstable_cache) → istekler ARASI, süreyle eskimez;
+ *    tazeleme `revalidateProducts()` ile olay tabanlıdır.
+ *  • React `cache` → aynı render içinde `generateMetadata` + sayfa gövdesi
+ *    çift çağrısını teke indirir.
+ *
+ * `ProductDetail` içinde `Date` alanı YOKTUR (kontrol edildi), bu yüzden
+ * serileştirme sınırında tip kayması olmaz.
+ */
+const loadDetailCached = productCache(["product-detail"], loadDetail);
+
 export const getProductBySegment = cache(
   async (rawSegment: string): Promise<ProductDetail | null> =>
-    loadDetail(productLookupKey(rawSegment))
+    loadDetailCached(productLookupKey(rawSegment))
 );
 
 /**
@@ -254,5 +273,5 @@ export const getProductBySegment = cache(
  */
 export const getProductByPartNumber = cache(
   async (rawPartNumber: string): Promise<ProductDetail | null> =>
-    loadDetail(normalizePartNumber(rawPartNumber))
+    loadDetailCached(normalizePartNumber(rawPartNumber))
 );

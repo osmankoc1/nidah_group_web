@@ -5,7 +5,8 @@ import { buildPostHreflangs } from "@/lib/blog-locales";
 
 interface PageProps { params: Promise<{ slug: string }> }
 
-export const revalidate = 60;
+// 2026-11-24 (bulgu B1): `revalidate = 60` KALDIRILDI — sayfa tam rota
+// onbellegine girer; tazeleme `revalidateBlog()` ile olay tabanlidir.
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   if (!(await isPageEnabled("page_blog"))) return DISABLED_PAGE_METADATA;

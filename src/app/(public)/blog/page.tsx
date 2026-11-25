@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
+import { blogCache, isoOrNull } from "@/lib/blog-cache";
 import { db } from "@/lib/db";
 import { blogPosts, blogCategories } from "@/lib/db/schema";
 import { desc, eq } from "drizzle-orm";
@@ -30,40 +31,34 @@ export async function generateMetadata(
   };
 }
 
-export const dynamic = "force-dynamic";
-
+// `force-dynamic` KALDIRILDI (2026-11-24, bulgu B1): bu sayfa her istekte
+// Neon'u uyandırıyordu. Sayfa `searchParams` okuduğu için render yine istek
+// başınadır, ancak VERİ artık etiket tabanlı önbellekten gelir — Neon'a
+// yalnızca admin panelinden bir yazı/kategori değiştiğinde inilir.
 const PAGE_SIZE = 12;
 
-export default async function BlogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
-  if (!await isPageEnabled("page_blog")) notFound();
-
-  const { page: pageParam } = await searchParams;
-  const page = Math.max(1, Number(pageParam) || 1);
-
+const getBlogListData = blogCache(["blog-tr-list"], async (page: number) => {
   const rows = db
     ? await db
-        .select({
-          id:                 blogPosts.id,
-          title:              blogPosts.title,
-          slug:               blogPosts.slug,
-          excerpt:            blogPosts.excerpt,
-          coverImageUrl:      blogPosts.coverImageUrl,
-          publishedAt:        blogPosts.publishedAt,
-          authorName:         blogPosts.authorName,
-          categoryName:       blogCategories.name,
-          categorySlug:       blogCategories.slug,
-          readingTimeMinutes: blogPosts.readingTimeMinutes,
-        })
-        .from(blogPosts)
-        .leftJoin(blogCategories, eq(blogPosts.categoryId, blogCategories.id))
-        .where(eq(blogPosts.status, "published"))
-        .orderBy(desc(blogPosts.publishedAt))
-        .limit(PAGE_SIZE + 1)
-        .offset((page - 1) * PAGE_SIZE)
+    .select({
+      id:                 blogPosts.id,
+      title:              blogPosts.title,
+      slug:               blogPosts.slug,
+      excerpt:            blogPosts.excerpt,
+      coverImageUrl:      blogPosts.coverImageUrl,
+      publishedAt:        blogPosts.publishedAt,
+      authorName:         blogPosts.authorName,
+      categoryName:       blogCategories.name,
+      categorySlug:       blogCategories.slug,
+      readingTimeMinutes: blogPosts.readingTimeMinutes,
+    })
+    .from(blogPosts)
+    .leftJoin(blogCategories, eq(blogPosts.categoryId, blogCategories.id))
+    .where(eq(blogPosts.status, "published"))
+    .orderBy(desc(blogPosts.publishedAt))
+    .limit(PAGE_SIZE + 1)
+    .offset((page - 1) * PAGE_SIZE)
     : [];
-
-  const hasMore = rows.length > PAGE_SIZE;
-  const posts   = rows.slice(0, PAGE_SIZE);
 
   const categories = db
     ? await db
@@ -73,6 +68,23 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
         .where(eq(blogPosts.status, "published"))
         .orderBy(blogCategories.name)
     : [];
+
+  return {
+    // Tarih önbellek sınırını ISO string olarak geçer; render tarafı
+    // `new Date(...)` ile biçimliyor (bkz. `blog-cache.ts`).
+    posts: rows.slice(0, PAGE_SIZE).map((r) => ({ ...r, publishedAt: isoOrNull(r.publishedAt) })),
+    hasMore: rows.length > PAGE_SIZE,
+    categories,
+  };
+});
+
+export default async function BlogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+  if (!await isPageEnabled("page_blog")) notFound();
+
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+
+  const { posts, hasMore, categories } = await getBlogListData(page);
 
   const otherLocales = LOCALES.filter(l => l !== "tr");
 

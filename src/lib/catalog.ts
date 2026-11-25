@@ -1,7 +1,7 @@
 import "server-only";
 import { db } from "@/lib/db";
 import { products, productImages, categories, fitments, machines, manufacturers, machineVariants } from "@/lib/db/schema";
-import { eq, and, ilike, or, asc, desc, count } from "drizzle-orm";
+import { eq, and, ilike, or, asc, desc, count, inArray } from "drizzle-orm";
 import { PRODUCT_COLUMNS_V1 } from "@/lib/db/columns";
 
 export interface CatalogListItem {
@@ -31,6 +31,13 @@ export interface CatalogFilters {
 
 /**
  * List active products with optional filters. Used by the public catalog page.
+ */
+/**
+ * KULLANIMDA DEĞİL (2026-11-24 denetimi, bulgu B6): public katalog listesi
+ * `/api/products` üzerinden çalışır; bu fonksiyonun çağıranı yoktur.
+ * Silinmesi ayrı bir karardır — şimdilik ölçeklenme tuzağı giderilmiş
+ * hâlde bırakıldı. Yeniden kullanılacaksa `/api/products` rotasındaki
+ * toplu (batch) desen ve `productCache` örnek alınmalıdır.
  */
 export async function listProducts(filters: CatalogFilters = {}): Promise<CatalogListResult> {
   if (!db) return { items: [], total: 0, page: 1, pages: 0 };
@@ -77,14 +84,23 @@ export async function listProducts(filters: CatalogFilters = {}): Promise<Catalo
   const imageMap: Record<string, string> = {};
 
   if (ids.length > 0) {
+    // 2026-11-24 (bulgu B6): sorgu ESKİDEN tablodaki BÜTÜN birincil görselleri
+    // çekip JavaScript'te `ids.includes()` ile süzüyordu — 5.000 üründe her
+    // liste görüntülemesi 5.000 satır çekmek ve O(n²) süzmek demekti.
+    // Artık filtreleme veritabanında yapılır.
     const imgs = await db
       .select({ productId: productImages.productId, url: productImages.cloudinaryUrl })
       .from(productImages)
-      .where(and(eq(productImages.isPrimary, true)))
+      .where(
+        and(
+          eq(productImages.isPrimary, true),
+          inArray(productImages.productId, ids)
+        )
+      )
       .orderBy(asc(productImages.productId));
 
     for (const img of imgs) {
-      if (ids.includes(img.productId)) imageMap[img.productId] = img.url;
+      imageMap[img.productId] = img.url;
     }
   }
 

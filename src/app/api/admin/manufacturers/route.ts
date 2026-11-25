@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateProducts } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { manufacturers } from "@/lib/db/schema";
 import { asc } from "drizzle-orm";
@@ -23,6 +24,9 @@ export async function POST(request: NextRequest) {
 
   try {
     const [row] = await db.insert(manufacturers).values({ name: name.trim(), slug, logoUrl: logoUrl || null }).returning();
+    // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+    // panelde gorunen veri ile sitede gorunen veri ayrisir.
+    revalidateProducts();
     return NextResponse.json({ data: row }, { status: 201 });
   } catch (err: unknown) {
     if (err instanceof Error && err.message.includes("uq_manufacturers_slug")) {

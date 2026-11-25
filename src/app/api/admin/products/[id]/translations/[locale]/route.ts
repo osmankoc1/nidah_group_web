@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateProducts } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { productTranslations } from "@/lib/db/schema";
 import { and, eq } from "drizzle-orm";
@@ -55,6 +56,9 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "Bu dil için çeviri bulunamadı." }, { status: 404 });
   }
 
+  // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+  // panelde gorunen veri ile sitede gorunen veri ayrisir.
+  revalidateProducts();
   return NextResponse.json({ data: updated });
 }
 
@@ -81,5 +85,8 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "Bu dil için çeviri bulunamadı." }, { status: 404 });
   }
 
+  // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+  // panelde gorunen veri ile sitede gorunen veri ayrisir.
+  revalidateProducts();
   return NextResponse.json({ success: true });
 }

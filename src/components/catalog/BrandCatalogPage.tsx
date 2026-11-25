@@ -17,6 +17,7 @@ import {
 } from "@/lib/db/schema";
 import { eq, and, ilike, asc, sql, inArray, countDistinct } from "drizzle-orm";
 import { BRAND_PAGE_SIZE, paginate, type PageInfo } from "@/lib/pagination";
+import { productCache } from "@/lib/product-cache";
 import { productPath } from "@/lib/product-url";
 import { type StockStatus } from "@/lib/stock";
 
@@ -58,8 +59,14 @@ const EMPTY_PAGE = { items: [] as BrandProductItem[], pageInfo: paginate(0, 1, B
  *
  * YENİ: filtre ve sayfalama SQL'de, görseller TEK batch sorguda.
  * Sorgu sayısı sayfa başına sabit 4'tür (üretici + toplam + sayfa + görseller).
+ *
+ * 2026-11-24 (bulgu B1): bu 4 sorgu artık ETİKET TABANLI önbellekten geçer
+ * (`fetchBrandPage`, aşağıda). Marka sayfaları `?sayfa=` okuduğu için render
+ * istek başınadır, ancak ölçülen sorgu sayısı ikinci istekte 4 → 0'a iner.
+ * Tazeleme olay tabanlıdır: admin ürün/üretici yazma yolları
+ * `revalidateProducts()` çağırır.
  */
-async function fetchBrandPage(
+async function fetchBrandPageUncached(
   brandSlug: string,
   brandDisplayName: string,
   requestedPage: string | string[] | undefined
@@ -172,6 +179,8 @@ async function fetchBrandPage(
     return EMPTY_PAGE;
   }
 }
+
+const fetchBrandPage = productCache(["brand-catalog-page"], fetchBrandPageUncached);
 
 // ── Server component ──────────────────────────────────────────────
 

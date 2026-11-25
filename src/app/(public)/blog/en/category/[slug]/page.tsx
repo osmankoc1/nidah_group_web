@@ -29,7 +29,8 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   };
 }
 
-export const dynamic = "force-dynamic";
+// 2026-11-24 (bulgu B1): `force-dynamic` KALDIRILDI — veri artik etiket
+// tabanli onbellekten gelir, Neon her istekte uyandirilmaz.
 
 export default async function EnCategoryPage({ params, searchParams }: PageProps) {
   const { slug } = await params;

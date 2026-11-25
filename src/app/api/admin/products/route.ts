@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateProducts } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { products, productImages, fitments, productConditionEnum, categories } from "@/lib/db/schema";
 import { eq, asc, desc, ilike, or, and, inArray, count, sql } from "drizzle-orm";
@@ -482,6 +483,9 @@ export async function POST(request: NextRequest) {
       })
       .returning(PRODUCT_COLUMNS_V3);
 
+    // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+    // panelde gorunen veri ile sitede gorunen veri ayrisir.
+    revalidateProducts();
     return NextResponse.json({ data: product }, { status: 201 });
   } catch (err: unknown) {
     if (isPartNumberConflict(err)) {

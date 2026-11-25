@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateProducts } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { machineVariants } from "@/lib/db/schema";
 import { eq, asc } from "drizzle-orm";
@@ -40,5 +41,8 @@ export async function POST(request: NextRequest, { params }: Params) {
     })
     .returning();
 
+  // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa
+  // panelde gorunen veri ile sitede gorunen veri ayrisir.
+  revalidateProducts();
   return NextResponse.json({ data: row }, { status: 201 });
 }
