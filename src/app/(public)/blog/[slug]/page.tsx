@@ -338,3 +338,15 @@ export default async function BlogPostPage({ params }: PageProps) {
     </main>
   );
 }
+
+/**
+ * ── ISTEK UZERINE ISR (2026-11-25, Aşama 3) ─────────────────────────────────
+ * `generateStaticParams` tanımlı olmadığında Next bu rotayı tamamen dinamik
+ * sayar ve her istek sayfayı yeniden render eder. Boş liste döndürmek,
+ * build'de hiçbir yazı üretmeden sayfaların ilk istekte üretilip süresiz
+ * önbelleğe alınmasını sağlar. Tazeleme `revalidateBlog()` ile olay
+ * tabanlıdır.
+ */
+export async function generateStaticParams() {
+  return [];
+}

@@ -167,16 +167,53 @@ const getProductList = productCache(
   }
 );
 
+/**
+ * ── ONBELLEK ANAHTAR UZAYINI SINIRLA (2026-11-25, Aşama 3) ──────────────────
+ * `getProductList` bir `unstable_cache` sarmalayıcısıdır ve anahtarı
+ * ARGÜMANLARINDAN üretilir. Argümanlar doğrudan sorgu dizesinden gelirse
+ * anahtar uzayı SINIRSIZ olur: `?search=<rastgele>` veya `?page=999999` ile
+ * bir bot sınırsız sayıda önbellek kaydı (Vercel Data Cache yazması) ve
+ * derin `OFFSET` taraması üretebilir. Aşağıdaki sınırlar bunu kapatır:
+ *
+ *  • `search`  — baştaki/sondaki boşluk atılır, içteki boşluklar tek boşluğa
+ *    indirilir, 32 karakterle kesilir. Harf/rakam içermiyorsa arama YOK
+ *    sayılır (çöp sorgu veritabanına inmez). BÜYÜK/küçük harf DEĞİŞTİRİLMEZ:
+ *    Türkçe'de `I/ı` eşlemesi `ILIKE` sonucunu bozabilirdi.
+ *  • `condition` — önbelleğe gitmeden doğrulanır, geçersizse `null`. Böylece
+ *    bu eksen yalnızca 4 değer alır (eskiden serbest metindi).
+ *  • `brand` — 40 karakterle kesilir.
+ *  • `page` — 1..500 arasına sıkıştırılır. 24'lük sayfalarla bu 12.000.
+ *    ürüne kadar erişimdir; daha derin sayfalama `OFFSET` taraması olduğu
+ *    için zaten verimsizdir (ölçeklenebilir çözüm: keyset sayfalama).
+ *  • `limit` — 1..48 (değişmedi).
+ */
+const SAYFA_UST_SINIRI = 500;
+const ARAMA_UZUNLUK_SINIRI = 32;
+const MARKA_UZUNLUK_SINIRI = 40;
+const GECERLI_DURUMLAR = ["new", "used", "remanufactured"] as const;
+
+function aramaNormalize(ham: string | null): string | null {
+  if (!ham) return null;
+  const sade = ham.trim().replace(/\s+/g, " ").slice(0, ARAMA_UZUNLUK_SINIRI);
+  if (sade.length < 2) return null;
+  // Hiç harf/rakam yoksa anlamlı bir arama değildir.
+  if (!/[\p{L}\p{N}]/u.test(sade)) return null;
+  return sade;
+}
+
 export async function GET(request: NextRequest) {
   if (!db) {
     return NextResponse.json({ error: "Database not configured" }, { status: 503 });
   }
 
   const { searchParams } = request.nextUrl;
-  const search    = searchParams.get("search")?.trim() || null;
-  const condition = searchParams.get("condition");
-  const brand     = searchParams.get("brand")?.trim().toUpperCase() || null;
-  const page      = Math.max(1, Number(searchParams.get("page"))  || 1);
+  const search    = aramaNormalize(searchParams.get("search"));
+  const hamDurum  = searchParams.get("condition");
+  const condition = hamDurum && (GECERLI_DURUMLAR as readonly string[]).includes(hamDurum)
+    ? hamDurum
+    : null;
+  const brand     = searchParams.get("brand")?.trim().toUpperCase().slice(0, MARKA_UZUNLUK_SINIRI) || null;
+  const page      = Math.min(SAYFA_UST_SINIRI, Math.max(1, Number(searchParams.get("page")) || 1));
   const limit     = Math.min(48, Math.max(1, Number(searchParams.get("limit")) || 24));
 
   try {

@@ -525,3 +525,26 @@ export default async function ProductDetailPage({
     </>
   );
 }
+
+/**
+ * ── ISTEK UZERINE ISR (2026-11-25, Aşama 3) ─────────────────────────────────
+ * `generateStaticParams` TANIMLI OLMADIĞINDA Next bu rotayı tamamen dinamik
+ * sayar: her istek sayfayı yeniden render eder ve `Cache-Control: no-store`
+ * döner. 5.000–50.000 ürünlük katalogda bu, Google'ın her taramasında bir
+ * Vercel fonksiyon çağrısı demektir.
+ *
+ * BOŞ liste döndürmek davranışı şuna çevirir: build sırasında HİÇBİR ürün
+ * sorgulanmaz ve HİÇBİR sayfa üretilmez (build süresi ve Neon tüketimi
+ * değişmez), ama ilk isteği gelen her ürün sayfası ÜRETİLİP ÖNBELLEĞE alınır
+ * ve `revalidate: false` olduğu için süreyle eskimez. Sonraki bütün istekler
+ * CDN'den gelir.
+ *
+ * Tazeleme olay tabanlıdır: admin yazma yolları `revalidateProducts()` çağırır
+ * (bkz. `src/lib/revalidate-public.ts`), o da bu yolu ve `/parca-katalog`
+ * layout alt ağacını düşürür. Toggle kapatıldığında `/api/admin/settings`
+ * `revalidatePath("/", "layout")` çağırdığı için önbellekteki 404'ler de
+ * düşer — gerçek 404 davranışı korunur (ölçüldü).
+ */
+export async function generateStaticParams() {
+  return [];
+}
