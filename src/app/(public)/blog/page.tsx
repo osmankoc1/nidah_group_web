@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { notFound } from "next/navigation";
-import { isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
+import { requirePageEnabled, isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
 import { blogCache, isoOrNull } from "@/lib/blog-cache";
 import { db } from "@/lib/db";
 import { blogPosts, blogCategories } from "@/lib/db/schema";
@@ -79,7 +78,7 @@ const getBlogListData = blogCache(["blog-tr-list"], async (page: number) => {
 });
 
 export default async function BlogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
-  if (!await isPageEnabled("page_blog")) notFound();
+  await requirePageEnabled("page_blog");
 
   const { page: pageParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);

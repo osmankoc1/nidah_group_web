@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { isPageEnabled, metadataForPage } from "@/lib/site-settings";
+import { requirePageEnabled, metadataForPage } from "@/lib/site-settings";
 import Link from "next/link";
 import {
   Package,
@@ -68,7 +67,7 @@ const ELECTRONIC_SERVICES = [
 ] as const;
 
 export default async function HizmetlerPage() {
-  if (!await isPageEnabled("page_hizmetler")) notFound();
+  await requirePageEnabled("page_hizmetler");
   return (
     <main>
 

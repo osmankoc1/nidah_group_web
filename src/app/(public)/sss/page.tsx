@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/lib/json-ld";
-import { notFound } from "next/navigation";
-import { isPageEnabled, metadataForPage } from "@/lib/site-settings";
+import { requirePageEnabled, metadataForPage } from "@/lib/site-settings";
 import Link from "next/link";
 import { MessageCircle, ArrowRight } from "lucide-react";
 import { faqItems, FAQ_CATEGORIES, type FaqCategory } from "@/data/faq";
@@ -41,7 +40,7 @@ const CATEGORY_META: Record<FaqCategory, { emoji: string; color: string }> = {
 };
 
 export default async function SSSPage() {
-  if (!await isPageEnabled("page_sss")) notFound();
+  await requirePageEnabled("page_sss");
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",

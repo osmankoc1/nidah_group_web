@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { isPageEnabled, metadataForPage } from "@/lib/site-settings";
+import { requirePageEnabled, metadataForPage } from "@/lib/site-settings";
 import TeklifAlClient from "@/components/layout/TeklifAlClient";
 
 export function generateMetadata(): Promise<Metadata> {
@@ -21,6 +20,6 @@ export function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function TeklifAlPage() {
-  if (!await isPageEnabled("page_teklif_al")) notFound();
+  await requirePageEnabled("page_teklif_al");
   return <TeklifAlClient />;
 }

@@ -1,5 +1,4 @@
-import { notFound } from "next/navigation";
-import { isPageEnabled } from "@/lib/site-settings";
+import { requirePageEnabled } from "@/lib/site-settings";
 
 /**
  * Admin > Sayfalar > "Hizmetler" toggle'ı tek otoritedir.
@@ -11,6 +10,6 @@ export default async function HizmetlerSectionLayout({
 }: {
   children: React.ReactNode;
 }) {
-  if (!await isPageEnabled("page_hizmetler")) notFound();
+  await requirePageEnabled("page_hizmetler");
   return <>{children}</>;
 }

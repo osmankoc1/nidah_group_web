@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
+import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { siteSettings } from "@/lib/db/schema";
 import { NAV_ITEMS } from "@/lib/constants";
@@ -92,6 +93,19 @@ type SettingsRead =
 
 let dbYokLoglandi = false;
 
+/**
+ * Sorgu hatasında kaç deneme yapılır.
+ *
+ * Ölçüm (2026-11-25, yerel `next start`, 145 sayfa, eşzamanlılık 6): yük
+ * altında `site_settings` okuması **41 kez** düştü ve fail-closed devreye
+ * girip AÇIK sayfaları 404 yaptı (11/145). Eşzamanlılık 1'de sıfır. Yani
+ * arıza kalıcı değil, ANLIKtır — bir kısa yeniden deneme bunların büyük
+ * bölümünü yutar. `!db` durumu YENİDEN DENENMEZ: o kalıcı bir yapılandırma
+ * hatasıdır, beklemek yalnızca gecikme ekler.
+ */
+const OKUMA_DENEMESI = 2;
+const DENEME_BEKLEME_MS = 120;
+
 async function readSettings(): Promise<SettingsRead> {
   // DB hiç yapılandırılmamışsa önbelleğe hiç girmeyiz. Sessiz kalmayız:
   // eksik DATABASE_URL bir yapılandırma hatasıdır ve logda görünmelidir.
@@ -109,17 +123,25 @@ async function readSettings(): Promise<SettingsRead> {
     return { ok: false };
   }
 
-  try {
-    return { ok: true, settings: await fetchSettings() };
-  } catch (err) {
-    // Hata ADI dışında hiçbir ayrıntı loglanmaz: bağlantı hatalarının mesajı
-    // uç nokta adresini taşıyabilir (bkz. ~/.claude/CLAUDE.md §3).
-    const kind = err instanceof Error ? err.name : "UnknownError";
-    console.error(
-      `[site-settings] ayarlar okunamadı (${kind}) — güvenli varsayılanlar (fallbackEnabled) uygulanıyor`
-    );
-    return { ok: false };
+  for (let deneme = 1; deneme <= OKUMA_DENEMESI; deneme++) {
+    try {
+      return { ok: true, settings: await fetchSettings() };
+    } catch (err) {
+      // Hata ADI dışında hiçbir ayrıntı loglanmaz: bağlantı hatalarının mesajı
+      // uç nokta adresini taşıyabilir (bkz. ~/.claude/CLAUDE.md §3).
+      const kind = err instanceof Error ? err.name : "UnknownError";
+      if (deneme < OKUMA_DENEMESI) {
+        console.error(`[site-settings] ayarlar okunamadı (${kind}) — ${deneme}. deneme, yeniden denenecek`);
+        await new Promise((r) => setTimeout(r, DENEME_BEKLEME_MS));
+        continue;
+      }
+      console.error(
+        `[site-settings] ayarlar okunamadı (${kind}, ${OKUMA_DENEMESI} deneme) — güvenli varsayılanlar (fallbackEnabled) uygulanıyor`
+      );
+      return { ok: false };
+    }
   }
+  return { ok: false };
 }
 
 /** Tek otorite: bir anahtarın etkin olup olmadığını okuma sonucundan çözer. */
@@ -136,6 +158,69 @@ function resolveEnabled(read: SettingsRead, key: PageKey): boolean {
 
 export async function isPageEnabled(key: PageKey): Promise<boolean> {
   return resolveEnabled(await readSettings(), key);
+}
+
+// ── Gerçek 404 ile GEÇİCİ arıza ayrımı (2026-11-26) ──────────────────────────
+//
+// SORUN (ölçüldü 2026-11-25): `isPageEnabled()` iki farklı gerçeği tek bir
+// `false` değerine indiriyordu:
+//   (a) ayarlar okundu, sayfa gerçekten KAPALI  → kalıcı durum, 404 DOĞRU
+//   (b) ayarlar OKUNAMADI                        → geçici durum, 404 YANLIŞ
+// `fallbackEnabled: false` olan sayfalarda (b) de 404 üretiyordu. Yük altında
+// `site_settings` okuması düştüğünde AÇIK ürün sayfaları 404 döndü (11/145).
+// `revalidate: false` ile üretilen bir 404 ISR deposuna yazılırsa bir yıl
+// kalır — yani geçici bir arıza kalıcı bir SEO hasarına dönüşebilir.
+//
+// ÇÖZÜM: üçüncü bir durum. `belirsiz`de sayfa SERVİS EDİLMEZ (toggle güvenliği
+// aynen korunur) ama `notFound()` de ÇAĞRILMAZ; hata fırlatılır → Next 500
+// üretir. 500 bir BAŞARILI render değildir, bu yüzden ISR/CDN onu kalıcı
+// olarak saklamaz ve ayarlar okunur hâle gelince sayfa kendiliğinden döner.
+//
+// `isPageEnabled()` ve `resolveEnabled()` DEĞİŞMEDİ: nav görünürlüğü,
+// `metadataForPage()`, `sitemap.ts` ve `catalog-access.ts` aynı değerleri
+// okumaya devam eder — SEO ve sitemap davranışı birebir korunur.
+
+/** Bir sayfanın üç hâli: açık, (kalıcı olarak) kapalı, (geçici olarak) belirsiz. */
+export type PageState = "acik" | "kapali" | "belirsiz";
+
+/** Ayarlar okunamadığında bu hata fırlatılır → Next 500 (önbelleğe alınmaz). */
+export class SettingsUnavailableError extends Error {
+  constructor(key: PageKey) {
+    super(`site-settings: "${key}" sayfa durumu geçici olarak belirlenemedi`);
+    this.name = "SettingsUnavailable";
+  }
+}
+
+export async function pageState(key: PageKey): Promise<PageState> {
+  const read = await readSettings();
+  const page = MANAGED_PAGES.find((p) => p.key === key);
+  if (!page) return "acik"; // bilinmeyen sayfa — engelleme
+
+  if (read.ok) {
+    const etkin = key in read.settings
+      ? read.settings[key] === "true"
+      : page.defaultEnabled;
+    return etkin ? "acik" : "kapali";
+  }
+
+  // Ayarlar okunamadı. `fallbackEnabled: true` olan sayfalar (blog, hakkımızda,
+  // SSS, iletişim, teklif-al, hizmetler) ESKİSİ GİBİ açık kalır: geçici bir DB
+  // arızası tüm siteyi 500'e çevirmemeli. Yalnızca `fallbackEnabled: false`
+  // olan sayfalar (katalog) "belirsiz" olur — orada eski davranış YANLIŞ 404'tü.
+  return page.fallbackEnabled ? "acik" : "belirsiz";
+}
+
+/**
+ * Toggle korumalı bir sayfanın başında çağrılır.
+ *
+ *   açık     → geri döner, sayfa render edilir
+ *   kapalı   → `notFound()` → GERÇEK 404 (davranış değişmedi)
+ *   belirsiz → `SettingsUnavailableError` → 500, önbelleğe alınmaz
+ */
+export async function requirePageEnabled(key: PageKey): Promise<void> {
+  const durum = await pageState(key);
+  if (durum === "kapali") notFound();
+  if (durum === "belirsiz") throw new SettingsUnavailableError(key);
 }
 
 export async function getAllPageSettings(): Promise<

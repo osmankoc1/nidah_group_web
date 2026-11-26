@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
+import { requirePageEnabled, isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
 import CatalogClient from "./CatalogClient";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -17,6 +16,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function CatalogPage() {
   // Admin > Sayfalar > "Canlı Katalog (Prosis)" toggle'ı tek otoritedir.
-  if (!await isPageEnabled("page_catalog")) notFound();
+  await requirePageEnabled("page_catalog");
   return <CatalogClient />;
 }

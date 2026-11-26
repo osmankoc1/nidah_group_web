@@ -4,6 +4,7 @@ import { products, productImages, categories, fitments, machines, manufacturers 
 import { eq, and, ilike, like, isNull, or, desc, count, inArray, sql } from "drizzle-orm";
 import { productCache } from "@/lib/product-cache";
 import { normalizePartNumber } from "@/lib/part-number";
+import { aramaKapisi } from "@/lib/search-gate";
 
 /**
  * Public ürün listesi.
@@ -24,15 +25,13 @@ import { normalizePartNumber } from "@/lib/part-number";
 const CDN_CACHE = "public, s-maxage=600, stale-while-revalidate=1200";
 
 /** Tek round-trip grubu: liste + toplam + görseller + markalar. */
-const getProductList = productCache(
-  ["public-product-list"],
-  async (
-    search: string | null,
-    condition: string | null,
-    brand: string | null,
-    page: number,
-    limit: number
-  ) => {
+async function urunListesiSorgusu(
+  search: string | null,
+  condition: string | null,
+  brand: string | null,
+  page: number,
+  limit: number
+) {
     if (!db) return null;
 
     const offset = (page - 1) * limit;
@@ -164,8 +163,14 @@ const getProductList = productCache(
       data,
       meta: { page, limit, total: totalNum, pages: Math.ceil(totalNum / limit) },
     };
-  }
-);
+}
+
+/**
+ * Aynı sorgunun ÖNBELLEKLİ hâli. Yalnızca `aramaKapisi()` "onbellekli" dediği
+ * durumlarda çağrılır; aksi hâlde `urunListesiSorgusu` doğrudan çalıştırılır ve
+ * KALICI KAYIT OLUŞMAZ. Gerekçe `src/lib/search-gate.ts` başında.
+ */
+const getProductList = productCache(["public-product-list"], urunListesiSorgusu);
 
 /**
  * ── ONBELLEK ANAHTAR UZAYINI SINIRLA (2026-11-25, Aşama 3) ──────────────────
@@ -217,11 +222,33 @@ export async function GET(request: NextRequest) {
   const limit     = Math.min(48, Math.max(1, Number(searchParams.get("limit")) || 24));
 
   try {
-    const result = await getProductList(search, condition, brand, page, limit);
+    // ── ARAMA KAPISI (2026-11-26) ──────────────────────────────────────────
+    // Yukarıdaki sınırlar anahtar BOYUTUNU kıstırır, SAYISINI kıstırmaz:
+    // ölçümde 600 farklı bot sorgusu 604 KALICI önbellek kaydı üretti. Kapı
+    // her aramayı üç kademeye ayırır (gerekçe: src/lib/search-gate.ts).
+    const karar = await aramaKapisi(search);
+
+    if (karar.tur === "bos") {
+      // Eşleşme KANITLI olarak imkânsız: Neon'a inilmez, kayıt yazılmaz.
+      return NextResponse.json(
+        { data: [], meta: { page: 1, limit, total: 0, pages: 0 } },
+        { headers: { "Cache-Control": CDN_CACHE, "X-Arama-Kapi": `bos:${karar.neden}` } }
+      );
+    }
+
+    const result = karar.tur === "onbellekli"
+      ? await getProductList(search, condition, brand, page, limit)
+      : await urunListesiSorgusu(search, condition, brand, page, limit);
+
     if (!result) {
       return NextResponse.json({ error: "Database not configured" }, { status: 503 });
     }
-    return NextResponse.json(result, { headers: { "Cache-Control": CDN_CACHE } });
+    return NextResponse.json(result, {
+      headers: {
+        "Cache-Control": CDN_CACHE,
+        "X-Arama-Kapi": `${karar.tur}:${karar.neden}`,
+      },
+    });
   } catch (err) {
     console.error("[GET /api/products]", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

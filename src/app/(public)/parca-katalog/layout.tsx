@@ -1,5 +1,4 @@
-import { notFound } from "next/navigation";
-import { isPageEnabled } from "@/lib/site-settings";
+import { requirePageEnabled } from "@/lib/site-settings";
 
 /**
  * Admin > Sayfalar > "Parça Kataloğu" toggle'ı tek otoritedir.
@@ -12,6 +11,6 @@ export default async function ParcaKatalogSectionLayout({
 }: {
   children: React.ReactNode;
 }) {
-  if (!await isPageEnabled("page_parca_katalog")) notFound();
+  await requirePageEnabled("page_parca_katalog");
   return <>{children}</>;
 }

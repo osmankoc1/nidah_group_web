@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { isPageEnabled, metadataForPage } from "@/lib/site-settings";
+import { requirePageEnabled, metadataForPage } from "@/lib/site-settings";
 import IletisimClient from "@/components/layout/IletisimClient";
 import { JsonLd } from "@/lib/json-ld";
 import { ORGANIZATION_REF } from "@/lib/constants";
@@ -40,7 +39,7 @@ const contactPageJsonLd = {
 };
 
 export default async function IletisimPage() {
-  if (!await isPageEnabled("page_iletisim")) notFound();
+  await requirePageEnabled("page_iletisim");
   return (
     <>
       <JsonLd data={contactPageJsonLd} />

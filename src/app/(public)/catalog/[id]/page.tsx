@@ -11,7 +11,7 @@ import {
   Truck,
 } from "lucide-react";
 import { getPart } from "@/lib/prosis";
-import { isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
+import { requirePageEnabled, isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
 import type {
   CrossRefEntry,
   DocumentEntry,
@@ -66,7 +66,7 @@ interface Tab {
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default async function CatalogDetailPage({ params }: PageProps) {
   // Admin > Sayfalar > "Canlı Katalog (Prosis)" toggle'ı tek otoritedir.
-  if (!await isPageEnabled("page_catalog")) notFound();
+  await requirePageEnabled("page_catalog");
 
   const { id } = await params;
 

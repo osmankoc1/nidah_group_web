@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { isPageEnabled, metadataForPage } from "@/lib/site-settings";
+import { requirePageEnabled, metadataForPage } from "@/lib/site-settings";
 import { JsonLd } from "@/lib/json-ld";
 import { ORGANIZATION_REF } from "@/lib/constants";
 import Link from "next/link";
@@ -130,7 +129,7 @@ const aboutPageJsonLd = {
 };
 
 export default async function HakkimizdaPage() {
-  if (!await isPageEnabled("page_hakkimizda")) notFound();
+  await requirePageEnabled("page_hakkimizda");
   return (
     <>
       <JsonLd data={aboutPageJsonLd} />

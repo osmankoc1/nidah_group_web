@@ -12,7 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb";
 import { CONTACTS, WHATSAPP_URL } from "@/lib/constants";
 import { getProductBySegment, type FitmentRow } from "@/lib/queries/product";
-import { isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
+import { requirePageEnabled, isPageEnabled, DISABLED_PAGE_METADATA } from "@/lib/site-settings";
 import { buildProductJsonLd } from "@/lib/product-jsonld";
 import { isCanonicalProductSegment, productPath, productUrl } from "@/lib/product-url";
 import { stockPresentationFromStatus } from "@/lib/stock";
@@ -243,7 +243,7 @@ export default async function ProductDetailPage({
 }) {
   // Admin > Sayfalar > "Parça Kataloğu" toggle'ı tek otoritedir —
   // hub kapalıyken ürün detayları da kapanır, açılınca otomatik yayına girer.
-  if (!await isPageEnabled("page_parca_katalog")) notFound();
+  await requirePageEnabled("page_parca_katalog");
 
   const { slug } = await params;
   const product = await getProductBySegment(slug);
