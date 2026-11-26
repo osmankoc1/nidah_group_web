@@ -14,11 +14,22 @@ Next.js 16 (App Router) · React 19 · TypeScript (strict) · Tailwind CSS v4 ·
 npm run dev      # next dev --webpack
 npm run build    # next build
 npm run lint     # eslint
+npm test         # playwright test (birim/regresyon, TARAYICI GEREKMEZ)
 ```
 
-**Test altyapısı yok.** `@playwright/test` bağımlılıkta duruyor ama `playwright.config.*`, test dosyası, `test` script'i ve tarayıcı binary'leri **yok**. "Testleri çalıştır" denildiğinde çalıştırılacak bir şey yoktur — `tsc` + `lint` + `build` kullanılır.
+**Test altyapısı VAR** (2026-11-26, ölçüldü — bu satır daha önce tersini söylüyordu):
+`playwright.config.ts` + `tests/` altında 34 spec dosyası, **572 test 5,4 saniyede geçiyor**.
+Koşucu `@playwright/test`'tir ama hiçbir test `page` fixture'ını kullanmaz: **tarayıcı
+binary'si indirilmez/başlatılmaz**, testler saf fonksiyon testleridir. `tsconfig` `paths`
+(`@/*`) çözümlüdür.
 
-**Lint baseline: 38 sorun (19 error, 19 warning)** — `29f5ce8` HEAD'inde ölçüldü. Bunlar önceden vardır. Kural: **bu sayı artmamalı**; dokunulan dosyalarda 0 **yeni** bulgu hedeflenir. Baseline'ı temizlemek ayrı bir iştir.
+"Testleri çalıştır" denildiğinde çalıştırılacak sıra: `npm test` + `npx tsc --noEmit` + `npm run lint`.
+
+> Sunucu/veritabanı gerektiren bir şey test edilecekse: testler DB'ye bağlanmaz.
+> Veritabanına bağlı mantık, saf bir çekirdek modülüne ayrılıp öyle test edilir
+> (örnek: `src/lib/search-gate-core.ts` ↔ `tests/search-gate.spec.ts`).
+
+**Lint baseline: 38 sorun (19 error, 19 warning)** — `29f5ce8` HEAD'inde ölçüldü. (2026-11-26 ölçümü: **34** — 19 error, 15 warning.) Bunlar önceden vardır. Kural: **bu sayı artmamalı**; dokunulan dosyalarda 0 **yeni** bulgu hedeflenir. Baseline'ı temizlemek ayrı bir iştir.
 
 > Baseline ölçerken `.claude/worktrees` kalıntısına dikkat: eski bir ölçüm (53) bu dizindeki dosyaları da saymıştı. Doğru yöntem `git stash -u` ile HEAD'de ölçüp karşılaştırmaktır.
 
