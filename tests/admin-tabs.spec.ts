@@ -99,7 +99,21 @@ test.describe("P3 — yayın düğmesi ölçütler karşılanmadan etkin değil"
     });
     expect(uygun.eligible).toBe(true);
 
+    // 2026-11-26: fotografsizlik artik uygunsuzluk DEGIL. Uygunsuzluk
+    // ornegi bu yuzden BOS ACIKLAMA ile kuruldu.
     const uygunsuz = evaluateSeoReadiness({
+      isActive: true,
+      partNumber: "CH 76281",
+      name: "Hidrolik Ana Pompa",
+      longDescription: "",
+      verifiedImageCount: 0,
+      verifiedFitmentCount: 1,
+    });
+    expect(uygunsuz.eligible).toBe(false);
+    expect(uygunsuz.unmet).toContain("long_description_missing");
+
+    // Fotografsiz ama tam kayit: UYGUN + gorsel bekliyor.
+    const fotografsiz = evaluateSeoReadiness({
       isActive: true,
       partNumber: "CH 76281",
       name: "Hidrolik Ana Pompa",
@@ -107,8 +121,8 @@ test.describe("P3 — yayın düğmesi ölçütler karşılanmadan etkin değil"
       verifiedImageCount: 0,
       verifiedFitmentCount: 1,
     });
-    expect(uygunsuz.eligible).toBe(false);
-    expect(uygunsuz.unmet.length).toBeGreaterThan(0);
+    expect(fotografsiz.eligible).toBe(true);
+    expect(fotografsiz.gorselBekliyor).toBe(true);
   });
 });
 

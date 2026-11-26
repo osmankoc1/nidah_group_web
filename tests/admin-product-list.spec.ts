@@ -74,7 +74,7 @@ test.describe("P13 — liste ucu yayın hazırlığı alanları", () => {
 });
 
 test.describe("P13 — özet alanları kapının kendisiyle tutarlı", () => {
-  test("fotoğrafsız ürün yayına uygun DEĞİL", () => {
+  test("fotoğrafsız ürün yayına UYGUN ama 'görsel bekliyor' (2026-11-26)", () => {
     const r = evaluateSeoReadiness({
       isActive: true,
       partNumber: "L77AB04",
@@ -83,8 +83,9 @@ test.describe("P13 — özet alanları kapının kendisiyle tutarlı", () => {
       verifiedImageCount: 0,
       verifiedFitmentCount: 1,
     });
-    expect(r.eligible).toBe(false);
-    expect(r.unmet).toEqual(["no_verified_image"]);
+    expect(r.eligible).toBe(true);
+    expect(r.unmet).toEqual([]);
+    expect(r.gorselBekliyor).toBe(true);
   });
 
   test("uzunluk yer tutucusu kapıyla aynı sonucu verir", () => {

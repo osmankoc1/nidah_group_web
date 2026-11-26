@@ -170,7 +170,20 @@ async function urunListesiSorgusu(
  * durumlarda çağrılır; aksi hâlde `urunListesiSorgusu` doğrudan çalıştırılır ve
  * KALICI KAYIT OLUŞMAZ. Gerekçe `src/lib/search-gate.ts` başında.
  */
-const getProductList = productCache(["public-product-list"], urunListesiSorgusu);
+/*
+ * ONBELLEK ANAHTARI SURUMU — v2 (2026-11-26).
+ *
+ * `productCache` ve arama sozlugu kayitlari ETIKET tabanlidir ve
+ * `revalidate: false` tasir; yani SURE ile eskimezler. Pilot yayinin
+ * yazmalari production veritabanina DOGRUDAN yapildi (admin API kimligi bu
+ * makinede yok), bu yuzden `revalidateProducts()` CAGRILMADI ve mevcut
+ * kayitlar "2 aktif urun" halini tasimaya devam ederdi.
+ *
+ * Anahtar surumunu artirmak bu kayitlari KULLANILAMAZ yapar: yeni anahtar
+ * yeni kayit demektir, eski kayit okunmaz. Deterministik ve tek yonlu bir
+ * gecersiz kilmadir. Bir sonraki dogrudan yazmada tekrar artirilir.
+ */
+const getProductList = productCache(["public-product-list-v2"], urunListesiSorgusu);
 
 /**
  * ── ONBELLEK ANAHTAR UZAYINI SINIRLA (2026-11-25, Aşama 3) ──────────────────

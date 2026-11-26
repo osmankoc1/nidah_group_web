@@ -4,7 +4,7 @@ import { drizzle } from "drizzle-orm/neon-http";
 import { getTableColumns } from "drizzle-orm";
 import * as schema from "@/lib/db/schema";
 import { products } from "@/lib/db/schema";
-import { shouldRevokeSeoReady, MIN_VERIFIED_IMAGES } from "@/lib/seo-gate";
+import { shouldRevokeSeoReady, MIN_VERIFIED_IMAGES, GORSEL_YAYIN_SARTI } from "@/lib/seo-gate";
 import { revokeSeoReadyStatement } from "@/lib/seo-gate-server";
 
 /**
@@ -36,9 +36,23 @@ function uretilenSql() {
 
 // ── Koşul 1 + 3: kararın yönü ────────────────────────────────────────────────
 
-test.describe("şart 1 — son doğrulanmış fotoğraf gidince geri alınır", () => {
-  test("yayındaki ürünün doğrulanmış fotoğrafı kalmazsa geri alınır", () => {
-    expect(shouldRevokeSeoReady({ seoReady: true, verifiedImageCount: 0 })).toBe(true);
+test.describe("şart 1 — fotoğraf kaybı artık geri ALMAZ (2026-11-26)", () => {
+  /*
+   * POLİTİKA DEĞİŞTİ. Fotoğraf 2026-11-26'da yayının zorunlu şartı olmaktan
+   * çıktı (`GORSEL_YAYIN_SARTI = false`). Son fotoğrafın gitmesi de yayını
+   * geri almaz: ürün "görsel bekliyor" durumuna döner ve sayfada "Ürün
+   * görseli henüz eklenmemiştir" yazar.
+   *
+   * Geri alma MEKANİZMASI korunuyor (SQL ifadesi, atomiklik, yan etki
+   * yokluğu — aşağıdaki şartlar). Yalnızca TETİKLEYİCİ kapandı:
+   * `GORSEL_YAYIN_SARTI` true yapılırsa eski altı koşul birebir geri döner.
+   */
+  test("politika sabiti kapalı", () => {
+    expect(GORSEL_YAYIN_SARTI).toBe(false);
+  });
+
+  test("yayındaki ürünün doğrulanmış fotoğrafı kalmasa da geri ALINMAZ", () => {
+    expect(shouldRevokeSeoReady({ seoReady: true, verifiedImageCount: 0 })).toBe(false);
   });
 
   test("doğrulanmış fotoğrafı duruyorsa geri alınmaz", () => {
@@ -46,19 +60,20 @@ test.describe("şart 1 — son doğrulanmış fotoğraf gidince geri alınır", 
     expect(shouldRevokeSeoReady({ seoReady: true, verifiedImageCount: 7 })).toBe(false);
   });
 
-  test("eşik MIN_VERIFIED_IMAGES ile aynı", () => {
+  test("eşik ARTIK karar vermiyor", () => {
     expect(
       shouldRevokeSeoReady({ seoReady: true, verifiedImageCount: MIN_VERIFIED_IMAGES })
     ).toBe(false);
     expect(
       shouldRevokeSeoReady({ seoReady: true, verifiedImageCount: MIN_VERIFIED_IMAGES - 1 })
-    ).toBe(true);
+    ).toBe(false);
   });
 
-  test("bozuk sayı güvenli tarafa düşer — geri alınır", () => {
-    // Sayım okunamadıysa ürünü yayında BIRAKMAK, yayından çıkarmaktan
-    // daha riskli: görselsiz sayfa indekslenmiş kalır.
-    expect(shouldRevokeSeoReady({ seoReady: true, verifiedImageCount: NaN })).toBe(true);
+  test("bozuk sayı de geri alma üretmez — fotoğraf artık şart değil", () => {
+    // Eskiden güvenli taraf "yayından çıkar"dı, çünkü görselsiz sayfa
+    // indekslenmiş kalırdı. Artık görselsiz sayfa MEŞRU bir durumdur, bu
+    // yüzden okunamayan bir sayım yayını geri almaz.
+    expect(shouldRevokeSeoReady({ seoReady: true, verifiedImageCount: NaN })).toBe(false);
   });
 });
 

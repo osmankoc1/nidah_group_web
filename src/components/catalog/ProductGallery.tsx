@@ -30,8 +30,24 @@ const ProductGallery = memo(function ProductGallery({ images, partNumber, produc
   // `og:image`, `Product.image` veya image sitemap'e sızamaz.
   if (images.length === 0) {
     return (
-      <div className="rounded-2xl overflow-hidden aspect-square">
-        <ProductImagePlaceholder variant="detail" />
+      <div className="space-y-3">
+        <div className="rounded-2xl overflow-hidden aspect-square">
+          <ProductImagePlaceholder variant="detail" />
+        </div>
+        {/*
+          GORSEL BEKLIYOR UYARISI (kullanici karari 2026-11-26).
+          Fotograf artik yayinin zorunlu sarti degil (`GORSEL_YAYIN_SARTI`),
+          bu yuzden eksiklik SAKLANMAZ: ziyaretciye sade ve profesyonel
+          bicimde bildirilir. Metin bir SEO cumlesi degil, seffaflik
+          beyanidir; urun bazli ozgun icerik olarak sayilmaz.
+        */}
+        <p className="text-sm text-gray-600 bg-gray-50 border border-gray-100 rounded-xl px-4 py-3">
+          <span className="font-medium text-gray-800">
+            Ürün görseli henüz eklenmemiştir.
+          </span>{" "}
+          Parça numarası, ürün adı ve makine uyumluluğu doğrulanmıştır.
+          Görsel talebinizi teklif formunda belirtebilirsiniz.
+        </p>
       </div>
     );
   }

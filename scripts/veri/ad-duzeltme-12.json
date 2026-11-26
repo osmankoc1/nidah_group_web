@@ -1,0 +1,74 @@
+[
+ {
+  "partNumber": "60463-00400",
+  "eskiAd": "O-ring",
+  "name": "O-ring — HMK 600MG, G030.00.01 kalem 36",
+  "dayanak": "HMK6 · G030.00.01, kalem 36 (doğrulanmış uyumluluk kaynağı)"
+ },
+ {
+  "partNumber": "C5563-70144",
+  "eskiAd": "O-ring",
+  "name": "O-ring — HMK 600MG, E080.00.01 kalem 30",
+  "dayanak": "HMK6 · E080.00.01, kalem 30 (doğrulanmış uyumluluk kaynağı)"
+ },
+ {
+  "partNumber": "C5563-70280",
+  "eskiAd": "O-ring",
+  "name": "O-ring — HMK 600MG, E130.00.01 kalem 20",
+  "dayanak": "HMK6 · E130.00.01, kalem 20 (doğrulanmış uyumluluk kaynağı)"
+ },
+ {
+  "partNumber": "N3150-02800",
+  "eskiAd": "O-ring",
+  "name": "O-ring — HMK 600MG, E110.00.01 kalem 28",
+  "dayanak": "HMK6 · E110.00.01, kalem 28 (doğrulanmış uyumluluk kaynağı)"
+ },
+ {
+  "partNumber": "N3153-05500",
+  "eskiAd": "O-ring",
+  "name": "O-ring — HMK 600MG, E160.00.04 kalem 30",
+  "dayanak": "HMK6 · E160.00.04, kalem 30 (doğrulanmış uyumluluk kaynağı)"
+ },
+ {
+  "partNumber": "N3153-06500",
+  "eskiAd": "O-ring",
+  "name": "O-ring — HMK 600MG, E110.00.01 kalem 31",
+  "dayanak": "HMK6 · E110.00.01, kalem 31 (doğrulanmış uyumluluk kaynağı)"
+ },
+ {
+  "partNumber": "N3153-13000",
+  "eskiAd": "O-ring",
+  "name": "O-ring — HMK 600MG, G030.00.01 kalem 37",
+  "dayanak": "HMK6 · G030.00.01, kalem 37 (doğrulanmış uyumluluk kaynağı)"
+ },
+ {
+  "partNumber": "F1035-14065",
+  "eskiAd": "Cıvata",
+  "name": "Cıvata — HMK 600MG, E120.00.01 kalem 28",
+  "dayanak": "HMK6 · E120.00.01, kalem 28 (doğrulanmış uyumluluk kaynağı)"
+ },
+ {
+  "partNumber": "N2305-22000",
+  "eskiAd": "Somun",
+  "name": "Somun — HMK 600MG, G030.00.01 kalem 33",
+  "dayanak": "HMK6 · G030.00.01, kalem 33 (doğrulanmış uyumluluk kaynağı)"
+ },
+ {
+  "partNumber": "R6020-11521-0",
+  "eskiAd": "Hat",
+  "name": "Hat — HMK 600MG, Z041.00.01 kalem 5",
+  "dayanak": "HMK6 · Z041.00.01, kalem 5 (doğrulanmış uyumluluk kaynağı)"
+ },
+ {
+  "partNumber": "H348004001",
+  "eskiAd": "Far",
+  "name": "Far — HMK 200 W / HMK 220 LC-2 elektrik grubu",
+  "dayanak": "İki doğrulanmış uyumluluk (HM200 · 238002-00 kalem 1 ve 6; HM220 · 348002-00 kalem 1) ve kayıtlı 'Sistem: Elektrik ve kontrol'"
+ },
+ {
+  "partNumber": "ND117228",
+  "eskiAd": "Rotor",
+  "name": "Rotor — AMMANN AP240 / AP240CT2 güç aktarımı",
+  "dayanak": "İki doğrulanmış uyumluluk (AP246 ve AP2T6 · ND117228 satırı) ve kayıtlı 'Sistem: Güç aktarımı'"
+ }
+]

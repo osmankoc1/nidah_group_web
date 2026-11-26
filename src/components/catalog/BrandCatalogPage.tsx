@@ -180,7 +180,7 @@ async function fetchBrandPageUncached(
   }
 }
 
-const fetchBrandPage = productCache(["brand-catalog-page"], fetchBrandPageUncached);
+const fetchBrandPage = productCache(["brand-catalog-page-v2"], fetchBrandPageUncached);
 
 // ── Server component ──────────────────────────────────────────────
 

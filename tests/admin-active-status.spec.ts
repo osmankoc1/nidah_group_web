@@ -80,15 +80,15 @@ test.describe("P7 — pasifleştirme yayın onayına DOKUNMAZ", () => {
     expect(kod.slice(formBas, formSon)).not.toContain("isActive");
   });
 
-  test("otomatik geri alma yalnızca FOTOĞRAF kaybında — aktiflik etkisiz", () => {
-    // Pasif ama fotoğrafı doğrulanmış ürün: onay DURUR.
-    expect(
-      shouldRevokeSeoReady({ seoReady: true, verifiedImageCount: 1 })
-    ).toBe(false);
-    // Fotoğraf kaybı: onay geri alınır.
-    expect(
-      shouldRevokeSeoReady({ seoReady: true, verifiedImageCount: 0 })
-    ).toBe(true);
+  test("otomatik geri alma ARTIK fotoğraf kaybında da olmuyor — aktiflik yine etkisiz", () => {
+    // 2026-11-26: fotoğraf yayın şartı olmaktan çıktı (GORSEL_YAYIN_SARTI),
+    // bu yüzden fotoğraf kaybı da onayı geri almıyor. P7'nin asıl bulgusu
+    // "aktiflik değişimi yayın onayına DOKUNMAZ" idi ve o kural duruyor:
+    // `shouldRevokeSeoReady` girdisinde aktiflik HİÇ yok.
+    expect(shouldRevokeSeoReady({ seoReady: true, verifiedImageCount: 1 })).toBe(false);
+    expect(shouldRevokeSeoReady({ seoReady: true, verifiedImageCount: 0 })).toBe(false);
+    // Yayında olmayan üründe her koşulda işlem yok.
+    expect(shouldRevokeSeoReady({ seoReady: false, verifiedImageCount: 0 })).toBe(false);
   });
 
   test("sunucu tarafı geri alma koşulu yalnızca doğrulanmış fotoğrafa bakar", () => {

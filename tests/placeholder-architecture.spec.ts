@@ -350,7 +350,7 @@ test.describe("temsilî görsel doğrulanmış fotoğraf SAYILMAZ", () => {
     expect(kaynak).not.toMatch(/^\s*imageCount:/m);
   });
 
-  test("temsilî kart gösterilen ürün yayın ölçütünü GEÇEMEZ", () => {
+  test("temsilî kart DOĞRULANMIŞ fotoğraf sayılmaz (yayın ölçütü 2026-11-26'da ayrıldı)", () => {
     const durum = resolveImageState({
       imageCount: 4,
       verifiedImageCount: 0,
@@ -367,8 +367,13 @@ test.describe("temsilî görsel doğrulanmış fotoğraf SAYILMAZ", () => {
       verifiedImageCount: 0,
       verifiedFitmentCount: 1,
     });
-    expect(kapi.eligible).toBe(false);
-    expect(kapi.unmet).toContain("no_verified_image");
+    // Fotograf 2026-11-26'da yayin sarti olmaktan cikti: urun yayina
+    // UYGUNdur ama "gorsel bekliyor" olarak isaretlenir ve sayfada
+    // "Urun gorseli henuz eklenmemistir" yazar. Temsili kart bu sayimi
+    // ARTIRMAZ — 4 yuklenmis dosya varken de gorselBekliyor true.
+    expect(kapi.gorselBekliyor).toBe(true);
+    expect(kapi.eligible).toBe(true);
+    expect(kapi.unmet).not.toContain("no_verified_image");
   });
 });
 

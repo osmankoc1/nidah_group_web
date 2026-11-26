@@ -1,0 +1,17 @@
+[
+ {
+  "partNumber": "76281",
+  "isActive": false,
+  "neden": "Açıklama BOŞ, doğrulanmış uyumluluk 0, doğrulanmış görsel 0, ad 'KIT' — yayın kapısının hiçbir ölçütünü karşılamıyor. Katalog açıldığında public yüzeyde görünürdü."
+ },
+ {
+  "partNumber": "90898",
+  "isActive": false,
+  "neden": "Açıklama BOŞ, doğrulanmış uyumluluk 0, doğrulanmış görsel 0, ad 'GAUDE' — yayın kapısının hiçbir ölçütünü karşılamıyor. Katalog açıldığında public yüzeyde görünürdü."
+ },
+ {
+  "partNumber": "DENEMEE32424",
+  "isActive": false,
+  "neden": "Deneme kaydı: ad 'DESWFSEDF', açıklama BOŞ, uyumluluk 0. Zaten pasif; kayıt bütünlüğü için listede."
+ }
+]

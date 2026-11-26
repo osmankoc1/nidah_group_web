@@ -260,7 +260,7 @@ async function loadDetail(normalized: string): Promise<ProductDetail | null> {
  * `ProductDetail` içinde `Date` alanı YOKTUR (kontrol edildi), bu yüzden
  * serileştirme sınırında tip kayması olmaz.
  */
-const loadDetailCached = productCache(["product-detail"], loadDetail);
+const loadDetailCached = productCache(["product-detail-v2"], loadDetail);
 
 export const getProductBySegment = cache(
   async (rawSegment: string): Promise<ProductDetail | null> =>

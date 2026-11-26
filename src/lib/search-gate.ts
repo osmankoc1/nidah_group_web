@@ -83,7 +83,7 @@ async function sozlukUret(): Promise<Sozluk> {
  * sayısını ARTIRAMAZ. `PRODUCTS_CACHE_TAG` ile düşer (admin ürün yazma yolu
  * `revalidateProducts()` çağırır), süreyle eskimez.
  */
-const sozlukOku = unstable_cache(sozlukUret, ["arama-sozlugu-v1"], {
+const sozlukOku = unstable_cache(sozlukUret, ["arama-sozlugu-v2"], {
   tags: [PRODUCTS_CACHE_TAG],
   revalidate: false,
 });

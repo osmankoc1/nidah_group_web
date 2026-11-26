@@ -2,8 +2,11 @@ import { test, expect } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
-  ONERILEN_ACIKLAMA_KARAKTERI,
+  AD_EN_AZ_KARAKTER,
+  GORSEL_YAYIN_SARTI,
   MIN_VERIFIED_IMAGES,
+  ONERILEN_ACIKLAMA_KARAKTERI,
+  adYeterli,
   evaluateSeoReadiness,
   isProductIndexable,
   type SeoReadinessInput,
@@ -45,12 +48,15 @@ test.describe("evaluateSeoReadiness", () => {
       verifiedFitmentCount: 0,
     });
     expect(r.eligible).toBe(false);
+    // Fotograf artik yayin sarti DEGIL (2026-11-26): "no_verified_image"
+    // unmet listesinde YOK — ama `gorselBekliyor` true.
     expect(r.unmet).toEqual([
-      "no_verified_image",
+      "name_too_weak",
       "long_description_missing",
       "no_verified_fitment",
     ]);
     expect(r.reasons).toHaveLength(3);
+    expect(r.gorselBekliyor).toBe(true);
   });
 
   test("pasif ürün asla uygun değil", () => {
@@ -59,10 +65,15 @@ test.describe("evaluateSeoReadiness", () => {
     expect(r.unmet).toContain("inactive");
   });
 
-  test("DOĞRULANMIŞ görsel yoksa uygun değil", () => {
-    expect(evaluateSeoReadiness({ ...eligible, verifiedImageCount: 0 }).unmet).toContain(
-      "no_verified_image"
-    );
+  test("DOĞRULANMIŞ görsel yoksa yayın ENGELLENMEZ (2026-11-26 kararı)", () => {
+    const r = evaluateSeoReadiness({ ...eligible, verifiedImageCount: 0 });
+    expect(r.eligible).toBe(true);
+    expect(r.unmet).not.toContain("no_verified_image");
+    expect(r.gorselBekliyor).toBe(true);
+  });
+
+  test("görsel varsa gorselBekliyor false", () => {
+    expect(evaluateSeoReadiness(eligible).gorselBekliyor).toBe(false);
   });
 
   test("KISA açıklama yayını ENGELLEMEZ (2026-11-20 kararı)", () => {
@@ -126,36 +137,97 @@ test.describe("evaluateSeoReadiness", () => {
       verifiedFitmentCount: Number.POSITIVE_INFINITY,
     });
     expect(r.eligible).toBe(false);
-    expect(r.unmet).toContain("no_verified_image");
     expect(r.unmet).toContain("no_verified_fitment");
+    // NaN gorsel sayisi "gorsel bekliyor" sayilir ama yayini engellemez.
+    expect(r.gorselBekliyor).toBe(true);
+    expect(r.unmet).not.toContain("no_verified_image");
   });
 });
 
 test.describe("K2 — yalnizca DOGRULANMIS gorsel sayilir", () => {
-  test("yuklenmis ama dogrulanmamis fotograf yayin kapisini GECMEZ", () => {
-    // Senaryo: operator 3 fotograf yukledi, hicbirini dogrulamadi.
-    // `verifiedImageCount` bu yuzden 0'dir ve urun yayina ACILAMAZ.
+  test("yuklenmis ama dogrulanmamis fotograf GORSEL SAYILMAZ", () => {
+    // Operator 3 fotograf yukledi, hicbirini dogrulamadi: sayim 0'dir.
+    // Urun "gorsel bekliyor" durumundadir ve sayfada "Urun gorseli henuz
+    // eklenmemistir" yazar. Yayini ENGELLEMEZ (2026-11-26) ama
+    // dogrulanmamis dosya da public yuzeye CIKMAZ.
     const r = evaluateSeoReadiness({ ...eligible, verifiedImageCount: 0 });
-    expect(r.eligible).toBe(false);
-    expect(r.unmet).toContain("no_verified_image");
+    expect(r.gorselBekliyor).toBe(true);
+    expect(r.eligible).toBe(true);
   });
 
   test("temsili gorsel sayiyi ARTIRMAZ", () => {
-    // Placeholder bir React bileseni; `product_images` tablosunda satiri
-    // yoktur, dolayisiyla sayilabilecek bir kaydi da yoktur. Bu test
-    // "placeholder gercek gorsel sayilmasin" sartini kilitler: kapiya
-    // gecilen tek sayi DOGRULANMIS satir sayisidir.
-    expect(evaluateSeoReadiness({ ...eligible, verifiedImageCount: 0 }).eligible).toBe(false);
-    expect(evaluateSeoReadiness({ ...eligible, verifiedImageCount: 1 }).eligible).toBe(true);
+    expect(evaluateSeoReadiness({ ...eligible, verifiedImageCount: 0 }).gorselBekliyor).toBe(true);
+    expect(evaluateSeoReadiness({ ...eligible, verifiedImageCount: 1 }).gorselBekliyor).toBe(false);
   });
 
   test("esik tam olarak MIN_VERIFIED_IMAGES", () => {
     expect(
-      evaluateSeoReadiness({ ...eligible, verifiedImageCount: MIN_VERIFIED_IMAGES }).eligible
-    ).toBe(true);
+      evaluateSeoReadiness({ ...eligible, verifiedImageCount: MIN_VERIFIED_IMAGES }).gorselBekliyor
+    ).toBe(false);
     expect(
-      evaluateSeoReadiness({ ...eligible, verifiedImageCount: MIN_VERIFIED_IMAGES - 1 }).unmet
-    ).toContain("no_verified_image");
+      evaluateSeoReadiness({ ...eligible, verifiedImageCount: MIN_VERIFIED_IMAGES - 1 }).gorselBekliyor
+    ).toBe(true);
+  });
+});
+
+// ── Seviye B: fotograf sarti kaldirildi, ad sarti eklendi ───────────────────
+
+test.describe("GORSEL_YAYIN_SARTI", () => {
+  test("politika sabiti false — fotograf yayin sarti DEGIL", () => {
+    expect(GORSEL_YAYIN_SARTI).toBe(false);
+  });
+
+  test("fotografsiz ama tam kayit yayina UYGUN", () => {
+    const r = evaluateSeoReadiness({
+      isActive: true,
+      partNumber: "714-12-19320",
+      name: "Şanzıman ara dişli yatağı",
+      verifiedImageCount: 0,
+      longDescription: "Komatsu WA320-3MC güç aktarımı grubundaki yatak.",
+      verifiedFitmentCount: 1,
+    });
+    expect(r.eligible).toBe(true);
+    expect(r.gorselBekliyor).toBe(true);
+  });
+});
+
+test.describe("adYeterli — fotografsiz sayfanin ad sarti", () => {
+  test("gerçek katalog adları geçer", () => {
+    for (const ad of [
+      "Şanzıman ara dişli yatağı",
+      "Daire ayar pulu",
+      "Hidrolik Ana Pompa",
+      "Bıçak kaydırma elemanı",
+      "Yağ Filtresi",
+    ]) {
+      expect(adYeterli(ad, "CH 76281"), ad).toBe(true);
+    }
+  });
+
+  test("ölçülen ZAYIF adlar düşer", () => {
+    // 154 urunde olculen 12 zayif ad + canlidaki uc eski kayit.
+    for (const ad of ["O-ring", "Hat", "Far", "Somun", "Cıvata", "Rotor", "KIT", "GAUDE", "DESWFSEDF"]) {
+      expect(adYeterli(ad, "CH 76281"), ad).toBe(false);
+    }
+  });
+
+  test("ad = parça numarası ise düşer", () => {
+    expect(adYeterli("CH 76281", "CH-76281")).toBe(false);
+    expect(adYeterli("ch76281", "CH 76281")).toBe(false);
+  });
+
+  test("tamamı büyük harf düşer, karışık geçer", () => {
+    expect(adYeterli("HIDROLIK POMPA MILI", "X")).toBe(false);
+    expect(adYeterli("Hidrolik pompa mili", "X")).toBe(true);
+  });
+
+  test("tek kelime ama uzun ad geçer", () => {
+    expect("Sızdırmazlık".length).toBeGreaterThanOrEqual(AD_EN_AZ_KARAKTER);
+    expect(adYeterli("Sızdırmazlık", "X")).toBe(true);
+  });
+
+  test("boş ad düşer", () => {
+    for (const ad of [null, undefined, "", "   "]) expect(adYeterli(ad, "X")).toBe(false);
   });
 });
 
