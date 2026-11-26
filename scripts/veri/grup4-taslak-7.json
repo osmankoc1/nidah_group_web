@@ -1,0 +1,44 @@
+[
+ {
+  "partNumber": "C0210-42010",
+  "ad": "Daire döndürme somunu",
+  "beklenenKarakter": 280,
+  "longDescription": "HMK 600MG greyderin daire döndürme grubundaki somundur; HİDROMEK kataloğunda G030.00.01 numaralı çizimin 19. kalemidir. Aynı çizimin 33. kalemi yalnızca “Somun” adıyla kayıtlıdır ve N2305-22000 numarasını taşır; iki kalem ayrı parçalardır. Sipariş C0210-42010 numarasıyla verilir."
+ },
+ {
+  "partNumber": "N1455-22050",
+  "ad": "Daire döndürme saplaması",
+  "beklenenKarakter": 310,
+  "longDescription": "Daire döndürme saplaması, HMK 600MG greyderin daire döndürme grubunda kullanılır. HİDROMEK kataloğunda G030.00.01 numaralı çizimde 31. kalem olarak kayıtlıdır; hemen ardından 32. kalem N2515-22000 yaylı pul, 33. kalem N2305-22000 somun gelir. Katalogdaki benzer adlı CH 24323 daire saplaması ayrı bir parçadır."
+ },
+ {
+  "partNumber": "N2515-22000",
+  "ad": "Yaylı pul",
+  "beklenenKarakter": 306,
+  "longDescription": "HİDROMEK kataloğunda G030.00.01 numaralı daire döndürme çiziminin 32. kalemi olan yaylı puldur; makine HMK 600MG'dir. Önündeki 31. kalem N1455-22050 daire döndürme saplamasıdır. Katalogda aynı adı taşıyan ikinci bir yaylı pul daha vardır (F2515-14000); ayrım parça numarasından ve çizim kaleminden yapılır."
+ },
+ {
+  "partNumber": "N010232438",
+  "ad": "M10×20 ISO 4017 cıvata",
+  "beklenenKarakter": 301,
+  "longDescription": "ISO 4017 standardında M10×20 cıvata. HMK 600MG kataloğunda E090.01.01 numaralı çizimin 20. kalemi olarak kayıtlıdır. İncelenen katalog kayıtlarında birden fazla cıvata bulunmaktadır; bu kayıt standart tanımı ve ölçüsüyle ayrılır. Çizimin kapsadığı montaj grubu kayıtta geçmediği için belirtilmemiştir."
+ },
+ {
+  "partNumber": "N030810015",
+  "ad": "M10 300HV pul",
+  "beklenenKarakter": 279,
+  "longDescription": "HMK 600MG için kayıtlı M10 puldur; katalog adında 300HV tanımı geçer. HİDROMEK kataloğunda G040.00.01 numaralı çizimin 2. kalemidir. Katalogdaki diğer pul kayıtlarından ölçüsü ve bu tanımla ayrılır. Çizimin hangi montaj grubunu kapsadığı kayıttan doğrulanamadı, tahmin yazılmadı."
+ },
+ {
+  "partNumber": "N1035-20150",
+  "ad": "M20×150 cıvata",
+  "beklenenKarakter": 288,
+  "longDescription": "M20×150 cıvata, HMK 600MG kataloğunda D030.00.01 numaralı çizimin 19. kalemidir. Aynı çizimde 11. kalem 60482-00500 aşınma bandı, 14. kalem 61382-01000 3,2 mm ayar pulu olarak kayıtlıdır. Katalogdaki diğer cıvatalardan M20×150 ölçüsüyle ayrılır; çizimin montaj grubu adı kayıtta geçmiyor."
+ },
+ {
+  "partNumber": "69404-02600",
+  "ad": "Şanzıman baskı plakası",
+  "beklenenKarakter": 364,
+  "longDescription": "HMK 600MG şanzımanının baskı plakasıdır; HİDROMEK kataloğunda E160.00.02 numaralı çizimin 19. kalemidir. Aynı çizimde 10. kalem 60525-01700 birinci kademe şanzıman taşıyıcısı, 11. kalem 60525-12300 şanzıman merkez milidir. Katalogda aynı adı taşıyan başka kayıtlar da var: 60325-01300, E160.00.01 çiziminin 2. kalemi; 69241-00901 ise Mitsubishi MG430 için kayıtlı."
+ }
+]

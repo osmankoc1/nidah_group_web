@@ -1,0 +1,44 @@
+[
+ {
+  "partNumber": "714-12-19320",
+  "ad": "Şanzıman ara dişli yatağı",
+  "beklenenKarakter": 264,
+  "longDescription": "Komatsu WA320-3MC yükleyicinin güç aktarımı grubundaki şanzıman ara dişli yatağıdır; üretici kataloğunda F4350-58A0 bölümünde F-030 çiziminin 2. kalemi olarak kayıtlıdır. Katalog kapsamı A31001 ve üzeri seri numaralarıdır. Sipariş 714-12-19320 numarasıyla verilir."
+ },
+ {
+  "partNumber": "714-12-19710",
+  "ad": "Şanzıman debriyaj diski",
+  "beklenenKarakter": 374,
+  "longDescription": "Komatsu WA320-3MC yükleyicinin şanzıman grubundaki debriyaj diskidir. Üretici kataloğunda üç ayrı çizimde kayıtlıdır: F4350-53A0 bölümünde F-020 çiziminin 4. kalemi, F4350-54A0 bölümünde F-022 ve F4350-55A0 bölümünde F-024 çizimlerinin 3. kalemi. Aynı çizimlerde bir sonraki kalem 714-16-19730 şanzıman ayırıcı plakasıdır. Katalog kapsamı A31001 ve üzeri seri numaralarıdır."
+ },
+ {
+  "partNumber": "714-16-19730",
+  "ad": "Şanzıman ayırıcı plakası",
+  "beklenenKarakter": 423,
+  "longDescription": "Komatsu WA320-3MC yükleyicinin şanzıman grubundaki ayırıcı plakadır; üretici kataloğunda F4350-53A0 bölümünde F-020 çiziminin 5. kalemi, F4350-54A0 bölümünde F-022 ve F4350-55A0 bölümünde F-024 çizimlerinin 4. kalemi olarak kayıtlıdır. Aynı çizimlerde bir önceki kalem 714-12-19710 debriyaj diskidir. Katalogda numarasının yalnızca orta grubu farklı olan 714-12-19730 ise park freni ayırıcı plakasıdır ve ayrı bir parçadır."
+ },
+ {
+  "partNumber": "CH 12119-10",
+  "ad": "Daire ayar pulu",
+  "beklenenKarakter": 432,
+  "longDescription": "Volvo G900 serisi greyderlerin daire döndürme arka grubundaki ayar puludur; üretici kataloğunda G0008437 çiziminin 1119. sayfasında 7. kalem olarak kayıtlıdır. Aynı kalemde CH 12119-16 ve CH 12119-20 numaralı iki ayar pulu daha kayıtlıdır; ayrım parça numarasıyla yapılır, kalınlık değeri kayıtta geçmez. Aynı çizimin 6. kalemi VOE 12749768 ise ayrı bir daire ayar puludur. Doğrulanmış makineler: G930, G940, G946, G960, G970, G976."
+ },
+ {
+  "partNumber": "CH 12119-16",
+  "ad": "Daire ayar pulu",
+  "beklenenKarakter": 432,
+  "longDescription": "Volvo G900 serisi greyderlerin daire döndürme arka grubundaki ayar puludur; üretici kataloğunda G0008437 çiziminin 1119. sayfasında 7. kalem olarak kayıtlıdır. Aynı kalemde CH 12119-10 ve CH 12119-20 numaralı iki ayar pulu daha kayıtlıdır; ayrım parça numarasıyla yapılır, kalınlık değeri kayıtta geçmez. Aynı çizimin 6. kalemi VOE 12749768 ise ayrı bir daire ayar puludur. Doğrulanmış makineler: G930, G940, G946, G960, G970, G976."
+ },
+ {
+  "partNumber": "CH 12119-20",
+  "ad": "Daire ayar pulu",
+  "beklenenKarakter": 432,
+  "longDescription": "Volvo G900 serisi greyderlerin daire döndürme arka grubundaki ayar puludur; üretici kataloğunda G0008437 çiziminin 1119. sayfasında 7. kalem olarak kayıtlıdır. Aynı kalemde CH 12119-10 ve CH 12119-16 numaralı iki ayar pulu daha kayıtlıdır; ayrım parça numarasıyla yapılır, kalınlık değeri kayıtta geçmez. Aynı çizimin 6. kalemi VOE 12749768 ise ayrı bir daire ayar puludur. Doğrulanmış makineler: G930, G940, G946, G960, G970, G976."
+ },
+ {
+  "partNumber": "VOE 12727387",
+  "ad": "Bıçak kaydırma elemanı",
+  "beklenenKarakter": 284,
+  "longDescription": "Volvo G930 greyderin bıçak montajındaki kaydırma elemanıdır; üretici kataloğunda 20061 numaralı çizimin 2. kalemi olarak kayıtlıdır. Aynı çizimde 3. kalem VOE 12727728 bıçak kaydırma yatağı, 4. kalem VOE 15403165 bıçak kaydırma uç plakasıdır. Sipariş VOE 12727387 numarasıyla verilir."
+ }
+]

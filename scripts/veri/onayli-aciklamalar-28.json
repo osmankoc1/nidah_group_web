@@ -1,0 +1,170 @@
+[
+ {
+  "partNumber": "324-0386",
+  "ad": "Standart hidrolik silindir keçe takımı",
+  "longDescription": "Caterpillar 324-0386, standart hidrolik silindir keçe takımı olarak kayıtlıdır. Üreticinin uyumlu model listesine göre 422E, 422F, 428E, 428F, 432E, 432F, 434E, 434F, 442E, 444E ve 444F modellerinde kullanılır. Keçe takımları silindire göre seçilir; sipariş öncesinde parça numarasının makinenizdeki silindirle eşleştiğini doğrulamanızı öneririz.",
+  "beklenenKarakter": 346
+ },
+ {
+  "partNumber": "58822-32300",
+  "ad": "Şanzıman sürtünme plakası",
+  "longDescription": "HİDROMEK HMK 600MG şanzıman grubunda kullanılan sürtünme plakasıdır. Üretici kataloğunda E160.00.01 numaralı çizimin 19. kalemi olarak kayıtlıdır; makinenizdeki parçayı bu çizim ve kalem numarasıyla karşılaştırabilirsiniz. Aynı çizimin 2. kalemi 60325-01300 şanzıman baskı plakası, 28. kalemi ise 69241-03403 şanzıman karşı plakasıdır. Sipariş 58822-32300 parça numarasıyla açılır.",
+  "beklenenKarakter": 381
+ },
+ {
+  "partNumber": "60325-01300",
+  "ad": "Şanzıman baskı plakası",
+  "longDescription": "HMK 600MG şanzımanının baskı plakasıdır. HİDROMEK kataloğunda E160.00.01 numaralı çizimde 2. kalem olarak yer alır. Aynı çizimde 19. kalem 58822-32300 sürtünme plakası, 28. kalem 69241-03403 karşı plakadır; üç parça da şanzıman paketinin kayıtlarıdır. Doğru parçayı seçmek için katalog sayfanızdaki kalem numarasını karşılaştırın.",
+  "beklenenKarakter": 330
+ },
+ {
+  "partNumber": "60332-00700",
+  "ad": "Diferansiyel karşı plakası",
+  "longDescription": "HMK 600MG greyderin diferansiyel grubuna ait karşı plakadır; HİDROMEK kataloğunda E120.00.01 numaralı çizimin 8. kalemidir. Aynı çizimde 9. kalem 60332-00801 diferansiyel sürtünme plakası, 7. kalem ise 60532-00100 diferansiyel uç plakasıdır. Diferansiyel paketinde benzer görünümlü farklı plakalar bulunduğundan seçimi kalem numarasına göre yapın.",
+  "beklenenKarakter": 347
+ },
+ {
+  "partNumber": "60332-00801",
+  "ad": "Diferansiyel sürtünme plakası",
+  "longDescription": "HMK 600MG diferansiyelinde kullanılan sürtünme plakasıdır. HİDROMEK kataloğunda E120.00.01 numaralı çizimde 9. kalem olarak kayıtlıdır; bir önceki kalem 60332-00700 karşı plaka, 7. kalem 60532-00100 diferansiyel uç plakasıdır. Diferansiyel paketinde birbirine benzeyen birden fazla plaka bulunur; sipariş öncesinde elinizdeki parçanın numarasını 60332-00801 ile tam olarak karşılaştırın.",
+  "beklenenKarakter": 387
+ },
+ {
+  "partNumber": "60425-01800",
+  "ad": "Şanzıman uç plakası",
+  "longDescription": "HMK 600MG şanzımanının uç plakasıdır; HİDROMEK kataloğunda E160.00.03 numaralı çizimin 1. kalemi olarak listelenir. Aynı çizimde 10. kalem 60525-02900 planet dişlisi, 13. kalem 60525-03800 planet dişli pimi, 29. kalem ise 60525-06900 şanzıman sürtünme plakasıdır. Bu kalemler aynı alt grubun kayıtlarıdır ve katalog sayfası üzerinden birlikte izlenebilir.",
+  "beklenenKarakter": 355
+ },
+ {
+  "partNumber": "60441-10300",
+  "ad": "Ön dingil pimi",
+  "longDescription": "HMK 600MG greyderin ön dingil grubunda kullanılan pimdir. HİDROMEK kataloğunda E040.00.02 numaralı çizimin 2. kalemi olarak kayıtlıdır; bu çizim, şanzıman (E160) ve diferansiyel (E120) çizimlerinden ayrı bir gruptur. Sipariş 60441-10300 parça numarasıyla açılır.",
+  "beklenenKarakter": 262
+ },
+ {
+  "partNumber": "60463-00400",
+  "ad": "O-ring",
+  "longDescription": "HMK 600MG makinesinde kullanılan o-ring tipi sızdırmazlık elemanıdır. HİDROMEK kataloğunda G030.00.01 numaralı çizimin 36. kalemi olarak kayıtlıdır. Bu çizim daire döndürme grubunu kapsar; aynı sayfada daire döndürme çarkı, keçesi ve burcu gibi kalemler yer alır. Katalogda bu makine için birden fazla o-ring bulunduğundan seçim çizim ve kalem numarasına göre yapılmalıdır.",
+  "beklenenKarakter": 373
+ },
+ {
+  "partNumber": "60525-02900",
+  "ad": "F ve 1. kademe planet dişlisi",
+  "longDescription": "HMK 600MG şanzımanının ileri (F) ve 1. kademe planet grubunda kullanılan dişlidir. HİDROMEK kataloğunda E160.00.03 numaralı çizimin 10. kalemi olarak kayıtlıdır. Aynı çizimde 13. kalem 60525-03800 planet dişli pimi, 1. kalem 60425-01800 uç plakası, 26. kalem ise 62625-06400 şanzıman halkasıdır. Birinci kademe şanzıman taşıyıcısı 60525-01700 numarasıyla ayrıca kayıtlıdır.",
+  "beklenenKarakter": 373
+ },
+ {
+  "partNumber": "60525-03800",
+  "ad": "Planet dişli pimi",
+  "longDescription": "HMK 600MG şanzımanındaki planet dişli grubunun pimidir; HİDROMEK kataloğunda E160.00.03 numaralı çizimin 13. kalemi olarak kayıtlıdır. Aynı çizimde 10. kalem 60525-02900 planet dişlisi, 25. kalem ise 62625-16300 yağlama sızdırmazlık halkasıdır. Sipariş öncesinde parçanın numarasını katalog sayfasındaki kalem numarasıyla karşılaştırın.",
+  "beklenenKarakter": 336
+ },
+ {
+  "partNumber": "60525-06300",
+  "ad": "Şanzıman D-ring contası",
+  "longDescription": "HMK 600MG şanzımanının D-ring contasıdır; HİDROMEK kataloğunda E160.00.01 numaralı çizimde 17. kalem olarak geçer. Aynı çizimin 18. kalemi de aynı adla kayıtlıdır ve 60525-06400 numarasını taşır — ad aynı, parça farklı.",
+  "beklenenKarakter": 219
+ },
+ {
+  "partNumber": "60525-06400",
+  "ad": "Şanzıman D-ring contası",
+  "longDescription": "HMK 600MG şanzımanının D-ring contasıdır; HİDROMEK kataloğunda E160.00.01 numaralı çizimde 18. kalem olarak geçer. Katalogda aynı adı taşıyan ikinci bir conta daha var: 17. kalem, 60525-06300. Eşleştirmeyi ada göre değil kalem veya parça numarasına göre yapın.",
+  "beklenenKarakter": 260
+ },
+ {
+  "partNumber": "60532-00100",
+  "ad": "Diferansiyel uç plakası",
+  "longDescription": "HMK 600MG greyderin diferansiyel grubundaki uç plakadır. HİDROMEK kataloğunda E120.00.01 numaralı çizimin 7. kalemidir. Aynı paketin 8. kalemi 60332-00700 karşı plaka, 9. kalemi 60332-00801 sürtünme plakasıdır — üç plaka ayrı parçalardır.",
+  "beklenenKarakter": 238
+ },
+ {
+  "partNumber": "60563-00201",
+  "ad": "Daire döndürme göbeği",
+  "longDescription": "Daire döndürme göbeği, HMK 600MG greyderin daire döndürme grubuna aittir. HİDROMEK kataloğunda G030.00.01 numaralı çizimde 44. kalem olarak kayıtlıdır. Bu çizim grubun çark, keçe ve burç kalemlerini de içerir.",
+  "beklenenKarakter": 209
+ },
+ {
+  "partNumber": "60632-05500",
+  "ad": "Diferansiyel istavrozu",
+  "longDescription": "HİDROMEK kataloğunda HMK 600MG diferansiyeli E120.00.01 numaralı çizimde toplanmıştır; istavroz bu çizimin 19. kalemidir. Hemen ardından gelen 20. kalem diferansiyel pinyonudur (60994-00600).",
+  "beklenenKarakter": 191
+ },
+ {
+  "partNumber": "60994-00600",
+  "ad": "Diferansiyel pinyonu",
+  "longDescription": "HMK 600MG diferansiyel grubunun pinyonudur. Kaynak kayıt: HİDROMEK E120.00.01 çizimi, 20. kalem. Bu kalem, 19. kalemdeki 60632-05500 istavrozla aynı alt grupta yer alır.",
+  "beklenenKarakter": 169
+ },
+ {
+  "partNumber": "62625-16300",
+  "ad": "Yağlama sızdırmazlık halkası",
+  "longDescription": "HMK 600MG şanzımanının planet grubunda kullanılan yağlama sızdırmazlık halkasıdır. HİDROMEK kataloğunda E160.00.03 numaralı çizimin 25. kalemidir; aynı çizim planet dişlisini ve dişli pimini de kapsar.",
+  "beklenenKarakter": 201
+ },
+ {
+  "partNumber": "62625-35901",
+  "ad": "Dış debriyaj piston keçesi",
+  "longDescription": "HMK 600MG şanzımanının debriyaj pistonunda kullanılan dış keçedir. HİDROMEK kataloğunda E160.00.01 numaralı çizimin 24. kalemidir. Aynı çizimin 30. kalemi “Dış piston keçesi” adıyla kayıtlıdır ve 92525-03800 numarasını taşır; adlar benzer, parçalar farklıdır.",
+  "beklenenKarakter": 259
+ },
+ {
+  "partNumber": "62663-00500",
+  "ad": "Daire döndürme çarkı",
+  "longDescription": "HMK 600MG greyderin daire döndürme çarkıdır. HİDROMEK kataloğunda G030.00.01 numaralı çizimin 8. kalemidir; aynı çizimde 44. kalem 60563-00201 daire döndürme göbeğidir.",
+  "beklenenKarakter": 168
+ },
+ {
+  "partNumber": "69241-03403",
+  "ad": "Şanzıman karşı plakası",
+  "longDescription": "HMK 600MG şanzımanının karşı plakasıdır. HİDROMEK kataloğunda E160.00.01 numaralı çizimin 28. kalemidir. Aynı çizimde 2. kalem 60325-01300 baskı plakası, 19. kalem 58822-32300 sürtünme plakasıdır; şanzıman paketinde üç ayrı plaka tipi bulunur.",
+  "beklenenKarakter": 243
+ },
+ {
+  "partNumber": "69331-03400",
+  "ad": "Dış piston keçesi",
+  "longDescription": "HMK 600MG greyderin diferansiyel grubundaki dış piston keçesidir; HİDROMEK kataloğunda E120.00.01 numaralı çizimin 23. kalemidir. Aynı çizimde 24. kalem 69331-03500 iç piston keçesi, 11. kalem ise 60332-01400 diferansiyel kilit pistonudur. Katalogda aynı adı taşıyan ikinci bir keçe daha var: 92525-03800, şanzıman çiziminde kayıtlı.",
+  "beklenenKarakter": 333
+ },
+ {
+  "partNumber": "69331-03500",
+  "ad": "İç piston keçesi",
+  "longDescription": "İç piston keçesi, HMK 600MG diferansiyel grubunda kullanılır. HİDROMEK kataloğunda E120.00.01 numaralı çizimde 24. kalem olarak kayıtlıdır; hemen öncesindeki 23. kalem 69331-03400 dış piston keçesidir. Aynı çizimde 11. kalem diferansiyel kilit pistonu olarak geçer.",
+  "beklenenKarakter": 265
+ },
+ {
+  "partNumber": "92525-03800",
+  "ad": "Dış piston keçesi",
+  "longDescription": "HMK 600MG şanzımanının dış piston keçesidir. HİDROMEK kataloğunda E160.00.01 numaralı çizimin 30. kalemidir. Dikkat: katalogda bu adla iki parça var — diğeri 69331-03400 ve diferansiyel çizimine (E120.00.01) aittir. Aynı çizimin 24. kalemi 62625-35901 dış debriyaj piston keçesidir.",
+  "beklenenKarakter": 282
+ },
+ {
+  "partNumber": "N3012-08523",
+  "ad": "Yağ keçesi",
+  "longDescription": "HMK 600MG şanzıman grubunda kullanılan yağ keçesidir. HİDROMEK kataloğunda E160.00.04 numaralı çizimin 26. kalemidir; aynı çizimde 12. kalem 60525-05300 şanzıman giriş kapağı contası, 30. kalem ise N3153-05500 O-ring olarak geçer.",
+  "beklenenKarakter": 230
+ },
+ {
+  "partNumber": "C5563-70280",
+  "ad": "O-ring",
+  "longDescription": "HMK 600MG için kayıtlı O-ring'lerden biridir; HİDROMEK kataloğunda E130.00.01 numaralı çizimin 20. kalemidir. İncelenen katalog kayıtlarında aynı adla birden fazla parça bulunmaktadır; ad tek başına ayırt etmeye yetmez.",
+  "beklenenKarakter": 219
+ },
+ {
+  "partNumber": "N3153-05500",
+  "ad": "O-ring",
+  "longDescription": "HMK 600MG şanzıman grubunda kullanılan O-ring'dir; HİDROMEK kataloğunda E160.00.04 numaralı çizimin 30. kalemidir. Aynı çizimde 26. kalem N3012-08523 yağ keçesi, 12. kalem ise 60525-05300 şanzıman giriş kapağı contasıdır. Sipariş N3153-05500 parça numarasıyla ya da çizim ve kalem numarasıyla verilir.",
+  "beklenenKarakter": 301
+ },
+ {
+  "partNumber": "N3153-06500",
+  "ad": "O-ring",
+  "longDescription": "HMK 600MG kataloğunda E110.00.01 numaralı çizimin 31. kalemi olan O-ring'dir. Aynı çizimde 34. kalem 60431-02901 dişli pompa olarak kayıtlıdır. Katalogdaki diğer O-ring kayıtlarından çizim numarasıyla ayrılır.",
+  "beklenenKarakter": 209
+ },
+ {
+  "partNumber": "N3153-13000",
+  "ad": "O-ring",
+  "longDescription": "Daire döndürme grubunun O-ring'idir; HİDROMEK kataloğunda G030.00.01 numaralı çizimin 37. kalemidir. Aynı çizimin hemen öncesindeki 36. kalemi de “O-ring” adıyla kayıtlıdır ve 60463-00400 numarasını taşır — iki komşu kalem, aynı ad, farklı parça. 18. kalem ise 44716-28500 daire döndürme O-ring contasıdır.",
+  "beklenenKarakter": 306
+ }
+]

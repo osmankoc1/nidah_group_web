@@ -1,5 +1,6 @@
 import "server-only";
 import { v2 as cloudinary } from "cloudinary";
+import { CLOUDINARY_YUKLEME_SECENEKLERI } from "@/lib/image-policy";
 
 // ── Configuration ─────────────────────────────────────────────────────────────
 // Supports two formats:
@@ -52,6 +53,10 @@ export interface UploadResult {
 /**
  * Upload a Buffer (from multipart) or a remote URL string to Cloudinary.
  * Throws if Cloudinary is not configured.
+ *
+ * YUKLEME POLITIKASI (2026-11-26): her yukleme `CLOUDINARY_YUKLEME_SECENEKLERI`
+ * ile kuculturulerek DEPOLANIR (en uzun kenar 1600 px, WebP, q80). Gerekce ve
+ * olculen 6,2 kat depolama farki: `src/lib/image-policy.ts`.
  */
 export async function uploadToCloudinary(
   source: Buffer | string,
@@ -67,7 +72,7 @@ export async function uploadToCloudinary(
     result = await new Promise<ReturnType<typeof cloudinary.uploader.upload> extends Promise<infer T> ? T : never>(
       (resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-          { folder, resource_type: "image" },
+          { folder, resource_type: "image", ...CLOUDINARY_YUKLEME_SECENEKLERI },
           (err, res) => {
             if (err || !res) return reject(err ?? new Error("upload_stream returned no result"));
             resolve(res);
@@ -77,7 +82,7 @@ export async function uploadToCloudinary(
       }
     );
   } else {
-    result = await cloudinary.uploader.upload(source, { folder, resource_type: "image" });
+    result = await cloudinary.uploader.upload(source, { folder, resource_type: "image", ...CLOUDINARY_YUKLEME_SECENEKLERI });
   }
 
   return {

@@ -3,13 +3,19 @@ import { revalidateProducts } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { productImages, products } from "@/lib/db/schema";
 import { eq, count } from "drizzle-orm";
-import { uploadToCloudinary, isCloudinaryConfigured } from "@/lib/cloudinary";
+import { uploadToCloudinary, destroyFromCloudinary, isCloudinaryConfigured } from "@/lib/cloudinary";
+import { GORSEL_MAKS_BAYT, dosyaBoyutuDenetimi, olcuDenetimi } from "@/lib/image-policy";
 import { PRODUCT_IMAGE_COLUMNS_V2 } from "@/lib/db/columns";
 
 type Params = { params: Promise<{ id: string }> };
 
 const MAX_IMAGES = 10;
-const MAX_BYTES  = 50 * 1024 * 1024; // 50 MB — matches next.config middlewareClientMaxBodySize
+/**
+ * Dosya basina sert ust sinir — YUKLEME POLITIKASI'ndan gelir (8 MB).
+ * Onceden 50 MB'ti; `next.config.ts` govde siniri bir UST sinir oldugu icin
+ * burada daraltmak o ayari degistirmeyi gerektirmez.
+ */
+const MAX_BYTES = GORSEL_MAKS_BAYT;
 
 export async function GET(_req: NextRequest, { params }: Params) {
   if (!db) return NextResponse.json({ error: "Database not configured" }, { status: 503 });
@@ -56,8 +62,9 @@ export async function POST(request: NextRequest, { params }: Params) {
     const file = form.get("file") as File | null;
 
     if (!file) return NextResponse.json({ error: "No file provided" }, { status: 400 });
-    if (file.size > MAX_BYTES) {
-      return NextResponse.json({ error: "File exceeds 50 MB limit" }, { status: 400 });
+    const boyut = dosyaBoyutuDenetimi(file.size);
+    if (!boyut.kabul) {
+      return NextResponse.json({ error: boyut.mesaj }, { status: 400 });
     }
 
     const bytes = await file.arrayBuffer();
@@ -71,6 +78,15 @@ export async function POST(request: NextRequest, { params }: Params) {
 
   try {
     const uploaded = await uploadToCloudinary(uploadSource, `nidah/products/${id}`);
+
+    // OLCU ALT SINIRI — donusumden SONRA. `crop: "limit"` buyutme yapmadigi
+    // icin donen olculer orijinalin olculeridir. Reddedilen gorsel
+    // Cloudinary'den SILINIR; depoda artik kalmaz.
+    const olcu = olcuDenetimi(uploaded.width, uploaded.height);
+    if (!olcu.kabul) {
+      await destroyFromCloudinary(uploaded.publicId);
+      return NextResponse.json({ error: olcu.mesaj }, { status: 400 });
+    }
 
     const isPrimary = Number(total) === 0; // first image becomes primary
     const [image] = await db
