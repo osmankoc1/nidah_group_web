@@ -104,8 +104,10 @@ const { values: ham } = parseArgs({
     // ve HATA oranını büyütür. Aynı ölçümde eşzamanlılık 6'da 145 sayfanın
     // 11'i YANLIŞ 404 döndü: yük altında `site_settings` okuması düştü ve
     // fail-closed devreye girdi (logda 41 kez "ayarlar okunamadı"), 1'de
-    // sıfır. Bu yüzden varsayılan DÜŞÜK tutulur.
-    eszamanlilik:        { type: "string", default: "2" },
+    // sıfır. Bu yüzden varsayılan EN GÜVENLİ değerde tutulur: 1.
+    // (Kullanıcı kararı 2026-11-26: eşzamanlılık 1 ölçümlerde tek güvenilir
+    // değer, verim farkı anlamlı değil — 19,4 vs 21,5 istek/sn.)
+    eszamanlilik:        { type: "string", default: "1" },
     "istek-araligi-ms":  { type: "string", default: "200" },
     "zaman-asimi-ms":    { type: "string", default: "30000" },
     prova:               { type: "boolean", default: false },
@@ -132,7 +134,7 @@ const AYAR = {
   dosya:            ham.dosya,
   suzgec:           ham.suzgec,
   diller:           new Set(ham.diller.split(",").map((d) => d.trim()).filter(Boolean)),
-  eszamanlilik:     Math.max(1, Math.min(16, Number(ham.eszamanlilik) || 3)),
+  eszamanlilik:     Math.max(1, Math.min(16, Number(ham.eszamanlilik) || 1)),
   istekAraligiMs:   Math.max(0, Number(ham["istek-araligi-ms"]) || 0),
   zamanAsimiMs:     Math.max(1000, Number(ham["zaman-asimi-ms"]) || 30000),
   prova:            ham.prova,

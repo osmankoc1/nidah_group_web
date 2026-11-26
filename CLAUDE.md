@@ -211,7 +211,7 @@ Bu değerler korunur; değişiyorsa regresyondur:
 | GA4 | ✅ Canlı (`G-L2JFWQH2J6`), consent mode, `CookieConsentBanner` ile güncelleniyor |
 | Sentry — sunucu | Config var; dışarıdan doğrulanamadı |
 | Sentry — **istemci** | ❌ Pakette ingest/DSN host yok → **tarayıcı hataları yakalanmıyor**. `NEXT_PUBLIC_SENTRY_DSN` tanımlı değil |
-| Vercel Analytics / Speed Insights | ❌ Yok → alan CWV verisi toplanmıyor |
+| Vercel Analytics / Speed Insights | ✅ Kodda bağlı (2026-11-26, doğrulandı): `@vercel/analytics` + `@vercel/speed-insights` bağımlılıkta, `src/app/layout.tsx:185-186`'da `<Analytics />` ve `<SpeedInsights />` monte. **Panelde veri toplandığı doğrulanmadı** (Vercel paneline erişim yok). Önceki "❌ Yok" satırı kodla çelişiyordu |
 | Vercel MCP | ⚠️ Eklenti etkin ama **yetkilendirilmemiş** (`/mcp`) |
 | Vercel CLI | ❌ Kurulu değil |
 
