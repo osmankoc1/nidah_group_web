@@ -88,3 +88,16 @@ yapması gerektiğini SÖYLEMİYOR. Sunucu zaten Türkçe gerekçeleri
 yazıyordu. Uç artık `reasons` alanını da döndürüyor, arayüz onu gösteriyor;
 ham kod listesi (`unmet`) yanıtta log/geliştirici tarafı için duruyor.
 Düzeltme development'ta yapıldı, test eklendi ve canlı doğrulandı.
+
+
+## İleride değerlendirilecek küçük iyileştirme (2026-11-19)
+
+**Y4 — fotoğraf doğrulama düğmesinde istemci tarafı ayna kontrol yok.**
+`ImagesManager` içindeki "Bu fotoğrafı doğrula" düğmesi yalnızca istek
+sürerken pasifleşiyor; ALT metni 15 karakterin altındayken veya kaynak notu
+boşken **pasifleşmiyor**. Kural iki katmanda zaten uygulanıyor —
+`parseImageAltText` 400 döndürüyor ve veritabanındaki
+`ck_product_images_verified_evidence` kısıtı yazmayı reddediyor — yani
+**güvenlik açığı değil**. Ancak P3'te yayın düğmesi için yaptığımız "aynı
+kararı önden göster" yaklaşımıyla tutarsız: operatör başarısız olacağı belli
+bir eylemi deneyebiliyor. Öncelik düşük; ayrı bir iş olarak değerlendirilir.

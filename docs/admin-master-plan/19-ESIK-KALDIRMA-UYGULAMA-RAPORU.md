@@ -150,9 +150,21 @@ ediyor**.
 
 Bu kritik: kapının tamamı (aktiflik + parça no + ad + açıklama +
 **doğrulanmış fotoğraf** + **doğrulanmış uyumluluk**) simüle edildiğinde
-**önce de sonra da 0 ürün** geçiyor. Hiçbir üründe doğrulanmış fotoğraf ve
-uyumluluk yok. Yani bu değişiklik **kendi başına hiçbir ürünü yayına
-sokmuyor**; fotoğraf turu hâlâ zorunlu kapı.
+**önce de sonra da 0 ürün** geçiyor. Yani bu değişiklik **kendi başına
+hiçbir ürünü yayına sokmuyor**.
+
+**Düzeltme (2026-11-20, deploy sonrası doğrulama):** bu raporun ilk
+sürümünde "hiçbir üründe doğrulanmış fotoğraf ve uyumluluk yok" yazıyordu.
+Yanlıştı. Ölçülen gerçek durum:
+
+| Kanıt | Sayı |
+|---|---|
+| Doğrulanmış fotoğraf (`product_images.verified`) | **0** |
+| Doğrulanmış uyumluluk (`fitments.verified`) | **300** |
+
+Uyumluluk kanıtı zaten var; kapıyı tek başına tutan şey **doğrulanmış
+fotoğraf eksikliği**. Sonuç (0 → 0) değişmiyor ama gerekçe tek: fotoğraf
+turu yayının **tek kalan** kapısıdır.
 
 ### 4.3 Boş açıklama koruması (D1) kimi tutuyor?
 
