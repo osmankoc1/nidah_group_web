@@ -1,0 +1,401 @@
+{
+ "plan": [
+  {
+   "partNumber": "CH 12745",
+   "eskiAd": "Mafsal pulu",
+   "yeniAd": "Mafsal pulu — güç aktarımı"
+  },
+  {
+   "partNumber": "VOE 12736166",
+   "eskiAd": "Mafsal pulu",
+   "yeniAd": "Mafsal pulu — yürüyüş ve şasi"
+  },
+  {
+   "partNumber": "232-70-53141",
+   "eskiAd": "Bıçak kaldırma burcu",
+   "yeniAd": "Bıçak kaldırma burcu — yatak ve burç"
+  },
+  {
+   "partNumber": "VOE 12724040",
+   "eskiAd": "Bıçak kaldırma burcu",
+   "yeniAd": "Bıçak kaldırma burcu — greyder bıçak ve daire grubu"
+  },
+  {
+   "partNumber": "23S-15-12740",
+   "eskiAd": "Debriyaj sürtünme diski",
+   "yeniAd": "Debriyaj sürtünme diski — Komatsu GD505A-3"
+  },
+  {
+   "partNumber": "714-07-12670",
+   "eskiAd": "Debriyaj sürtünme diski",
+   "yeniAd": "Debriyaj sürtünme diski — Komatsu WA470-3"
+  },
+  {
+   "partNumber": "CH 400229",
+   "eskiAd": "Daire döndürme valfi",
+   "yeniAd": "Daire döndürme valfi — güç aktarımı"
+  },
+  {
+   "partNumber": "CH 52338",
+   "eskiAd": "Daire döndürme valfi",
+   "yeniAd": "Daire döndürme valfi — greyder bıçak ve daire grubu"
+  }
+ ],
+ "cozulemeyen": [
+  {
+   "ad": "Şanzıman sızdırmazlık halkası",
+   "adet": 8,
+   "partNumbers": [
+    "60425-18200",
+    "VOE 17200049",
+    "VOE 1547255",
+    "VOE 11989792",
+    "VOE 11989795",
+    "VOE 11989796",
+    "VOE 11145531",
+    "VOE 11989804"
+   ]
+  },
+  {
+   "ad": "Son tahrik makaralı rulmanı",
+   "adet": 6,
+   "partNumbers": [
+    "VOE 12743102",
+    "VOE 12743270",
+    "VOE 12743289",
+    "VOE 12743288",
+    "VOE 12743355",
+    "VOE 12743367"
+   ]
+  },
+  {
+   "ad": "Mafsal ara parçası",
+   "adet": 5,
+   "partNumbers": [
+    "CH 12746",
+    "CH 12747",
+    "VOE 12736163",
+    "VOE 12736165",
+    "VOE 16004086"
+   ]
+  },
+  {
+   "ad": "Mafsal pimi",
+   "adet": 4,
+   "partNumbers": [
+    "CH 12742",
+    "CH 12743",
+    "VOE 16004078",
+    "VOE 12736164"
+   ]
+  },
+  {
+   "ad": "Son tahrik aks mili",
+   "adet": 4,
+   "partNumbers": [
+    "VOE 12732666",
+    "VOE 12743299",
+    "VOE 12743300",
+    "VOE 12732667"
+   ]
+  },
+  {
+   "ad": "Şanzıman disk takımı",
+   "adet": 4,
+   "partNumbers": [
+    "VOE 11419059",
+    "VOE 15035797",
+    "VOE 15035796",
+    "VOE 15035800"
+   ]
+  },
+  {
+   "ad": "Diferansiyel kilidi çelik diski",
+   "adet": 3,
+   "partNumbers": [
+    "VOE 12743075",
+    "VOE 12743072",
+    "VOE 12743302"
+   ]
+  },
+  {
+   "ad": "Şanzıman kilit halkası",
+   "adet": 3,
+   "partNumbers": [
+    "VOE 11145452",
+    "VOE 11037147",
+    "VOE 4786536"
+   ]
+  },
+  {
+   "ad": "Tutma plakası",
+   "adet": 3,
+   "partNumbers": [
+    "VOE 16004081",
+    "VOE 12746887",
+    "VOE 12736168"
+   ]
+  },
+  {
+   "ad": "Son tahrik itme pulu",
+   "adet": 3,
+   "partNumbers": [
+    "VOE 16018975",
+    "VOE 12743292",
+    "VOE 12743297"
+   ]
+  },
+  {
+   "ad": "Son tahrik pulu",
+   "adet": 3,
+   "partNumbers": [
+    "VOE 12743340",
+    "VOE 12743339",
+    "VOE 12743347"
+   ]
+  },
+  {
+   "ad": "Şanzıman debriyaj göbeği",
+   "adet": 3,
+   "partNumbers": [
+    "VOE 15079751",
+    "VOE 11037518",
+    "VOE 11037521"
+   ]
+  },
+  {
+   "ad": "Son tahrik O-ring contası",
+   "adet": 3,
+   "partNumbers": [
+    "VOE 12743099",
+    "VOE 12743091",
+    "VOE 12743326"
+   ]
+  },
+  {
+   "ad": "Ön dingil segmanı",
+   "adet": 3,
+   "partNumbers": [
+    "VOE 990254",
+    "VOE 914535",
+    "CH 69510"
+   ]
+  },
+  {
+   "ad": "Fren destek halkası",
+   "adet": 2,
+   "partNumbers": [
+    "CH 37874",
+    "CH 37873"
+   ]
+  },
+  {
+   "ad": "Diferansiyel kilidi makara kafesi",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 11706743",
+    "VOE 12743319"
+   ]
+  },
+  {
+   "ad": "Porya yatağı",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 12736498",
+    "VOE 12736499"
+   ]
+  },
+  {
+   "ad": "Altıgen cıvata",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 983904",
+    "VOE 984950"
+   ]
+  },
+  {
+   "ad": "Şanzıman dişlisi",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 15001069",
+    "VOE 11144782"
+   ]
+  },
+  {
+   "ad": "Çıkış debriyaj göbeği",
+   "adet": 2,
+   "partNumbers": [
+    "CH 41129",
+    "CH 41110"
+   ]
+  },
+  {
+   "ad": "Porya sızdırmazlık halkası",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 12736497",
+    "VOE 12740963"
+   ]
+  },
+  {
+   "ad": "Park freni O-ring contası",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 12743138",
+    "VOE 12743131"
+   ]
+  },
+  {
+   "ad": "Planet aks O-ring contası",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 12743382",
+    "VOE 12743123"
+   ]
+  },
+  {
+   "ad": "Çıkış debriyaj sızdırmazlık halkası",
+   "adet": 2,
+   "partNumbers": [
+    "CH 41125",
+    "CH 41118"
+   ]
+  },
+  {
+   "ad": "Diferansiyel kilidi O-ring contası",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 12743081",
+    "VOE 12743082"
+   ]
+  },
+  {
+   "ad": "Planet aks keçesi",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 12743377",
+    "VOE 12743118"
+   ]
+  },
+  {
+   "ad": "Son tahrik keçesi",
+   "adet": 2,
+   "partNumbers": [
+    "CH 37580",
+    "CH 68233"
+   ]
+  },
+  {
+   "ad": "Planet aks ayar pulu",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 12743262",
+    "VOE 12743264"
+   ]
+  },
+  {
+   "ad": "Son tahrik ayar pulu",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 12743361",
+    "VOE 12743362"
+   ]
+  },
+  {
+   "ad": "Ön dingil yatağı",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 12746141",
+    "VOE 12746142"
+   ]
+  },
+  {
+   "ad": "Radyatör hortumu",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 12737132",
+    "VOE 12746492"
+   ]
+  },
+  {
+   "ad": "Fren O-ring contası",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 983578",
+    "VOE 983580"
+   ]
+  },
+  {
+   "ad": "Şanzıman baskı plakası",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 11037642",
+    "VOE 11037644"
+   ]
+  },
+  {
+   "ad": "Planet aks radyal yatağı",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 12743122",
+    "VOE 12743381"
+   ]
+  },
+  {
+   "ad": "Ön dingil rot ucu",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 12742701",
+    "VOE 12749827"
+   ]
+  },
+  {
+   "ad": "Şanzıman solenoid valfi",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 15066984",
+    "VOE 11144019"
+   ]
+  },
+  {
+   "ad": "Çıkış debriyaj segmanı",
+   "adet": 2,
+   "partNumbers": [
+    "CH 41115",
+    "CH 41116"
+   ]
+  },
+  {
+   "ad": "Kardan mafsalı",
+   "adet": 2,
+   "partNumbers": [
+    "VOE 12731893",
+    "VOE 12731894"
+   ]
+  },
+  {
+   "ad": "Çıkış debriyaj yatağı",
+   "adet": 2,
+   "partNumbers": [
+    "CH 41132",
+    "CH 41133"
+   ]
+  },
+  {
+   "ad": "Çıkış debriyaj pulu",
+   "adet": 2,
+   "partNumbers": [
+    "CH 41131",
+    "CH 41134"
+   ]
+  },
+  {
+   "ad": "Kavrama diski",
+   "adet": 2,
+   "partNumbers": [
+    "0501.212.372",
+    "0501.212.370"
+   ]
+  }
+ ]
+}

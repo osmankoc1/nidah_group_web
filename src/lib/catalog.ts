@@ -1,6 +1,6 @@
 import "server-only";
 import { db } from "@/lib/db";
-import { products, productImages, categories, fitments, machines, manufacturers, machineVariants } from "@/lib/db/schema";
+import { products, productImages, fitments, machines, manufacturers, machineVariants } from "@/lib/db/schema";
 import { eq, and, ilike, or, asc, desc, count, inArray } from "drizzle-orm";
 import { PRODUCT_COLUMNS_V1 } from "@/lib/db/columns";
 import { publicProductConditions, publicProductWhere } from "@/lib/public-visibility";

@@ -1,0 +1,1757 @@
+[
+ {
+  "ad": "Şanzıman sızdırmazlık halkası",
+  "adet": 8,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 3,
+   "kategori": 2,
+   "makineler": 2,
+   "seri": 2
+  },
+  "uyeler": [
+   {
+    "partNumber": "60425-18200",
+    "ad": "Şanzıman sızdırmazlık halkası",
+    "marka": "HİDROMEK",
+    "kategori": "Sızdırmazlık",
+    "makineler": "HİDROMEK HMK 600MG",
+    "seri": "HİDROMEK HMK 600MG: 1GCI0003 · belge kapsamı",
+    "logo": "60425-18200",
+    "seviye": "1"
+   },
+   {
+    "partNumber": "VOE 17200049",
+    "ad": "Şanzıman sızdırmazlık halkası",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "17200049",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 1547255",
+    "ad": "Şanzıman sızdırmazlık halkası",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "1547255",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 11989792",
+    "ad": "Şanzıman sızdırmazlık halkası",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "11989792",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 11989795",
+    "ad": "Şanzıman sızdırmazlık halkası",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "11989795",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 11989796",
+    "ad": "Şanzıman sızdırmazlık halkası",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "11989796",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 11145531",
+    "ad": "Şanzıman sızdırmazlık halkası",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "11145531",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 11989804",
+    "ad": "Şanzıman sızdırmazlık halkası",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "11989804",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Son tahrik makaralı rulmanı",
+  "adet": 6,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 2,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12743102",
+    "ad": "Son tahrik makaralı rulmanı",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743102",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743270",
+    "ad": "Son tahrik makaralı rulmanı",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743270",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743289",
+    "ad": "Son tahrik makaralı rulmanı",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743289",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743288",
+    "ad": "Son tahrik makaralı rulmanı",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743288",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743355",
+    "ad": "Son tahrik makaralı rulmanı",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743355",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743367",
+    "ad": "Son tahrik makaralı rulmanı",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743367",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Mafsal ara parçası",
+  "adet": 5,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 2,
+   "kategori": 2,
+   "makineler": 2,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "CH 12746",
+    "ad": "Mafsal ara parçası",
+    "marka": "Volvo / Champion",
+    "kategori": "Güç aktarımı",
+    "makineler": "Champion 720A | Champion 780A",
+    "seri": "",
+    "logo": "12746",
+    "seviye": "1"
+   },
+   {
+    "partNumber": "CH 12747",
+    "ad": "Mafsal ara parçası",
+    "marka": "Volvo / Champion",
+    "kategori": "Güç aktarımı",
+    "makineler": "Champion 720A | Champion 780A",
+    "seri": "",
+    "logo": "12747",
+    "seviye": "1"
+   },
+   {
+    "partNumber": "VOE 12736163",
+    "ad": "Mafsal ara parçası",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "12736163",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12736165",
+    "ad": "Mafsal ara parçası",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "12736165",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 16004086",
+    "ad": "Mafsal ara parçası",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "16004086",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Mafsal pimi",
+  "adet": 4,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 3,
+   "kategori": 2,
+   "makineler": 2,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "CH 12742",
+    "ad": "Mafsal pimi",
+    "marka": "Volvo / Champion",
+    "kategori": "Güç aktarımı",
+    "makineler": "Champion 720A | Champion 780A",
+    "seri": "",
+    "logo": "12742",
+    "seviye": "1"
+   },
+   {
+    "partNumber": "CH 12743",
+    "ad": "Mafsal pimi",
+    "marka": "Volvo / Champion",
+    "kategori": "Güç aktarımı",
+    "makineler": "Champion 720A | Champion 780A",
+    "seri": "",
+    "logo": "12743",
+    "seviye": "1"
+   },
+   {
+    "partNumber": "VOE 16004078",
+    "ad": "Mafsal pimi",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "16004078",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12736164",
+    "ad": "Mafsal pimi",
+    "marka": "Volvo",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "12736164",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Son tahrik aks mili",
+  "adet": 4,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 3,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12732666",
+    "ad": "Son tahrik aks mili",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12732666",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743299",
+    "ad": "Son tahrik aks mili",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743299",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743300",
+    "ad": "Son tahrik aks mili",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743300",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12732667",
+    "ad": "Son tahrik aks mili",
+    "marka": "Volvo / Champion",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12732667",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Şanzıman disk takımı",
+  "adet": 4,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 11419059",
+    "ad": "Şanzıman disk takımı",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "VOE 11419059",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 15035797",
+    "ad": "Şanzıman disk takımı",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "15035797",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 15035796",
+    "ad": "Şanzıman disk takımı",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "VOE 15035796",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 15035800",
+    "ad": "Şanzıman disk takımı",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "15035800",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Diferansiyel kilidi çelik diski",
+  "adet": 3,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 2,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12743075",
+    "ad": "Diferansiyel kilidi çelik diski",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743075",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743072",
+    "ad": "Diferansiyel kilidi çelik diski",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743072",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743302",
+    "ad": "Diferansiyel kilidi çelik diski",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743302",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Şanzıman kilit halkası",
+  "adet": 3,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 2,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 11145452",
+    "ad": "Şanzıman kilit halkası",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "11145452",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 11037147",
+    "ad": "Şanzıman kilit halkası",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "11037147",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 4786536",
+    "ad": "Şanzıman kilit halkası",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "4786536",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Tutma plakası",
+  "adet": 3,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 16004081",
+    "ad": "Tutma plakası",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "16004081",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12746887",
+    "ad": "Tutma plakası",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "12746887",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12736168",
+    "ad": "Tutma plakası",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "12736168",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Son tahrik itme pulu",
+  "adet": 3,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 2,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 16018975",
+    "ad": "Son tahrik itme pulu",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "16018975",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743292",
+    "ad": "Son tahrik itme pulu",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743292",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743297",
+    "ad": "Son tahrik itme pulu",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743297",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Son tahrik pulu",
+  "adet": 3,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 2,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12743340",
+    "ad": "Son tahrik pulu",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743340",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743339",
+    "ad": "Son tahrik pulu",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743339",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743347",
+    "ad": "Son tahrik pulu",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743347",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Şanzıman debriyaj göbeği",
+  "adet": 3,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 15079751",
+    "ad": "Şanzıman debriyaj göbeği",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "15079751",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 11037518",
+    "ad": "Şanzıman debriyaj göbeği",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "11037518",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 11037521",
+    "ad": "Şanzıman debriyaj göbeği",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "11037521",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Son tahrik O-ring contası",
+  "adet": 3,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12743099",
+    "ad": "Son tahrik O-ring contası",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743099",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743091",
+    "ad": "Son tahrik O-ring contası",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743091",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743326",
+    "ad": "Son tahrik O-ring contası",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743326",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Ön dingil segmanı",
+  "adet": 3,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 990254",
+    "ad": "Ön dingil segmanı",
+    "marka": "Volvo",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "990254",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 914535",
+    "ad": "Ön dingil segmanı",
+    "marka": "Volvo",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "914535",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "CH 69510",
+    "ad": "Ön dingil segmanı",
+    "marka": "Volvo",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "69510",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Mafsal pulu",
+  "adet": 2,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 2,
+   "kategori": 2,
+   "makineler": 2,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "CH 12745",
+    "ad": "Mafsal pulu",
+    "marka": "Volvo / Champion",
+    "kategori": "Güç aktarımı",
+    "makineler": "Champion 720A | Champion 780A",
+    "seri": "",
+    "logo": "12745",
+    "seviye": "1"
+   },
+   {
+    "partNumber": "VOE 12736166",
+    "ad": "Mafsal pulu",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "12736166",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Bıçak kaldırma burcu",
+  "adet": 2,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 2,
+   "kategori": 2,
+   "makineler": 2,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "232-70-53141",
+    "ad": "Bıçak kaldırma burcu",
+    "marka": "Komatsu",
+    "kategori": "Yatak ve burç",
+    "makineler": "Komatsu GD500R | Komatsu GD505A | Komatsu GD521A | Komatsu GD525A | Komatsu GD555 | Komatsu GD655",
+    "seri": "",
+    "logo": "232-70-53141",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12724040",
+    "ad": "Bıçak kaldırma burcu",
+    "marka": "Volvo",
+    "kategori": "Greyder bıçak ve daire grubu",
+    "makineler": "",
+    "seri": "",
+    "logo": "12724040",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Debriyaj sürtünme diski",
+  "adet": 2,
+  "yontem": "makine-modeli",
+  "farkli": {
+   "marka": 2,
+   "kategori": 1,
+   "makineler": 2,
+   "seri": 2
+  },
+  "uyeler": [
+   {
+    "partNumber": "23S-15-12740",
+    "ad": "Debriyaj sürtünme diski",
+    "marka": "Komatsu",
+    "kategori": "Güç aktarımı",
+    "makineler": "Komatsu GD505A-3",
+    "seri": "Komatsu GD505A-3: 1001 ve sonrası · çizim kapsamı",
+    "logo": "23S-15-12740",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "714-07-12670",
+    "ad": "Debriyaj sürtünme diski",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "Komatsu WA470-3",
+    "seri": "Komatsu WA470-3: 25233 ve sonrası",
+    "logo": "714-07-12670",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Fren destek halkası",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "CH 37874",
+    "ad": "Fren destek halkası",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Fren",
+    "makineler": "",
+    "seri": "",
+    "logo": "37874",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "CH 37873",
+    "ad": "Fren destek halkası",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Fren",
+    "makineler": "",
+    "seri": "",
+    "logo": "37873",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Diferansiyel kilidi makara kafesi",
+  "adet": 2,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 2,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 11706743",
+    "ad": "Diferansiyel kilidi makara kafesi",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "11706743",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743319",
+    "ad": "Diferansiyel kilidi makara kafesi",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743319",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Porya yatağı",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12736498",
+    "ad": "Porya yatağı",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "12736498",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12736499",
+    "ad": "Porya yatağı",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "12736499",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Altıgen cıvata",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 983904",
+    "ad": "Altıgen cıvata",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "983904",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 984950",
+    "ad": "Altıgen cıvata",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "984950",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Şanzıman dişlisi",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 15001069",
+    "ad": "Şanzıman dişlisi",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "15001069",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 11144782",
+    "ad": "Şanzıman dişlisi",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "11144782",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Çıkış debriyaj göbeği",
+  "adet": 2,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 2,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "CH 41129",
+    "ad": "Çıkış debriyaj göbeği",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "41129",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "CH 41110",
+    "ad": "Çıkış debriyaj göbeği",
+    "marka": "Volvo / Champion",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "41110",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Porya sızdırmazlık halkası",
+  "adet": 2,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 2,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12736497",
+    "ad": "Porya sızdırmazlık halkası",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "12736497",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12740963",
+    "ad": "Porya sızdırmazlık halkası",
+    "marka": "Volvo",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "12740963",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Park freni O-ring contası",
+  "adet": 2,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 2,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12743138",
+    "ad": "Park freni O-ring contası",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Fren",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743138",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743131",
+    "ad": "Park freni O-ring contası",
+    "marka": "ZF",
+    "kategori": "Fren",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743131",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Planet aks O-ring contası",
+  "adet": 2,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 2,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12743382",
+    "ad": "Planet aks O-ring contası",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Sızdırmazlık",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743382",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743123",
+    "ad": "Planet aks O-ring contası",
+    "marka": "Volvo",
+    "kategori": "Sızdırmazlık",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743123",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Çıkış debriyaj sızdırmazlık halkası",
+  "adet": 2,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 2,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "CH 41125",
+    "ad": "Çıkış debriyaj sızdırmazlık halkası",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "41125",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "CH 41118",
+    "ad": "Çıkış debriyaj sızdırmazlık halkası",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "41118",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Diferansiyel kilidi O-ring contası",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12743081",
+    "ad": "Diferansiyel kilidi O-ring contası",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743081",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743082",
+    "ad": "Diferansiyel kilidi O-ring contası",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743082",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Planet aks keçesi",
+  "adet": 2,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 2,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12743377",
+    "ad": "Planet aks keçesi",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Sızdırmazlık",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743377",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743118",
+    "ad": "Planet aks keçesi",
+    "marka": "Volvo",
+    "kategori": "Sızdırmazlık",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743118",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Son tahrik keçesi",
+  "adet": 2,
+  "yontem": "marka",
+  "farkli": {
+   "marka": 2,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "CH 37580",
+    "ad": "Son tahrik keçesi",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "CH37580",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "CH 68233",
+    "ad": "Son tahrik keçesi",
+    "marka": "Volvo / Champion",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "CH68233",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Planet aks ayar pulu",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12743262",
+    "ad": "Planet aks ayar pulu",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743262",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743264",
+    "ad": "Planet aks ayar pulu",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743264",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Son tahrik ayar pulu",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12743361",
+    "ad": "Son tahrik ayar pulu",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743361",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743362",
+    "ad": "Son tahrik ayar pulu",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743362",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Daire döndürme valfi",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 2,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "CH 400229",
+    "ad": "Daire döndürme valfi",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "400229",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "CH 52338",
+    "ad": "Daire döndürme valfi",
+    "marka": "Marka belirlenemedi",
+    "kategori": "Greyder bıçak ve daire grubu",
+    "makineler": "",
+    "seri": "",
+    "logo": "52338",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Ön dingil yatağı",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12746141",
+    "ad": "Ön dingil yatağı",
+    "marka": "Volvo",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "12746141",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12746142",
+    "ad": "Ön dingil yatağı",
+    "marka": "Volvo",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "12746142",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Radyatör hortumu",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12737132",
+    "ad": "Radyatör hortumu",
+    "marka": "Volvo",
+    "kategori": "Motor ve soğutma",
+    "makineler": "",
+    "seri": "",
+    "logo": "12737132",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12746492",
+    "ad": "Radyatör hortumu",
+    "marka": "Volvo",
+    "kategori": "Motor ve soğutma",
+    "makineler": "",
+    "seri": "",
+    "logo": "12746492",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Fren O-ring contası",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 983578",
+    "ad": "Fren O-ring contası",
+    "marka": "Volvo",
+    "kategori": "Fren",
+    "makineler": "",
+    "seri": "",
+    "logo": "983578",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 983580",
+    "ad": "Fren O-ring contası",
+    "marka": "Volvo",
+    "kategori": "Fren",
+    "makineler": "",
+    "seri": "",
+    "logo": "983580",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Şanzıman baskı plakası",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 11037642",
+    "ad": "Şanzıman baskı plakası",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "11037642",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 11037644",
+    "ad": "Şanzıman baskı plakası",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "11037644",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Planet aks radyal yatağı",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12743122",
+    "ad": "Planet aks radyal yatağı",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743122",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12743381",
+    "ad": "Planet aks radyal yatağı",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12743381",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Ön dingil rot ucu",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12742701",
+    "ad": "Ön dingil rot ucu",
+    "marka": "Volvo",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "12742701",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12749827",
+    "ad": "Ön dingil rot ucu",
+    "marka": "Volvo",
+    "kategori": "Yürüyüş ve şasi",
+    "makineler": "",
+    "seri": "",
+    "logo": "12749827",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Şanzıman solenoid valfi",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 15066984",
+    "ad": "Şanzıman solenoid valfi",
+    "marka": "Volvo",
+    "kategori": "Elektrik ve kontrol",
+    "makineler": "",
+    "seri": "",
+    "logo": "15066984",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 11144019",
+    "ad": "Şanzıman solenoid valfi",
+    "marka": "Volvo",
+    "kategori": "Elektrik ve kontrol",
+    "makineler": "",
+    "seri": "",
+    "logo": "11144019",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Çıkış debriyaj segmanı",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "CH 41115",
+    "ad": "Çıkış debriyaj segmanı",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "41115",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "CH 41116",
+    "ad": "Çıkış debriyaj segmanı",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "41116",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Kardan mafsalı",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "VOE 12731893",
+    "ad": "Kardan mafsalı",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12731893",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "VOE 12731894",
+    "ad": "Kardan mafsalı",
+    "marka": "Volvo",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "12731894",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Çıkış debriyaj yatağı",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "CH 41132",
+    "ad": "Çıkış debriyaj yatağı",
+    "marka": "Volvo / Champion",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "41132",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "CH 41133",
+    "ad": "Çıkış debriyaj yatağı",
+    "marka": "Volvo / Champion",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "41133",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Çıkış debriyaj pulu",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "CH 41131",
+    "ad": "Çıkış debriyaj pulu",
+    "marka": "Volvo / Champion",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "41131",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "CH 41134",
+    "ad": "Çıkış debriyaj pulu",
+    "marka": "Volvo / Champion",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "41134",
+    "seviye": "2"
+   }
+  ]
+ },
+ {
+  "ad": "Kavrama diski",
+  "adet": 2,
+  "yontem": "ayirt-edici-veri-yok",
+  "farkli": {
+   "marka": 1,
+   "kategori": 1,
+   "makineler": 1,
+   "seri": 1
+  },
+  "uyeler": [
+   {
+    "partNumber": "0501.212.372",
+    "ad": "Kavrama diski",
+    "marka": "ZF",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "0501 212 372",
+    "seviye": "2"
+   },
+   {
+    "partNumber": "0501.212.370",
+    "ad": "Kavrama diski",
+    "marka": "ZF",
+    "kategori": "Güç aktarımı",
+    "makineler": "",
+    "seri": "",
+    "logo": "0501 212 370",
+    "seviye": "2"
+   }
+  ]
+ }
+]

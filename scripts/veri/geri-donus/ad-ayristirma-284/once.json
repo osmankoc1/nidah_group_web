@@ -1,0 +1,61 @@
+{
+ "tarih": "2026-11-27T06:03:04.004Z",
+ "satirlar": [
+  {
+   "id": "df3b803f-21d7-4fe2-9768-438d97fe6ce6",
+   "part_number": "VOE 12736166",
+   "name": "Mafsal pulu",
+   "is_active": false,
+   "seo_ready": false
+  },
+  {
+   "id": "a0e590fd-424d-4caa-ac60-5c5074b00eda",
+   "part_number": "CH 400229",
+   "name": "Daire döndürme valfi",
+   "is_active": false,
+   "seo_ready": false
+  },
+  {
+   "id": "c4bafce9-2a8a-4fc2-81f3-a7fbcc63a349",
+   "part_number": "CH 52338",
+   "name": "Daire döndürme valfi",
+   "is_active": false,
+   "seo_ready": false
+  },
+  {
+   "id": "24b23298-f126-401e-9235-2378216d9706",
+   "part_number": "VOE 12724040",
+   "name": "Bıçak kaldırma burcu",
+   "is_active": false,
+   "seo_ready": false
+  },
+  {
+   "id": "496f3b09-c83d-4e6f-97f2-d05bf203521b",
+   "part_number": "232-70-53141",
+   "name": "Bıçak kaldırma burcu",
+   "is_active": false,
+   "seo_ready": false
+  },
+  {
+   "id": "5eaf991e-b187-4b2d-83c0-2aaa4411ebd2",
+   "part_number": "23S-15-12740",
+   "name": "Debriyaj sürtünme diski",
+   "is_active": false,
+   "seo_ready": false
+  },
+  {
+   "id": "a06f8941-197f-4725-9443-f0dd329dfec8",
+   "part_number": "714-07-12670",
+   "name": "Debriyaj sürtünme diski",
+   "is_active": false,
+   "seo_ready": false
+  },
+  {
+   "id": "982cdc21-c96f-4fb4-8417-ea1d9a3dcdd2",
+   "part_number": "CH 12745",
+   "name": "Mafsal pulu",
+   "is_active": false,
+   "seo_ready": false
+  }
+ ]
+}

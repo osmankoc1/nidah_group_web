@@ -1,0 +1,25 @@
+{
+ "tarih": "2026-11-27T05:58:19.438Z",
+ "satirlar": [
+  {
+   "id": "d811693a-8418-4aa5-b34d-387e6833d8f7",
+   "part_number": "76281",
+   "part_number_normalized": "76281",
+   "name": "KIT",
+   "long_description": "",
+   "notes": "",
+   "is_active": false,
+   "seo_ready": false
+  },
+  {
+   "id": "129f30d2-659e-4823-9ba8-020729b4978a",
+   "part_number": "90898",
+   "part_number_normalized": "90898",
+   "name": "GAUDE",
+   "long_description": "",
+   "notes": "",
+   "is_active": false,
+   "seo_ready": false
+  }
+ ]
+}

@@ -1,0 +1,557 @@
+{
+ "tekUrun": [
+  {
+   "normalizeNumara": "6172513200",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-003962",
+     "logoKodu": "61725--13200",
+     "partNumber": "61725-13200",
+     "adTR": "Planet dişli pulu",
+     "markaIpucu": "HİDROMEK",
+     "makineler": "HİDROMEK HMK 600MG"
+    },
+    {
+     "kimlik": "NG-005462",
+     "logoKodu": "61725-13200",
+     "partNumber": "61725-13200",
+     "adTR": "Planet dişli pulu",
+     "markaIpucu": "HİDROMEK",
+     "makineler": "HİDROMEK HMK 600MG"
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "Planet dişli pulu"
+   ],
+   "kodlar": [
+    "6172513200"
+   ]
+  },
+  {
+   "normalizeNumara": "4191512133",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-004876",
+     "logoKodu": "419--15-12133",
+     "partNumber": "419-15-12133",
+     "adTR": "Dalgalı debriyaj yayı",
+     "markaIpucu": "Komatsu",
+     "makineler": "Komatsu WA320-3AP"
+    },
+    {
+     "kimlik": "NG-004887",
+     "logoKodu": "419-15-12133",
+     "partNumber": "419-15-12133",
+     "adTR": "Dalgalı debriyaj yayı",
+     "markaIpucu": "Komatsu",
+     "makineler": "Komatsu WA320-3AP"
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "Dalgalı debriyaj yayı"
+   ],
+   "kodlar": [
+    "4191512133"
+   ]
+  },
+  {
+   "normalizeNumara": "VOE16001024",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-000443",
+     "logoKodu": "16001024",
+     "partNumber": "VOE 16001024",
+     "adTR": "Fan pompası kontrol valfi",
+     "markaIpucu": "Marka belirlenemedi",
+     "makineler": ""
+    },
+    {
+     "kimlik": "NG-001723",
+     "logoKodu": "VOE 16001024",
+     "partNumber": "VOE 16001024",
+     "adTR": "Fan pompası kontrol valfi",
+     "markaIpucu": "Volvo",
+     "makineler": ""
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "Fan pompası kontrol valfi"
+   ],
+   "kodlar": [
+    "16001024"
+   ]
+  },
+  {
+   "normalizeNumara": "CH13A0312",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-001819",
+     "logoKodu": "13A0312",
+     "partNumber": "CH 13A-0312",
+     "adTR": "Debriyaj kopilyası",
+     "markaIpucu": "Marka belirlenemedi",
+     "makineler": ""
+    },
+    {
+     "kimlik": "NG-003064",
+     "logoKodu": "13A-0312",
+     "partNumber": "CH 13A-0312",
+     "adTR": "Debriyaj kopilyası",
+     "markaIpucu": "Volvo",
+     "makineler": ""
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "Debriyaj kopilyası"
+   ],
+   "kodlar": [
+    "13A0312"
+   ]
+  },
+  {
+   "normalizeNumara": "CH3865",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-001824",
+     "logoKodu": "3865",
+     "partNumber": "CH 3865",
+     "adTR": "Debriyaj itme yatağı",
+     "markaIpucu": "Marka belirlenemedi",
+     "makineler": ""
+    },
+    {
+     "kimlik": "NG-001186",
+     "logoKodu": "CH 3865",
+     "partNumber": "CH 3865",
+     "adTR": "Debriyaj itme yatağı",
+     "markaIpucu": "Volvo",
+     "makineler": ""
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "Debriyaj itme yatağı"
+   ],
+   "kodlar": [
+    "3865"
+   ]
+  },
+  {
+   "normalizeNumara": "VOE15163008",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-001898",
+     "logoKodu": "15163008",
+     "partNumber": "VOE 15163008",
+     "adTR": "Basınç sensörü",
+     "markaIpucu": "Marka belirlenemedi",
+     "makineler": ""
+    },
+    {
+     "kimlik": "NG-003947",
+     "logoKodu": "VOE 15163008",
+     "partNumber": "VOE 15163008",
+     "adTR": "Basınç sensörü",
+     "markaIpucu": "Volvo",
+     "makineler": ""
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "Basınç sensörü"
+   ],
+   "kodlar": [
+    "15163008"
+   ]
+  },
+  {
+   "normalizeNumara": "CH89160",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-002624",
+     "logoKodu": "CH 89160",
+     "partNumber": "CH 89160",
+     "adTR": "Son tahrik gövdesi",
+     "markaIpucu": "Marka belirlenemedi",
+     "makineler": ""
+    },
+    {
+     "kimlik": "NG-002632",
+     "logoKodu": "89160",
+     "partNumber": "CH 89160",
+     "adTR": "Son tahrik gövdesi",
+     "markaIpucu": "Volvo / Champion",
+     "makineler": ""
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "Son tahrik gövdesi"
+   ],
+   "kodlar": [
+    "89160"
+   ]
+  },
+  {
+   "normalizeNumara": "CH41077",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-002646",
+     "logoKodu": "CH 41077",
+     "partNumber": "CH 41077",
+     "adTR": "Giriş debriyajı göbeği",
+     "markaIpucu": "Marka belirlenemedi",
+     "makineler": ""
+    },
+    {
+     "kimlik": "NG-002835",
+     "logoKodu": "41077",
+     "partNumber": "CH 41077",
+     "adTR": "Giriş debriyajı göbeği",
+     "markaIpucu": "Marka belirlenemedi",
+     "makineler": ""
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "Giriş debriyajı göbeği"
+   ],
+   "kodlar": [
+    "41077"
+   ]
+  },
+  {
+   "normalizeNumara": "VOE11419323",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-003663",
+     "logoKodu": "11419323",
+     "partNumber": "VOE 11419323",
+     "adTR": "Şanzıman ayırıcı duvarı",
+     "markaIpucu": "Marka belirlenemedi",
+     "makineler": ""
+    },
+    {
+     "kimlik": "NG-003664",
+     "logoKodu": "VOE 11419323",
+     "partNumber": "VOE 11419323",
+     "adTR": "Şanzıman ayırıcı duvarı",
+     "markaIpucu": "Marka belirlenemedi",
+     "makineler": ""
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "Şanzıman ayırıcı duvarı"
+   ],
+   "kodlar": [
+    "11419323"
+   ]
+  },
+  {
+   "normalizeNumara": "CH37848",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-003786",
+     "logoKodu": "CH 37848",
+     "partNumber": "CH 37848",
+     "adTR": "Şanzıman debriyaj pistonu",
+     "markaIpucu": "Marka belirlenemedi",
+     "makineler": ""
+    },
+    {
+     "kimlik": "NG-003772",
+     "logoKodu": "37848",
+     "partNumber": "CH 37848",
+     "adTR": "Şanzıman debriyaj pistonu",
+     "markaIpucu": "Volvo",
+     "makineler": ""
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "Şanzıman debriyaj pistonu"
+   ],
+   "kodlar": [
+    "37848"
+   ]
+  },
+  {
+   "normalizeNumara": "CH49987",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-004043",
+     "logoKodu": "CH 49987",
+     "partNumber": "CH 49987",
+     "adTR": "Dış debriyaj diski",
+     "markaIpucu": "Marka belirlenemedi",
+     "makineler": ""
+    },
+    {
+     "kimlik": "NG-003874",
+     "logoKodu": "49987",
+     "partNumber": "CH 49987",
+     "adTR": "Dış debriyaj diski",
+     "markaIpucu": "Volvo / Champion",
+     "makineler": ""
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "Dış debriyaj diski"
+   ],
+   "kodlar": [
+    "49987"
+   ]
+  },
+  {
+   "normalizeNumara": "VOE983285",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-001637",
+     "logoKodu": "VOE 983285",
+     "partNumber": "VOE 983285",
+     "adTR": "Bıçak montajı altıgen cıvatası",
+     "markaIpucu": "Volvo",
+     "makineler": "Volvo G930"
+    },
+    {
+     "kimlik": "NG-001642",
+     "logoKodu": "983285",
+     "partNumber": "VOE 983285",
+     "adTR": "Bıçak montajı altıgen cıvatası",
+     "markaIpucu": "Volvo",
+     "makineler": "Volvo G930"
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "Bıçak montajı altıgen cıvatası"
+   ],
+   "kodlar": [
+    "983285"
+   ]
+  },
+  {
+   "normalizeNumara": "VOE15048183",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-003411",
+     "logoKodu": "VOE 15048183",
+     "partNumber": "VOE 15048183",
+     "adTR": "Yağ seviye sensörü",
+     "markaIpucu": "Volvo",
+     "makineler": ""
+    },
+    {
+     "kimlik": "NG-003412",
+     "logoKodu": "VOE15048183",
+     "partNumber": "VOE 15048183",
+     "adTR": "Yağ seviye sensörü",
+     "markaIpucu": "Volvo",
+     "makineler": ""
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "Yağ seviye sensörü"
+   ],
+   "kodlar": [
+    "15048183"
+   ]
+  },
+  {
+   "normalizeNumara": "VOE15096785",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-003787",
+     "logoKodu": "VOE 15096785",
+     "partNumber": "VOE 15096785",
+     "adTR": "Şanzıman debriyaj pistonu",
+     "markaIpucu": "Volvo",
+     "makineler": ""
+    },
+    {
+     "kimlik": "NG-003802",
+     "logoKodu": "15096785",
+     "partNumber": "VOE 15096785",
+     "adTR": "Şanzıman debriyaj pistonu",
+     "markaIpucu": "Volvo",
+     "makineler": ""
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "Şanzıman debriyaj pistonu"
+   ],
+   "kodlar": [
+    "15096785"
+   ]
+  },
+  {
+   "normalizeNumara": "VOE11037595",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-004119",
+     "logoKodu": "11037595",
+     "partNumber": "VOE 11037595",
+     "adTR": "Şanzıman kilit halkası",
+     "markaIpucu": "Volvo",
+     "makineler": ""
+    },
+    {
+     "kimlik": "NG-003118",
+     "logoKodu": "VOE 11037595",
+     "partNumber": "VOE 11037595",
+     "adTR": "Şanzıman kilit halkası",
+     "markaIpucu": "Volvo / Champion",
+     "makineler": ""
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "Şanzıman kilit halkası"
+   ],
+   "kodlar": [
+    "11037595"
+   ]
+  },
+  {
+   "normalizeNumara": "VOE11419486",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-004678",
+     "logoKodu": "11419486",
+     "partNumber": "VOE 11419486",
+     "adTR": "Şanzıman sıcaklık sensörü",
+     "markaIpucu": "Volvo",
+     "makineler": ""
+    },
+    {
+     "kimlik": "NG-005076",
+     "logoKodu": "VOE 11419486",
+     "partNumber": "VOE 11419486",
+     "adTR": "Şanzıman sıcaklık sensörü",
+     "markaIpucu": "Volvo",
+     "makineler": ""
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "Şanzıman sıcaklık sensörü"
+   ],
+   "kodlar": [
+    "11419486"
+   ]
+  },
+  {
+   "normalizeNumara": "0501316592",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-000741",
+     "logoKodu": "0501316592",
+     "partNumber": "0501.316.592",
+     "adTR": "İç kavrama diski",
+     "markaIpucu": "ZF",
+     "makineler": ""
+    },
+    {
+     "kimlik": "NG-002697",
+     "logoKodu": "0501.316.592",
+     "partNumber": "0501.316.592",
+     "adTR": "İç kavrama diski",
+     "markaIpucu": "ZF",
+     "makineler": ""
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "İç kavrama diski"
+   ],
+   "kodlar": [
+    "0501316592"
+   ]
+  },
+  {
+   "normalizeNumara": "0501316591",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-001492",
+     "logoKodu": "0501 316 591",
+     "partNumber": "0501.316.591",
+     "adTR": "İç kavrama diski",
+     "markaIpucu": "ZF",
+     "makineler": ""
+    },
+    {
+     "kimlik": "NG-002698",
+     "logoKodu": "0501.316.591",
+     "partNumber": "0501.316.591",
+     "adTR": "İç kavrama diski",
+     "markaIpucu": "ZF",
+     "makineler": ""
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "İç kavrama diski"
+   ],
+   "kodlar": [
+    "0501316591"
+   ]
+  },
+  {
+   "normalizeNumara": "0501214895",
+   "satirSayisi": 2,
+   "satirlar": [
+    {
+     "kimlik": "NG-002383",
+     "logoKodu": "0501.214.895",
+     "partNumber": "0501.214.895",
+     "adTR": "Şanzıman dişli pompası",
+     "markaIpucu": "ZF",
+     "makineler": ""
+    },
+    {
+     "kimlik": "NG-005554",
+     "logoKodu": "0501 214 895",
+     "partNumber": "0501.214.895",
+     "adTR": "Şanzıman dişli pompası",
+     "markaIpucu": "ZF",
+     "makineler": ""
+    }
+   ],
+   "karar": "ELLE İNCELEME: aynı normalize numaraya düşen birden çok Logo satırı. Tek ürün mü, ayrı ürünler mi olduğu kaynakla teyit edilmeli. Otomatik birleştirme YAPILMADI, aktarıma alınmadı.",
+   "adlar": [
+    "Şanzıman dişli pompası"
+   ],
+   "kodlar": [
+    "0501214895"
+   ]
+  }
+ ],
+ "ayriOlabilir": [],
+ "belirsiz": []
+}

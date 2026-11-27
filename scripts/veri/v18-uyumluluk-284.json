@@ -1,0 +1,511 @@
+[
+ {
+  "partNumber": "K9000010",
+  "kimlik": "NG-001377",
+  "adTR": "Fren balata takımı",
+  "markaIpucu": "Doosan",
+  "kategori": "Fren",
+  "modeller": [
+   "Doosan DL420"
+  ],
+  "seriKapsami": "",
+  "kaynakUrl": "https://fr.scribd.com/document/363599373/doosan-Dl-420-Parts",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "60425-10500",
+  "kimlik": "NG-001791",
+  "adTR": "Şanzıman damperi",
+  "markaIpucu": "HİDROMEK",
+  "kategori": "Güç aktarımı",
+  "modeller": [
+   "HİDROMEK HMK 600MG"
+  ],
+  "seriKapsami": "HİDROMEK HMK 600MG: 1GCI0003 · belge kapsamı",
+  "kaynakUrl": "https://www.scribd.com/document/1041733758/Hmk-600mg-10-A%C4%9Fustos",
+  "kanitTurleri": [
+   "Kesin doğrulandı"
+  ]
+ },
+ {
+  "partNumber": "R6061-10007-0",
+  "kimlik": "NG-002822",
+  "adTR": "Ana pompa kardan mili",
+  "markaIpucu": "HİDROMEK",
+  "kategori": "Güç aktarımı",
+  "modeller": [
+   "HİDROMEK HMK 600MG"
+  ],
+  "seriKapsami": "HİDROMEK HMK 600MG: 1GCI0003 · belge kapsamı",
+  "kaynakUrl": "https://www.scribd.com/document/1041733758/Hmk-600mg-10-A%C4%9Fustos",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "62222-22100",
+  "kimlik": "NG-002874",
+  "adTR": "Şanzıman keçesi",
+  "markaIpucu": "HİDROMEK",
+  "kategori": "Sızdırmazlık",
+  "modeller": [
+   "HİDROMEK HMK 600MG"
+  ],
+  "seriKapsami": "HİDROMEK HMK 600MG: 1GCI0003 · belge kapsamı",
+  "kaynakUrl": "https://www.scribd.com/document/1041733758/Hmk-600mg-10-A%C4%9Fustos",
+  "kanitTurleri": [
+   "Kesin doğrulandı"
+  ]
+ },
+ {
+  "partNumber": "C5563-70385",
+  "kimlik": "NG-003499",
+  "adTR": "O-ring",
+  "markaIpucu": "HİDROMEK",
+  "kategori": "Sızdırmazlık",
+  "modeller": [
+   "HİDROMEK HMK 600MG"
+  ],
+  "seriKapsami": "HİDROMEK HMK 600MG: 1GCI0003 · belge kapsamı",
+  "kaynakUrl": "https://www.scribd.com/document/1041733758/Hmk-600mg-10-A%C4%9Fustos",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "60425-18200",
+  "kimlik": "NG-004442",
+  "adTR": "Şanzıman sızdırmazlık halkası",
+  "markaIpucu": "HİDROMEK",
+  "kategori": "Sızdırmazlık",
+  "modeller": [
+   "HİDROMEK HMK 600MG"
+  ],
+  "seriKapsami": "HİDROMEK HMK 600MG: 1GCI0003 · belge kapsamı",
+  "kaynakUrl": "https://www.scribd.com/document/1041733758/Hmk-600mg-10-A%C4%9Fustos",
+  "kanitTurleri": [
+   "Kesin doğrulandı"
+  ]
+ },
+ {
+  "partNumber": "419-15-12270",
+  "kimlik": "NG-004210",
+  "adTR": "İğneli debriyaj rulmanı",
+  "markaIpucu": "Komatsu",
+  "kategori": "Güç aktarımı",
+  "modeller": [
+   "Komatsu WA320-3AP"
+  ],
+  "seriKapsami": "",
+  "kaynakUrl": "https://www.scribd.com/document/464951836/komatsu-WA3203AP-F4350W32-053-Page",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "6261-81-6901",
+  "kimlik": "NG-004579",
+  "adTR": "Su sıcaklık sensörü",
+  "markaIpucu": "Komatsu",
+  "kategori": "Elektrik ve kontrol",
+  "modeller": [
+   "Komatsu GD655-5"
+  ],
+  "seriKapsami": "Komatsu GD655-5: 26540705 ve sonrası · motor seri kapsamı",
+  "kaynakUrl": "https://pdfcoffee.com/catalogo-motoniveladora-gd655-5-pdf-pdf-free.html",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "419-15-16930",
+  "kimlik": "NG-004833",
+  "adTR": "Şanzıman kontrol valfi filtre elemanı",
+  "markaIpucu": "Komatsu",
+  "kategori": "Filtre",
+  "modeller": [
+   "Komatsu WA320-3MC"
+  ],
+  "seriKapsami": "Komatsu WA320-3MC: A31001 ve sonrası · belge kapsamı",
+  "kaynakUrl": "https://www.scribd.com/document/917381253/Wa320-3mc-s-n-a31001-and-Up",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "CH 12742",
+  "kimlik": "NG-003692",
+  "adTR": "Mafsal pimi",
+  "markaIpucu": "Volvo / Champion",
+  "kategori": "Güç aktarımı",
+  "modeller": [
+   "Champion 720A",
+   "Champion 780A"
+  ],
+  "seriKapsami": "",
+  "kaynakUrl": "https://www.sonoracomputer.com/desktop/miscellaneous/manuals/1985%20Champion%20730A%20Series%20II%20Motor%20Grader/Parts_Manual/Section_1_Steering_System.pdf",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "CH 12743",
+  "kimlik": "NG-003702",
+  "adTR": "Mafsal pimi",
+  "markaIpucu": "Volvo / Champion",
+  "kategori": "Güç aktarımı",
+  "modeller": [
+   "Champion 720A",
+   "Champion 780A"
+  ],
+  "seriKapsami": "",
+  "kaynakUrl": "https://www.sonoracomputer.com/desktop/miscellaneous/manuals/1985%20Champion%20730A%20Series%20II%20Motor%20Grader/Parts_Manual/Section_1_Steering_System.pdf",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "CH 12746",
+  "kimlik": "NG-003966",
+  "adTR": "Mafsal ara parçası",
+  "markaIpucu": "Volvo / Champion",
+  "kategori": "Güç aktarımı",
+  "modeller": [
+   "Champion 720A",
+   "Champion 780A"
+  ],
+  "seriKapsami": "",
+  "kaynakUrl": "https://www.sonoracomputer.com/desktop/miscellaneous/manuals/1985%20Champion%20730A%20Series%20II%20Motor%20Grader/Parts_Manual/Section_1_Steering_System.pdf",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "CH 12745",
+  "kimlik": "NG-003971",
+  "adTR": "Mafsal pulu",
+  "markaIpucu": "Volvo / Champion",
+  "kategori": "Güç aktarımı",
+  "modeller": [
+   "Champion 720A",
+   "Champion 780A"
+  ],
+  "seriKapsami": "",
+  "kaynakUrl": "https://www.sonoracomputer.com/desktop/miscellaneous/manuals/1985%20Champion%20730A%20Series%20II%20Motor%20Grader/Parts_Manual/Section_1_Steering_System.pdf",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "CH 12747",
+  "kimlik": "NG-003978",
+  "adTR": "Mafsal ara parçası",
+  "markaIpucu": "Volvo / Champion",
+  "kategori": "Güç aktarımı",
+  "modeller": [
+   "Champion 720A",
+   "Champion 780A"
+  ],
+  "seriKapsami": "",
+  "kaynakUrl": "https://www.sonoracomputer.com/desktop/miscellaneous/manuals/1985%20Champion%20730A%20Series%20II%20Motor%20Grader/Parts_Manual/Section_1_Steering_System.pdf",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "813/50012",
+  "kimlik": "NG-002269",
+  "adTR": "Fren piston keçesi",
+  "markaIpucu": "HİDROMEK",
+  "kategori": "Fren",
+  "modeller": [
+   "JCB 3CX"
+  ],
+  "seriKapsami": "JCB 3CX: 00460001–00499999",
+  "kaynakUrl": "https://www.aservicemanualpdf.com/Samplepages/PM-JCB-3CX-BACKOHE-LOADER-00460001-00499999.pdf",
+  "kanitTurleri": [
+   "Kesin doğrulandı"
+  ]
+ },
+ {
+  "partNumber": "813/50026",
+  "kimlik": "NG-002270",
+  "adTR": "Kare kesitli fren piston keçesi",
+  "markaIpucu": "HİDROMEK",
+  "kategori": "Fren",
+  "modeller": [
+   "JCB 3CX-4"
+  ],
+  "seriKapsami": "JCB 3CX-4: 00337000–00399999",
+  "kaynakUrl": "https://www.aservicemanualpdf.com/Samplepages/PM-JCB-3CX-4-BACKOHE-LOADER-00337000-00399999.pdf",
+  "kanitTurleri": [
+   "Kesin doğrulandı"
+  ]
+ },
+ {
+  "partNumber": "F3012-07523",
+  "kimlik": "NG-003440",
+  "adTR": "Şanzıman yağ keçesi",
+  "markaIpucu": "HİDROMEK",
+  "kategori": "Sızdırmazlık",
+  "modeller": [
+   "Mitsubishi MG530"
+  ],
+  "seriKapsami": "",
+  "kaynakUrl": "https://kattrak.com/wp-content/uploads/98160-46920-Parts-catalogue-MG530.pdf",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "H375309700",
+  "kimlik": "NG-005153",
+  "adTR": "Kova tırnağı",
+  "markaIpucu": "HİDROMEK",
+  "kategori": "Yürüyüş ve şasi",
+  "modeller": [
+   "HİDROMEK HMK470"
+  ],
+  "seriKapsami": "",
+  "kaynakUrl": "https://trasteelwearparts.com/storage/app/uploads/public/68d/bcd/4c9/68dbcd4c9ea72323860027.pdf",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "701/43700",
+  "kimlik": "NG-003319",
+  "adTR": "3/8 BSP yağ basınç şalteri",
+  "markaIpucu": "JCB",
+  "kategori": "Elektrik ve kontrol",
+  "modeller": [
+   "JCB 530"
+  ],
+  "seriKapsami": "JCB 530: < M778519 · parça satırı",
+  "kaynakUrl": "https://www.aservicemanualpdf.com/Samplepages/PM-JCB-530-Telescopic-Handlers-Loadall-00768740-01016568.pdf",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "232-70-53141",
+  "kimlik": "NG-001401",
+  "adTR": "Bıçak kaldırma burcu",
+  "markaIpucu": "Komatsu",
+  "kategori": "Yatak ve burç",
+  "modeller": [
+   "Komatsu GD500R",
+   "Komatsu GD505A",
+   "Komatsu GD521A",
+   "Komatsu GD525A",
+   "Komatsu GD555",
+   "Komatsu GD655"
+  ],
+  "seriKapsami": "",
+  "kaynakUrl": "https://www.costex.com/wp-content/uploads/2023/08/F-720-363-Rev.-B-Bushings-for-Komatsu.pdf",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "419-15-16960",
+  "kimlik": "NG-001464",
+  "adTR": "Şanzıman kontrol filtresi gövdesi",
+  "markaIpucu": "Komatsu",
+  "kategori": "Güç aktarımı",
+  "modeller": [
+   "Komatsu WA350-3H",
+   "Komatsu WA420-3L"
+  ],
+  "seriKapsami": "Komatsu WA350-3H: 63001 ve sonrası · çizim kapsamı | Komatsu WA420-3L: A30001 ve sonrası · çizim kapsamı",
+  "kaynakUrl": "https://zapkomat.su/partsbook/4676-75-KLAPAN-UPRAVLENIYa-TRANSMISSIEY--SOLENOIDNYY-KLAPAN | https://partsell.ru/autocatalog/komatsu/pogruzchiki-frontalnye/wa420-3l-s-n-a30001-up/6317-104-fig-f-a-transmissiya-sol",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "238-15-12810",
+  "kimlik": "NG-001511",
+  "adTR": "Debriyaj ara plakası",
+  "markaIpucu": "Komatsu",
+  "kategori": "Güç aktarımı",
+  "modeller": [
+   "Komatsu GD505A-3"
+  ],
+  "seriKapsami": "Komatsu GD505A-3: 1001 ve sonrası · çizim kapsamı",
+  "kaynakUrl": "https://zapkomat.su/partsbook/2423-76-TRANSMISSIYa-PERED-I-3-MUFTA",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "125-15-32750",
+  "kimlik": "NG-001512",
+  "adTR": "Çelik debriyaj ara plakası",
+  "markaIpucu": "Komatsu",
+  "kategori": "Güç aktarımı",
+  "modeller": [
+   "Komatsu D41P-6"
+  ],
+  "seriKapsami": "Komatsu D41P-6: 829001 ve sonrası · katalog kapsamı",
+  "kaynakUrl": "https://transmissioncenter.net/wp-content/uploads/2021/01/Exedy.pdf",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "23S-15-12740",
+  "kimlik": "NG-002436",
+  "adTR": "Debriyaj sürtünme diski",
+  "markaIpucu": "Komatsu",
+  "kategori": "Güç aktarımı",
+  "modeller": [
+   "Komatsu GD505A-3"
+  ],
+  "seriKapsami": "Komatsu GD505A-3: 1001 ve sonrası · çizim kapsamı",
+  "kaynakUrl": "https://zapkomat.su/partsbook/2423-76-TRANSMISSIYa-PERED-I-3-MUFTA | https://www.protecfriction.com/wp-content/uploads/2025/11/WETFrictionCatalogforWeb.pdf",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "419-15-12660",
+  "kimlik": "NG-004182",
+  "adTR": "İğneli şanzıman rulmanı",
+  "markaIpucu": "Komatsu",
+  "kategori": "Yatak ve burç",
+  "modeller": [
+   "Komatsu WA300-3A",
+   "Komatsu LW100-1X"
+  ],
+  "seriKapsami": "Komatsu WA300-3A: 53001 ve sonrası · çizim kapsamı | Komatsu LW100-1X: 15001 ve sonrası · çizim kapsamı",
+  "kaynakUrl": "https://zapkomat.su/partsbook/4653-49-TRANSMISSIYa-1-I-3-MUFTA | https://zapkomat.su/partsbook/3678-117-TRANSMISSIYa-VYHODNOY-VAL",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "423-15-19420",
+  "kimlik": "NG-004193",
+  "adTR": "Şanzıman rulmanı",
+  "markaIpucu": "Komatsu",
+  "kategori": "Güç aktarımı",
+  "modeller": [
+   "Komatsu GD505A-3"
+  ],
+  "seriKapsami": "Komatsu GD505A-3: 1001 ve sonrası · çizim kapsamı",
+  "kaynakUrl": "https://zapkomat.su/partsbook/2423-76-TRANSMISSIYa-PERED-I-3-MUFTA",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "23B-22-11420",
+  "kimlik": "NG-004238",
+  "adTR": "Son tahrik rulmanı",
+  "markaIpucu": "Komatsu",
+  "kategori": "Yatak ve burç",
+  "modeller": [
+   "Komatsu GD663A-2"
+  ],
+  "seriKapsami": "Komatsu GD663A-2: 1001 ve sonrası · çizim kapsamı",
+  "kaynakUrl": "https://catalog.ornekismakinalari.com.tr/en/komatsu-yedek-parca-graders-gd663a-2-sn-1001-up-final-drive-gear-12%2C774524.html",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "707-98-27650",
+  "kimlik": "NG-005068",
+  "adTR": "Eğim silindiri keçe takımı",
+  "markaIpucu": "Komatsu",
+  "kategori": "Sızdırmazlık",
+  "modeller": [
+   "Komatsu GD555",
+   "Komatsu GD655",
+   "Komatsu GD675"
+  ],
+  "seriKapsami": "",
+  "kaynakUrl": "https://www.pspsealing.com/filesdirectserver/itp1/z_itp_28112022n28e/HSTPartsList2212z-z788071661987.pdf",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "714-07-12670",
+  "kimlik": "NG-001916",
+  "adTR": "Debriyaj sürtünme diski",
+  "markaIpucu": "Marka belirlenemedi",
+  "kategori": "Güç aktarımı",
+  "modeller": [
+   "Komatsu WA470-3"
+  ],
+  "seriKapsami": "Komatsu WA470-3: 25233 ve sonrası",
+  "kaynakUrl": "https://www.industrialbrake.com.au/wp-content/uploads/2021/06/IBFS-PARTS-BY-MODEL-CATALOGUE-2021.pdf | https://zapkomat.su/partsbook/1073-138-TRANSMISSIYa2-MUFTA-",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "VOE 983272",
+  "kimlik": "NG-001635",
+  "adTR": "Bıçak montajı altıgen cıvatası",
+  "markaIpucu": "Volvo",
+  "kategori": "Greyder bıçak ve daire grubu",
+  "modeller": [
+   "Volvo G930"
+  ],
+  "seriKapsami": "",
+  "kaynakUrl": "https://es.scribd.com/document/1062447987/MODBOARD-O-CUCHICLLA-INSTALACION",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "VOE 15090274",
+  "kimlik": "NG-001845",
+  "adTR": "İndüktif devir sensörü",
+  "markaIpucu": "Volvo",
+  "kategori": "Elektrik ve kontrol",
+  "modeller": [
+   "Volvo G930"
+  ],
+  "seriKapsami": "",
+  "kaynakUrl": "https://power-equip.com/wp-content/uploads/2025/06/Volvo-Parts-List.pdf | https://appcentral.centraldecompras.pb.gov.br/appls/sgc/sgc_anexos22.nsf/8386C2212F722AD603258DA5003185BE/%24file/ETP%20ASSINADO%20OLEO.pdf",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "VOE 17418113",
+  "kimlik": "NG-004322",
+  "adTR": "Şanzıman yağ filtresi",
+  "markaIpucu": "Volvo",
+  "kategori": "Güç aktarımı",
+  "modeller": [
+   "Volvo L150G"
+  ],
+  "seriKapsami": "Volvo L150G: 18501–22004 (çizim kapsamı)",
+  "kaynakUrl": "https://ymtork.com/makinalar-ve-parcalar-detay/l150g-volvo-18501-22004-421-150-oil-filter-22574-22586-22591-pno-3721-mno-36-sno-46.html",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ },
+ {
+  "partNumber": "VOE 22819604",
+  "kimlik": "NG-004378",
+  "adTR": "Saplama",
+  "markaIpucu": "Volvo",
+  "kategori": "Bağlantı elemanları",
+  "modeller": [
+   "Volvo EC200D"
+  ],
+  "seriKapsami": "Volvo EC200D: 240001 / 250001 / 280001 başlangıçları · belge kapsamı",
+  "kaynakUrl": "https://silverhorn.co.uk/web/content/product.attachment/561/attachment/Parts%20Manual%20Volvo%20EC200D%20Serial%20No%20240001-%2C%20250001-%2C%20280001-.pdf | https://srp.com.tr/volvo/22819604",
+  "kanitTurleri": [
+   "Güçlü eşleşme"
+  ]
+ }
+]

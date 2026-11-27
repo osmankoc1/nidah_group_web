@@ -1,0 +1,382 @@
+[
+ {
+  "norm": "6172513200",
+  "sinif": "BIRLESEBILIR",
+  "kimlik": "NG-003962",
+  "logoKodu": "61725--13200",
+  "partNumber": "61725-13200",
+  "adTR": "Planet dişli pulu",
+  "markaIpucu": "HİDROMEK",
+  "makineler": "HİDROMEK HMK 600MG"
+ },
+ {
+  "norm": "6172513200",
+  "sinif": "BIRLESEBILIR",
+  "kimlik": "NG-005462",
+  "logoKodu": "61725-13200",
+  "partNumber": "61725-13200",
+  "adTR": "Planet dişli pulu",
+  "markaIpucu": "HİDROMEK",
+  "makineler": "HİDROMEK HMK 600MG"
+ },
+ {
+  "norm": "4191512133",
+  "sinif": "BIRLESEBILIR",
+  "kimlik": "NG-004876",
+  "logoKodu": "419--15-12133",
+  "partNumber": "419-15-12133",
+  "adTR": "Dalgalı debriyaj yayı",
+  "markaIpucu": "Komatsu",
+  "makineler": "Komatsu WA320-3AP"
+ },
+ {
+  "norm": "4191512133",
+  "sinif": "BIRLESEBILIR",
+  "kimlik": "NG-004887",
+  "logoKodu": "419-15-12133",
+  "partNumber": "419-15-12133",
+  "adTR": "Dalgalı debriyaj yayı",
+  "markaIpucu": "Komatsu",
+  "makineler": "Komatsu WA320-3AP"
+ },
+ {
+  "norm": "VOE16001024",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-000443",
+  "logoKodu": "16001024",
+  "partNumber": "VOE 16001024",
+  "adTR": "Fan pompası kontrol valfi",
+  "markaIpucu": "Marka belirlenemedi",
+  "makineler": ""
+ },
+ {
+  "norm": "VOE16001024",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-001723",
+  "logoKodu": "VOE 16001024",
+  "partNumber": "VOE 16001024",
+  "adTR": "Fan pompası kontrol valfi",
+  "markaIpucu": "Volvo",
+  "makineler": ""
+ },
+ {
+  "norm": "CH13A0312",
+  "sinif": "BIRLESEBILIR",
+  "kimlik": "NG-001819",
+  "logoKodu": "13A0312",
+  "partNumber": "CH 13A-0312",
+  "adTR": "Debriyaj kopilyası",
+  "markaIpucu": "Marka belirlenemedi",
+  "makineler": ""
+ },
+ {
+  "norm": "CH13A0312",
+  "sinif": "BIRLESEBILIR",
+  "kimlik": "NG-003064",
+  "logoKodu": "13A-0312",
+  "partNumber": "CH 13A-0312",
+  "adTR": "Debriyaj kopilyası",
+  "markaIpucu": "Volvo",
+  "makineler": ""
+ },
+ {
+  "norm": "CH3865",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-001824",
+  "logoKodu": "3865",
+  "partNumber": "CH 3865",
+  "adTR": "Debriyaj itme yatağı",
+  "markaIpucu": "Marka belirlenemedi",
+  "makineler": ""
+ },
+ {
+  "norm": "CH3865",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-001186",
+  "logoKodu": "CH 3865",
+  "partNumber": "CH 3865",
+  "adTR": "Debriyaj itme yatağı",
+  "markaIpucu": "Volvo",
+  "makineler": ""
+ },
+ {
+  "norm": "VOE15163008",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-001898",
+  "logoKodu": "15163008",
+  "partNumber": "VOE 15163008",
+  "adTR": "Basınç sensörü",
+  "markaIpucu": "Marka belirlenemedi",
+  "makineler": ""
+ },
+ {
+  "norm": "VOE15163008",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-003947",
+  "logoKodu": "VOE 15163008",
+  "partNumber": "VOE 15163008",
+  "adTR": "Basınç sensörü",
+  "markaIpucu": "Volvo",
+  "makineler": ""
+ },
+ {
+  "norm": "CH89160",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-002624",
+  "logoKodu": "CH 89160",
+  "partNumber": "CH 89160",
+  "adTR": "Son tahrik gövdesi",
+  "markaIpucu": "Marka belirlenemedi",
+  "makineler": ""
+ },
+ {
+  "norm": "CH89160",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-002632",
+  "logoKodu": "89160",
+  "partNumber": "CH 89160",
+  "adTR": "Son tahrik gövdesi",
+  "markaIpucu": "Volvo / Champion",
+  "makineler": ""
+ },
+ {
+  "norm": "CH41077",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-002646",
+  "logoKodu": "CH 41077",
+  "partNumber": "CH 41077",
+  "adTR": "Giriş debriyajı göbeği",
+  "markaIpucu": "Marka belirlenemedi",
+  "makineler": ""
+ },
+ {
+  "norm": "CH41077",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-002835",
+  "logoKodu": "41077",
+  "partNumber": "CH 41077",
+  "adTR": "Giriş debriyajı göbeği",
+  "markaIpucu": "Marka belirlenemedi",
+  "makineler": ""
+ },
+ {
+  "norm": "VOE11419323",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-003663",
+  "logoKodu": "11419323",
+  "partNumber": "VOE 11419323",
+  "adTR": "Şanzıman ayırıcı duvarı",
+  "markaIpucu": "Marka belirlenemedi",
+  "makineler": ""
+ },
+ {
+  "norm": "VOE11419323",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-003664",
+  "logoKodu": "VOE 11419323",
+  "partNumber": "VOE 11419323",
+  "adTR": "Şanzıman ayırıcı duvarı",
+  "markaIpucu": "Marka belirlenemedi",
+  "makineler": ""
+ },
+ {
+  "norm": "CH37848",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-003786",
+  "logoKodu": "CH 37848",
+  "partNumber": "CH 37848",
+  "adTR": "Şanzıman debriyaj pistonu",
+  "markaIpucu": "Marka belirlenemedi",
+  "makineler": ""
+ },
+ {
+  "norm": "CH37848",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-003772",
+  "logoKodu": "37848",
+  "partNumber": "CH 37848",
+  "adTR": "Şanzıman debriyaj pistonu",
+  "markaIpucu": "Volvo",
+  "makineler": ""
+ },
+ {
+  "norm": "CH49987",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-004043",
+  "logoKodu": "CH 49987",
+  "partNumber": "CH 49987",
+  "adTR": "Dış debriyaj diski",
+  "markaIpucu": "Marka belirlenemedi",
+  "makineler": ""
+ },
+ {
+  "norm": "CH49987",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-003874",
+  "logoKodu": "49987",
+  "partNumber": "CH 49987",
+  "adTR": "Dış debriyaj diski",
+  "markaIpucu": "Volvo / Champion",
+  "makineler": ""
+ },
+ {
+  "norm": "VOE983285",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-001637",
+  "logoKodu": "VOE 983285",
+  "partNumber": "VOE 983285",
+  "adTR": "Bıçak montajı altıgen cıvatası",
+  "markaIpucu": "Volvo",
+  "makineler": "Volvo G930"
+ },
+ {
+  "norm": "VOE983285",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-001642",
+  "logoKodu": "983285",
+  "partNumber": "VOE 983285",
+  "adTR": "Bıçak montajı altıgen cıvatası",
+  "markaIpucu": "Volvo",
+  "makineler": "Volvo G930"
+ },
+ {
+  "norm": "VOE15048183",
+  "sinif": "BIRLESEBILIR",
+  "kimlik": "NG-003411",
+  "logoKodu": "VOE 15048183",
+  "partNumber": "VOE 15048183",
+  "adTR": "Yağ seviye sensörü",
+  "markaIpucu": "Volvo",
+  "makineler": ""
+ },
+ {
+  "norm": "VOE15048183",
+  "sinif": "BIRLESEBILIR",
+  "kimlik": "NG-003412",
+  "logoKodu": "VOE15048183",
+  "partNumber": "VOE 15048183",
+  "adTR": "Yağ seviye sensörü",
+  "markaIpucu": "Volvo",
+  "makineler": ""
+ },
+ {
+  "norm": "VOE15096785",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-003787",
+  "logoKodu": "VOE 15096785",
+  "partNumber": "VOE 15096785",
+  "adTR": "Şanzıman debriyaj pistonu",
+  "markaIpucu": "Volvo",
+  "makineler": ""
+ },
+ {
+  "norm": "VOE15096785",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-003802",
+  "logoKodu": "15096785",
+  "partNumber": "VOE 15096785",
+  "adTR": "Şanzıman debriyaj pistonu",
+  "markaIpucu": "Volvo",
+  "makineler": ""
+ },
+ {
+  "norm": "VOE11037595",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-004119",
+  "logoKodu": "11037595",
+  "partNumber": "VOE 11037595",
+  "adTR": "Şanzıman kilit halkası",
+  "markaIpucu": "Volvo",
+  "makineler": ""
+ },
+ {
+  "norm": "VOE11037595",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-003118",
+  "logoKodu": "VOE 11037595",
+  "partNumber": "VOE 11037595",
+  "adTR": "Şanzıman kilit halkası",
+  "markaIpucu": "Volvo / Champion",
+  "makineler": ""
+ },
+ {
+  "norm": "VOE11419486",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-004678",
+  "logoKodu": "11419486",
+  "partNumber": "VOE 11419486",
+  "adTR": "Şanzıman sıcaklık sensörü",
+  "markaIpucu": "Volvo",
+  "makineler": ""
+ },
+ {
+  "norm": "VOE11419486",
+  "sinif": "BELIRSIZ",
+  "kimlik": "NG-005076",
+  "logoKodu": "VOE 11419486",
+  "partNumber": "VOE 11419486",
+  "adTR": "Şanzıman sıcaklık sensörü",
+  "markaIpucu": "Volvo",
+  "makineler": ""
+ },
+ {
+  "norm": "0501316592",
+  "sinif": "BIRLESEBILIR",
+  "kimlik": "NG-000741",
+  "logoKodu": "0501316592",
+  "partNumber": "0501.316.592",
+  "adTR": "İç kavrama diski",
+  "markaIpucu": "ZF",
+  "makineler": ""
+ },
+ {
+  "norm": "0501316592",
+  "sinif": "BIRLESEBILIR",
+  "kimlik": "NG-002697",
+  "logoKodu": "0501.316.592",
+  "partNumber": "0501.316.592",
+  "adTR": "İç kavrama diski",
+  "markaIpucu": "ZF",
+  "makineler": ""
+ },
+ {
+  "norm": "0501316591",
+  "sinif": "BIRLESEBILIR",
+  "kimlik": "NG-001492",
+  "logoKodu": "0501 316 591",
+  "partNumber": "0501.316.591",
+  "adTR": "İç kavrama diski",
+  "markaIpucu": "ZF",
+  "makineler": ""
+ },
+ {
+  "norm": "0501316591",
+  "sinif": "BIRLESEBILIR",
+  "kimlik": "NG-002698",
+  "logoKodu": "0501.316.591",
+  "partNumber": "0501.316.591",
+  "adTR": "İç kavrama diski",
+  "markaIpucu": "ZF",
+  "makineler": ""
+ },
+ {
+  "norm": "0501214895",
+  "sinif": "BIRLESEBILIR",
+  "kimlik": "NG-002383",
+  "logoKodu": "0501.214.895",
+  "partNumber": "0501.214.895",
+  "adTR": "Şanzıman dişli pompası",
+  "markaIpucu": "ZF",
+  "makineler": ""
+ },
+ {
+  "norm": "0501214895",
+  "sinif": "BIRLESEBILIR",
+  "kimlik": "NG-005554",
+  "logoKodu": "0501 214 895",
+  "partNumber": "0501.214.895",
+  "adTR": "Şanzıman dişli pompası",
+  "markaIpucu": "ZF",
+  "makineler": ""
+ }
+]
