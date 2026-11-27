@@ -6,6 +6,7 @@ import {
 } from "@/lib/db/schema";
 import { eq, and, asc, isNull, or, sql } from "drizzle-orm";
 import { productLookupKey } from "@/lib/product-url";
+import { publicProductConditions } from "@/lib/public-visibility";
 import { productCache } from "@/lib/product-cache";
 
 type Params = { params: Promise<{ partNumber: string }> };
@@ -40,7 +41,8 @@ const getProductDetail = productCache(
       .leftJoin(categories, eq(products.categoryId, categories.id))
       .where(
         and(
-          eq(products.isActive, true),
+          // YAYIN = aktif VE yayın onaylı (bkz. lib/public-visibility.ts).
+          ...publicProductConditions(),
           or(
             eq(products.partNumberNormalized, normalized),
             // 0006 öncesinden kalan NULL normalize satırlar için geri dönüş.

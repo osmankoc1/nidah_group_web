@@ -280,6 +280,48 @@ export const OPTIONAL_PRODUCT_COLUMNS = [
  */
 export const IMPORT_FORBIDDEN_COLUMNS = ["seoReady", "seo_ready", "verified"] as const;
 
+/**
+ * YENİ ÜRÜNLERİN AKTARIM SONRASI DURUMU (kullanıcı kararı 2026-11-26).
+ *
+ * ── NEDEN ─────────────────────────────────────────────────────────────────
+ * `products.is_active` şema varsayılanı `true`'dur ve import ucu bu alanı
+ * yazmıyordu; yani toplu aktarımla gelen her ürün AKTİF giriyordu. Katalog
+ * toggle'ı açıkken bu, içerik denetiminden geçmemiş yüzlerce sayfayı public
+ * yüzeye çıkarır (ölçüm: `docs/admin-master-plan/35-YAYIN-RAPORU.md`).
+ *
+ * AKTARIM VE YAYIN AYRI İŞLEMLERDİR:
+ *   · aktarım  → kayıt oluşur, PASİF ve yayın onaysız
+ *   · yayın    → içerik denetimi + `seo_ready` (tek tek, insan kararı)
+ *
+ * `seoReady` zaten import yüzeyinde hiç yok (IMPORT_FORBIDDEN_COLUMNS);
+ * burada ikinci bir güvence olarak değeri de yazılıdır, böylece politika tek
+ * yerde okunur ve test edilir.
+ */
+export const IMPORT_NEW_PRODUCT_STATE = {
+  isActive: false,
+  seoReady: false,
+} as const;
+
+/**
+ * GÜNCELLEMEDE ASLA YAZILMAYAN kolonlar.
+ *
+ * Mevcut bir ürünün aktiflik ve yayın durumu, bir dosya yüklemesiyle
+ * değişmez: ne açılır ne kapanır. `buildProductConflictSet` gövdesi bu
+ * adları içermez ve `tests/import-safety.spec.ts` bunu ölçer.
+ */
+export const IMPORT_UPDATE_PROTECTED_COLUMNS = [
+  "isActive",
+  "seoReady",
+  "seoReadyAt",
+] as const;
+
+/** Operatöre gösterilen Türkçe politika metni (dry-run'da da döner). */
+export const IMPORT_NEW_PRODUCT_NOTICE =
+  "Yeni ürünler PASİF (is_active = false) ve yayın onaysız " +
+  "(seo_ready = false) oluşturulur. Aktarım yayın demek değildir: ürünler " +
+  "içerik denetiminden geçip tek tek yayın onayı alana kadar public yüzeyde " +
+  "görünmez. Mevcut ürünlerin aktiflik ve yayın durumuna dokunulmaz.";
+
 export type OptionalProductColumn = (typeof OPTIONAL_PRODUCT_COLUMNS)[number];
 
 /**

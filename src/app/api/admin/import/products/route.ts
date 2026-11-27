@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidateProducts } from "@/lib/revalidate-public";
 import { db } from "@/lib/db";
 import { products, categories } from "@/lib/db/schema";
-import { sql, inArray, or, type SQL } from "drizzle-orm";
+import { inArray, or } from "drizzle-orm";
 import { parseUploadedFile } from "@/lib/import-xlsx";
 import { runImportBatch } from "@/lib/import-apply";
+import { buildProductConflictSet } from "@/lib/import-conflict";
 import { normalizePartNumber } from "@/lib/part-number";
 import {
   checkIdentifierCell,
@@ -22,8 +23,9 @@ import {
   parseImportInternalStockCode,
   parseImportText,
   IMPORT_FORBIDDEN_COLUMNS,
+  IMPORT_NEW_PRODUCT_STATE,
+  IMPORT_NEW_PRODUCT_NOTICE,
   type ImportIssue,
-  type OptionalProductColumn,
   type ProductCondition,
 } from "@/lib/import-validation";
 import type { SourcingTypeValue, StockStatusValue } from "@/lib/product-fields";
@@ -77,49 +79,6 @@ interface UpsertRow {
   // ── Faz 3 — İÇ KULLANIM, eşleştirme anahtarı DEĞİL ──
   internalStockCode: string | null;
   internalStockCodeNormalized: string | null;
-}
-
-/**
- * ON CONFLICT DO UPDATE SET gövdesi.
- *
- * Dosyada BULUNMAYAN kolona `products.<kolon>` yazılır — yani kendi mevcut
- * değeri, no-op. Eski davranış her kolona `excluded.<kolon>` yazıyordu; bu
- * yüzden yalnızca `partNumber` + `name` içeren bir dosya, mevcut kayıtların
- * `description` / `weight` / `category_id` / `notes` alanlarını NULL'a
- * çekiyordu (denetim E-4, sessiz veri kaybı).
- */
-function buildConflictSet(updatable: Set<OptionalProductColumn>) {
-  const pick = (column: OptionalProductColumn, excluded: SQL, current: SQL) =>
-    updatable.has(column) ? excluded : current;
-
-  return {
-    name: sql`excluded.name`,
-    // Kimlik anahtarı HER ZAMAN yenilenir — denetim E-1'in kök nedeni buydu.
-    partNumberNormalized: sql`excluded.part_number_normalized`,
-    description: pick("description", sql`excluded.description`, sql`${products.description}`),
-    condition: pick("condition", sql`excluded.condition`, sql`${products.condition}`),
-    inStock: pick("inStock", sql`excluded.in_stock`, sql`${products.inStock}`),
-    weight: pick("weight", sql`excluded.weight`, sql`${products.weight}`),
-    categoryId: pick("category", sql`excluded.category_id`, sql`${products.categoryId}`),
-    notes: pick("notes", sql`excluded.notes`, sql`${products.notes}`),
-    // ── Faz 2 — aynı "dosyada yoksa dokunma" kuralı ────────────────────────
-    partManufacturer: pick("partManufacturer", sql`excluded.part_manufacturer`, sql`${products.partManufacturer}`),
-    sourcingType:     pick("sourcingType",     sql`excluded.sourcing_type`,     sql`${products.sourcingType}`),
-    stockStatus:      pick("stockStatus",      sql`excluded.stock_status`,      sql`${products.stockStatus}`),
-    shortDescription: pick("shortDescription", sql`excluded.short_description`, sql`${products.shortDescription}`),
-    longDescription:  pick("longDescription",  sql`excluded.long_description`,  sql`${products.longDescription}`),
-    metaTitle:        pick("metaTitle",        sql`excluded.meta_title`,        sql`${products.metaTitle}`),
-    metaDescription:  pick("metaDescription",  sql`excluded.meta_description`,  sql`${products.metaDescription}`),
-    // ── Faz 3 — ham kod ve normalize kolon BİRLİKTE güncellenir; biri
-    // güncellenip diğeri eski kalırsa arama sessizce yanlış sonuç verir.
-    internalStockCode:
-      pick("internalStockCode", sql`excluded.internal_stock_code`, sql`${products.internalStockCode}`),
-    internalStockCodeNormalized:
-      pick("internalStockCode", sql`excluded.internal_stock_code_normalized`, sql`${products.internalStockCodeNormalized}`),
-    // `seo_ready` ve `seo_ready_at` BILINCLI OLARAK YOK: yayin onayi toplu
-    // import ile verilemez (IMPORT_FORBIDDEN_COLUMNS).
-    updatedAt: sql`now()`,
-  };
 }
 
 export async function POST(request: NextRequest) {
@@ -393,7 +352,7 @@ export async function POST(request: NextRequest) {
   // Hata varsa HİÇBİR ŞEY yazılmaz (mevcut davranış korunuyor).
   let applied = false;
   if (!isDryRun && !hasErrors && toUpsert.length > 0) {
-    const conflictSet = buildConflictSet(updatable);
+    const conflictSet = buildProductConflictSet(updatable);
 
     /*
      * ── NEDEN `db.batch`, `db.transaction` DEĞİL ────────────────────────────
@@ -444,6 +403,15 @@ export async function POST(request: NextRequest) {
               // hedefi hala products.partNumber.
               internalStockCode: v.internalStockCode,
               internalStockCodeNormalized: v.internalStockCodeNormalized,
+              /*
+               * ── AKTARIM ≠ YAYIN (kullanici karari 2026-11-26) ───────────
+               * `products.is_active` sema varsayilani TRUE'dur. Bu alan
+               * yazilmadigi surece toplu aktarimla gelen her urun AKTIF
+               * girer; katalog toggle'i acikken 322 urunluk bir aktarim,
+               * icerik denetimi yapilmadan 322 sayfayi public yuzeye
+               * cikarirdi. Deger bu yuzden ACIKCA yazilir.
+               */
+              isActive: IMPORT_NEW_PRODUCT_STATE.isActive,
               // seoReady YAZILMAZ -> sema varsayilani false kalir.
             }))
           )
@@ -534,6 +502,34 @@ export async function POST(request: NextRequest) {
      * BİRLEŞTİRİLMEZ — operatörün elle incelemesi için bildirilir.
      */
     stockCodeWarnings,
+    /**
+     * YENİ ÜRÜNLERİN DURUMU — operatöre açıkça söylenir.
+     *
+     * Dry-run'da da döner: operatör uygulamadan ÖNCE yeni ürünlerin pasif
+     * geleceğini görür.
+     */
+    newProductState: {
+      isActive: IMPORT_NEW_PRODUCT_STATE.isActive,
+      seoReady: IMPORT_NEW_PRODUCT_STATE.seoReady,
+      notice: IMPORT_NEW_PRODUCT_NOTICE,
+    },
+    /**
+     * GERİ DÖNÜŞ — bu aktarımın OLUŞTURDUĞU parça numaraları.
+     *
+     * Yazma hatasında hiçbir kayıt yazılmaz (tek transaction, bkz.
+     * `runImportBatch`). Yazma BAŞARILI olduktan sonra aktarımı geri almak
+     * isteyen operatörün elinde ise kesin bir liste olmalı: güncellenen
+     * kayıtlar silinmemeli, yalnızca YENİ oluşanlar geri alınmalı. Bu alan
+     * tam o listedir ve dry-run'da da döner (yani önce görülebilir).
+     */
+    rollback: {
+      createdPartNumbers: results
+        .filter((r) => r.action === "insert")
+        .map((r) => r.partNumber),
+      note:
+        "Bu aktarımı geri almak için yalnızca yukarıdaki parça numaraları " +
+        "ele alınır; 'update' satırları mevcut kayıtlardır ve silinmemelidir.",
+    },
   };
 
   // Public urun onbellegini dusur (2026-11-24, bulgu B1): atlanirsa

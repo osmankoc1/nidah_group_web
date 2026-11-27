@@ -15,6 +15,7 @@ import { eq, and } from "drizzle-orm";
 import { getAllPageSettings, type PageKey } from "@/lib/site-settings";
 import { isUsableSlug } from "@/lib/blog-locales";
 import { productUrl } from "@/lib/product-url";
+import { publicProductConditions } from "@/lib/public-visibility";
 
 const BASE_URL = "https://www.nidahgroup.com.tr";
 
@@ -131,7 +132,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ? await db
         .select({ id: products.id, partNumber: products.partNumber })
         .from(products)
-        .where(and(eq(products.isActive, true), eq(products.seoReady, true)))
+        .where(and(...publicProductConditions()))
     : [];
 
   // ── Kategori ve etiketler — YALNIZCA yayımlanmış içeriği olanlar ───────────
@@ -201,8 +202,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         // zaten bir URL'si yoktur — satır içi SVG'dir, bu sorguya düşmez.
         .where(
           and(
-            eq(products.isActive, true),
-            eq(products.seoReady, true),
+            ...publicProductConditions(),
             eq(productImages.verified, true)
           )
         )

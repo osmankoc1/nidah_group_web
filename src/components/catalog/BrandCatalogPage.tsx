@@ -20,6 +20,7 @@ import { BRAND_PAGE_SIZE, paginate, type PageInfo } from "@/lib/pagination";
 import { productCache } from "@/lib/product-cache";
 import { productPath } from "@/lib/product-url";
 import { type StockStatus } from "@/lib/stock";
+import { publicProductConditions } from "@/lib/public-visibility";
 
 // ── Types ────────────────────────────────────────────────────────
 
@@ -101,8 +102,11 @@ async function fetchBrandPageUncached(
 
     if (mfrRows.length === 0) return EMPTY_PAGE;
 
+    // Public gorunurluk TEK KAYNAK: is_active VE seo_ready (bkz.
+    // lib/public-visibility.ts). Yayin onayi olmayan urun marka
+    // sayfasinda da listelenmez.
     const where = and(
-      eq(products.isActive, true),
+      ...publicProductConditions(),
       inArray(
         machines.manufacturerId,
         mfrRows.map((m) => m.id)

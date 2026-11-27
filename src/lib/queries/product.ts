@@ -9,6 +9,7 @@ import {
 import { eq, and, asc, isNull, sql } from "drizzle-orm";
 import { normalizePartNumber } from "@/lib/part-number";
 import { productLookupKey } from "@/lib/product-url";
+import { publicProductConditions } from "@/lib/public-visibility";
 import type { ProductTranslationRow } from "@/lib/product-i18n";
 import type { PartNumberType } from "@/lib/verification";
 
@@ -128,7 +129,9 @@ async function findProductRow(normalized: string) {
     .where(
       and(
         eq(products.partNumberNormalized, normalized),
-        eq(products.isActive, true)
+        // YAYIN = aktif VE yayın onaylı. Onaysız ürün artık 200 + noindex
+        // DEĞİL, gerçek 404 döner (bkz. lib/public-visibility.ts).
+        ...publicProductConditions()
       )
     )
     .limit(1);
@@ -142,7 +145,7 @@ async function findProductRow(normalized: string) {
     .where(
       and(
         isNull(products.partNumberNormalized),
-        eq(products.isActive, true),
+        ...publicProductConditions(),
         sql`upper(regexp_replace(${products.partNumber}, '[^A-Za-z0-9]', '', 'g')) = ${normalized}`
       )
     )

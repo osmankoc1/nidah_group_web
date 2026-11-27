@@ -4,6 +4,7 @@ import { products, productImages, categories, fitments, machines, manufacturers 
 import { eq, and, ilike, like, isNull, or, desc, count, inArray, sql } from "drizzle-orm";
 import { productCache } from "@/lib/product-cache";
 import { normalizePartNumber } from "@/lib/part-number";
+import { publicProductConditions } from "@/lib/public-visibility";
 import { aramaKapisi } from "@/lib/search-gate";
 
 /**
@@ -35,7 +36,8 @@ async function urunListesiSorgusu(
     if (!db) return null;
 
     const offset = (page - 1) * limit;
-    const conditions = [eq(products.isActive, true)];
+    // YAYIN = aktif VE yayın onaylı (bkz. lib/public-visibility.ts).
+    const conditions = publicProductConditions();
 
     if (search) {
       // ── ARAMA (2026-11-24, bulgu B7) ────────────────────────────────────

@@ -1,6 +1,5 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
-import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { products } from "@/lib/db/schema";
 import { PRODUCTS_CACHE_TAG } from "@/lib/product-cache";
@@ -58,6 +57,7 @@ import {
   type Sozluk,
   type SozlukSatiri,
 } from "@/lib/search-gate-core";
+import { publicProductWhere } from "@/lib/public-visibility";
 
 export type { AramaKarari, Sozluk, SozlukSatiri } from "@/lib/search-gate-core";
 export { aramaKarariVer, sozlukKur } from "@/lib/search-gate-core";
@@ -72,7 +72,8 @@ async function sozlukUret(): Promise<Sozluk> {
       ad:  products.name,
     })
     .from(products)
-    .where(eq(products.isActive, true))
+    // YAYIN = aktif VE yayın onaylı: onaysız ürün aramada da yok.
+    .where(publicProductWhere())
     .limit(SATIR_UST_SINIRI);
 
   return sozlukKur(satirlar);

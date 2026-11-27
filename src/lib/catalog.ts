@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { products, productImages, categories, fitments, machines, manufacturers, machineVariants } from "@/lib/db/schema";
 import { eq, and, ilike, or, asc, desc, count, inArray } from "drizzle-orm";
 import { PRODUCT_COLUMNS_V1 } from "@/lib/db/columns";
+import { publicProductConditions, publicProductWhere } from "@/lib/public-visibility";
 
 export interface CatalogListItem {
   id:             string;
@@ -46,7 +47,8 @@ export async function listProducts(filters: CatalogFilters = {}): Promise<Catalo
   const limit = Math.min(50, Math.max(1, filters.limit ?? 20));
   const offset = (page - 1) * limit;
 
-  const conditions = [eq(products.isActive, true)];
+  // YAYIN = aktif VE yayın onaylı (bkz. lib/public-visibility.ts).
+  const conditions = publicProductConditions();
 
   if (filters.search) {
     conditions.push(
@@ -139,7 +141,7 @@ export async function getProduct(idOrPartNumber: string): Promise<CatalogDetail 
 
   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrPartNumber);
   const where = and(
-    eq(products.isActive, true),
+    ...publicProductConditions(),
     isUuid
       ? eq(products.id, idOrPartNumber)
       : eq(products.partNumber, idOrPartNumber.toUpperCase())
@@ -191,6 +193,6 @@ export async function listProductSlugs(): Promise<{ id: string; partNumber: stri
   return db
     .select({ id: products.id, partNumber: products.partNumber })
     .from(products)
-    .where(eq(products.isActive, true))
+    .where(publicProductWhere())
     .orderBy(asc(products.createdAt));
 }
