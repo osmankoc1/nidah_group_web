@@ -103,3 +103,19 @@ test.describe("sitemap ve ürün sayfası ile tutarlılık", () => {
     expect(kod).toContain("index: false");
   });
 });
+
+test.describe("ic yonetim notlari public yuzeyde olmamali", () => {
+  test("public urun API'si products.notes SECMIYOR", () => {
+    // `products.notes` bir YONETIM notudur. Olculen eski hal: public
+    // `/api/products/[partNumber]` ucu bu alani donuyordu; icerigi
+    // "Logo'da iki stok satiri ayni parcaya cozuluyor" ya da "yuklu gorsel
+    // urun fotografi degil, sirket logosudur" gibi ic yorumlardir.
+    const kod = yorumsuz(oku("src/app/api/products/[partNumber]/route.ts"));
+    expect(kod).not.toContain("products.notes");
+  });
+
+  test("urun detay sorgusu da products.notes SECMIYOR", () => {
+    const kod = yorumsuz(oku("src/lib/queries/product.ts"));
+    expect(kod).not.toContain("products.notes");
+  });
+});

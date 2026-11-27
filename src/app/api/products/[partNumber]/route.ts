@@ -33,7 +33,11 @@ const getProductDetail = productCache(
         condition:    products.condition,
         inStock:      products.inStock,
         weight:       products.weight,
-        notes:        products.notes,
+        // `notes` BILINCLI OLARAK YOK: bu alan YONETIM NOTUDUR (admin duzenleme
+        // ekraninda girilir, ornegin "Logo'da iki stok satiri ayni parcaya
+        // cozuluyor" ya da "yuklu gorsel urun fotografi degil"). Public uca
+        // konursa bu ic yorumlar disariya acilir. Olculdu: uygulamada bu alani
+        // tuketen public bir yuzey YOK.
         categoryName: categories.name,
         createdAt:    products.createdAt,
       })

@@ -291,3 +291,17 @@ hazırlandı, sıralandı ve izlenebilir hâle getirildi; katalog taraması ayr�
 - 173 reddedilen açıklama ve 41 çözülemeyen ad kümesi elle çalışma bekliyor.
 - `HMK600MG`/`HMK 600MG` birleştirmesi, `R6020-11521-0` "Hat" adı ve HeroSection
   `48h` ifadesi hâlâ **şirket teyidi** bekliyor.
+
+---
+
+## 9. Ek bulgu — iç yönetim notları public uçtaydı (düzeltildi)
+
+Uyumlulukları yazdıktan sonra yapılan kontrolde ölçüldü:
+
+| Alan | Durum | Düzeltme |
+|---|---|---|
+| `fitments.notes` | **Public ürün sayfasında RENDER EDİLİYOR** (`(public)/parca-katalog/[slug]/page.tsx:222`). İlk yazımda bu alana "Kanıt düzeyi: Güçlü eşleşme" ve kaynak URL'si (scribd bağlantısı) konmuştu. | 47 kaydın notu yeniden yazıldı: yalnızca müşteriye dönük "Katalog kapsamı: …" kaldı (22 kayıt), gerisi NULL (25 kayıt). Kanıt düzeyi `source` alanına taşındı — bu alan public yüzeyde render edilmiyor (ölçüldü). Kaynak URL'leri veritabanından çıkarıldı; `scripts/veri/v18-uyumluluk-284.json` içinde duruyor. Doğrulandı: notunda URL geçen 0, "Kanıt düzeyi" geçen 0. |
+| `products.notes` | Public `/api/products/[partNumber]` ucu bu alanı **dönüyordu**. İçeriği yönetim notudur ("Logo'da iki stok satırı aynı parçaya çözülüyor", "yüklü görsel ürün fotoğrafı değil, şirket logosudur"). Uygulamada tüketen public yüzey YOK. | Seçimden çıkarıldı. `tests/public-visibility.spec.ts` iki yeni testle kilitliyor. |
+
+Bu, oturumun ikinci ölçülen yayın açığıdır (birincisi marka sayfasındaki eksik
+`seo_ready` şartıydı). İkisi de katalog toggle'ı açılmadan önce kapatıldı.
